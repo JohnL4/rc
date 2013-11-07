@@ -566,7 +566,7 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;---------------------------------  nxhtml  ---------------------------------
 
-(load "c:/usr/local/nxhtml/autostart.el")
+;; (load "c:/usr/local/nxhtml/autostart.el")
 
 ;; Workaround the annoying warnings:
 ;;    Warning (mumamo-per-buffer-local-vars):

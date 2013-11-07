@@ -68,13 +68,6 @@ something fanciful or something totally random, whatever makes you happy.")
                 )
 	      Info-default-directory-list))
 
-;;--------------------------------  packages  --------------------------------
-
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
-(package-initialize)
-
 ;;---------------------------------  fonts  ----------------------------------
 
 					;Use (insert (prin1-to-string
@@ -99,6 +92,7 @@ something fanciful or something totally random, whatever makes you happy.")
 					;8- and 9-point courier:
       ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-96-96-c-*-iso8859-1")
       ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-96-96-c-*-iso8859-1") ;Previous default, before Consolas.
+      ;; (setq my-default-font "Lucida Console-9")
       (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
       ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-*-*-c-*-*-ansi-")
       ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
@@ -135,7 +129,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 					;List colors available with
 					;  "ESC x list-colors-display".
-      (set-face-inverse-video-p 'mode-line nil)
+;;;      (set-face-inverse-video-p 'mode-line nil)
       (set-face-background 'mode-line
                            (if (eq 'dark preferred-background-mode)
                                "gainsboro"
@@ -193,13 +187,14 @@ something fanciful or something totally random, whatever makes you happy.")
   	     (file-readable-p cygwin-root))
     
     (setq exec-path (cons cygwin-bin exec-path))
+    (setenv "CYGWIN" "nodosfilewarning")
     (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
     
     ;; By default use the Windows HOME.
     ;; Otherwise, uncomment below to set a HOME
     ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
     
-    ;; NT-emacs assumes a Windows shell. Change to baash.
+    ;; NT-emacs assumes a Windows shell. Change to bash.
     (setq shell-file-name "bash")
     (setenv "SHELL" shell-file-name) 
     (setq explicit-shell-file-name shell-file-name) 
@@ -310,16 +305,6 @@ something fanciful or something totally random, whatever makes you happy.")
 				
 (setq default-major-mode 'text-mode)
 
-;;--------------------------------  haskell  ---------------------------------
-
-(require 'haskell-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-
-                                        ;Use only one indentation mode.
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-
 ;;---------------------------------  csharp  ---------------------------------
 
 (require 'csharp-mode)
@@ -333,6 +318,14 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;   )
 ;;;   (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
 
+(if (member 'csharp-mode features)
+    (progn
+      (add-hook 'csharp-mode-hook (lambda ()
+                                    (c-set-style "c#")
+                                    )
+                )
+      )
+  )
 
 ;;----------------------------------  calc  ----------------------------------
 
@@ -357,6 +350,7 @@ something fanciful or something totally random, whatever makes you happy.")
             (local-set-key "\C-j" 'newline)
             (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
             (local-set-key "\M-o" 'one-line-section-break)
+            (modify-syntax-entry ?- "_")
             ))
 
 ;;---------------------------------  VB.NET  ---------------------------------
@@ -805,7 +799,7 @@ something fanciful or something totally random, whatever makes you happy.")
 	 ;; (setq ediff-narrow-control-frame-leftward-shift 134)
          (setq ediff-narrow-control-frame-leftward-shift 0)
 	 (setq ediff-wide-control-frame-rightward-shift 0)
-	 (setq ediff-control-frame-upward-shift -1100)
+	 ;; (setq ediff-control-frame-upward-shift -1100)
 	     
 	 ;; (setq ediff-diff-program "diff")
 	 (setq ediff-diff-options "-dw")
@@ -856,13 +850,16 @@ something fanciful or something totally random, whatever makes you happy.")
       (setq org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
       (defface org-in-progress
         (org-compatible-face nil
-          '(
-            ;;(((class color) (min-colors 16) (background light)) (:foreground "DarkOrange3" :bold t))
-            (((class color) (min-colors 16) (background light)) (:foreground "magenta2" :bold t))
-            ;;(((class color) (min-colors 16) (background dark))  (:foreground "DarkOrange2" :bold t))
-            (((class color) (min-colors 16) (background dark))  (:foreground "magenta2" :bold t))
-            (((class color) (min-colors 8)  (background light)) (:foreground "red"  :bold t))
-            (((class color) (min-colors 8)  (background dark))  (:foreground "red"  :bold t))
+          '((((class color) (min-colors 16) (background light))
+             ;;(:foreground "DarkOrange3" :bold t :background "White"))
+             (:foreground "magenta2" :bold t :background "White"))
+            (((class color) (min-colors 16) (background dark))
+             ;;(:foreground "DarkOrange2" :bold t :background "Black"))
+             (:foreground "magenta2" :bold t :background "Black"))
+            (((class color) (min-colors 8)  (background light))
+             (:foreground "magenta"  :bold t :background "White"))
+            (((class color) (min-colors 8)  (background dark))
+             (:foreground "magenta"  :bold t :background "Black"))
             (t (:inverse-video t :bold t))))
         "Face for IN-PROGRESS keywords."
         :group 'org-faces)
@@ -902,8 +899,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
       ;;For TODO colors, see http://colorschemedesigner.com/#4W51Ew0--w0w0
       ;;
-      (setq org-export-html-style       ;No longer used in org-8.2.1 (don't know when they really
-                                        ;stopped using it.
+      (setq org-export-html-style       
 "<style type=\"text/css\">
  <!--/*--><![CDATA[/*><!--*/
   html { }
