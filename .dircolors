@@ -1,0 +1,141 @@
+# Configuration file for dircolors, a utility to help you set the
+# LS_COLORS environment variable used by GNU ls with the --color option.
+
+# The keywords COLOR, OPTIONS, and EIGHTBIT (honored by the
+# slackware version of dircolors) are recognized but ignored.
+
+# Below, there should be one TERM entry for each termtype that is colorizable
+TERM cygwin
+TERM linux
+TERM linux-c
+TERM mach-color
+TERM console
+TERM con132x25
+TERM con132x30
+TERM con132x43
+TERM con132x60
+TERM con80x25
+TERM con80x28
+TERM con80x30
+TERM con80x43
+TERM con80x50
+TERM con80x60
+TERM xterm
+TERM xterm-debian
+TERM rxvt
+TERM screen
+TERM screen-w
+TERM vt100
+
+# Below are the color init strings for the basic file types. A color init
+# string consists of one or more of the following numeric codes:
+# Attribute codes (blink makes background bright for Cygwin):
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+NORMAL 00	# global default, although everything should be something.
+FILE 00 	# normal file
+DIR 34 	# directory
+LINK 36 	# symbolic link.  (If you set this to 'target' instead of a
+           	# numerical value, the color is as for the file pointed to.)
+FIFO 40;33	# pipe
+SOCK 35	# socket
+DOOR 35	# door
+BLK 40;33	# block device driver
+CHR 40;33 	# character device driver
+ORPHAN 1;40;31  # symlink to nonexistent file
+STICKY_OTHER_WRITABLE 01;05;30;42 # dir that is sticky and other-writable (+t,o+w)
+OTHER_WRITABLE 01;05;34;42 # dir that is other-writable (o+w) and not sticky
+# This is for files with execute permission:
+EXEC 32
+
+# List any file extensions like '.gz' or '.tar' that you would like ls
+# to colorize below. Put the extension, a space, and the color init string.
+# (and any comments you want to add after a '#')
+
+# If you use DOS-style suffixes, you may want to uncomment the following:
+.cmd 32 # executables (bright green)
+.CMD 32 # executables (bright green)
+.exe 32
+.EXE 32
+.com 32
+.COM 32
+.btm 32
+.BTM 32
+.bat 32
+.BAT 32
+
+# Backup files
+# *~ 37 # grey
+
+.tar 31 # archives or compressed (bright red)
+.TAR 31 # archives or compressed (bright red)
+.tgz 31
+.TGZ 31
+.arj 31
+.ARJ 31
+.taz 31
+.TAZ 31
+.lzh 31
+.LZH 31
+.zip 31
+.ZIP 31
+.z   31
+.Z   31
+.Z   31
+.Z   31
+.gz  31
+.GZ  31
+.bz2 31
+.BZ2 31
+.deb 31
+.DEB 31
+.rpm 31
+.RPM 31
+.jar 31
+.JAR 31
+
+# image formats
+.jpg 35
+.JPG 35
+.png 35
+.PNG 35
+.gif 35
+.GIF 35
+.bmp 35
+.BMP 35
+.ppm 35
+.PPM 35
+.tga 35
+.TGA 35
+.xbm 35
+.XBM 35
+.xpm 35
+.XPM 35
+.tif 35
+.TIF 35
+.png 35
+.PNG 35
+.mpg 35
+.MPG 35
+.avi 35
+.AVI 35
+.fli 35
+.FLI 35
+.gl 35
+.GL 35
+.dl 35
+.DL 35
+
+# non-executable binaries
+.class 37
+.CLASS 37
+.o     37
+.O     37
+.dll   37
+.DLL   37
+.a     37
+.A     37
+
