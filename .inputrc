@@ -1,0 +1,43 @@
+# For Cygnus cygwin32 'readline', this file *must* have only LFs
+# terminating its lines, not DOS-style CRLFs.  In emacs, this can be
+# accomplished by typing 'C-x RET f latin-1-unix' to specify the coding
+# system with which to save the file.  If the emacs mode line has a
+# backslash in the coding system position (column 3?), you are using
+# the DOS CRLF coding system.  Note that CVS on NT makes a rude
+# assumption that CRLF is called for when extracting from the
+# repository, so, after every CVS commit, you'll have to fix this
+# file.
+
+# $Header: v:/J80Lusk/CVSROOT/Dotfiles/.inputrc,v 1.7 2002/05/06 18:01:39 J80Lusk Exp $
+
+set bell-style none
+
+# Make Bash 8bit clean
+set meta-flag on
+set convert-meta off
+set output-meta on
+
+set completion-ignore-case on
+set visible-stats on
+
+# Tcsh behavior commented out because I should learn to use bash
+# properly.
+"\M-n": history-search-forward
+"\M-p": history-search-backward
+"\C-u": kill-whole-line
+
+# "": vi-movement-mode
+
+# "Linux" keypad sequences:  strings emitted when certain keys are
+# pressed.  See http://www.infodoor.com/~andrew/.
+# OR... type "cat > /tmp/key.txt", hit the key you want to know about,
+# hit ctrl-D (EOF), then use "od -bc /tmp/key.txt" to see what got
+# written.
+
+# Home
+"\e[1~": beginning-of-line
+# End
+"\e[4~": end-of-line
+# Del
+"\e[3~": delete-char
+
