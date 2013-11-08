@@ -1,6 +1,6 @@
 ;;; Emacs initialization/customization for the development group.
 ;;;
-;;; $Header: v:/J80Lusk/CVSROOT/usr/local/emacsLisp/group-config.el,v 1.74 2004/05/05 12:04:36 j80lusk Exp $
+;;; $Header: v:/J80Lusk/CVSROOT/EmacsLisp/group-config.el,v 1.74 2004/05/05 12:04:36 j80lusk Exp $
 ;;;
 ;;; TO CHANGE COLORS:
 ;;; Simplest thing to do is set variable `preferred-background-mode' in your
@@ -26,6 +26,7 @@ something fanciful or something totally random, whatever makes you happy.")
       (fix-filesystem-paths
        (append
         (list
+            "c:/usr/local/share/emacs/site-lisp/org"
 ;;;         (concat group-emacs-directory
 ;;;                 "/usr/local/emacs/Add-ons/jde-"
 ;;;                 group-jde-version
@@ -36,19 +37,18 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;                 "/lisp"
 ;;;                 )
 
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/common"
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/cogre"
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/contrib"
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/ede"
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/eieio"
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/semantic"
-;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/speedbar"
-
-         "c:/usr/local/emacs/Add-ons/elib-1.0"
-         "C:/usr/local/emacs/Add-ons/gnuserv"
-         "c:/usr/local/emacs/Add-ons/psgml-1.2.4"
-         ;;"c:/usr/local/emacs/Add-ons/nxml-mode-20031018"
-         "c:/usr/local/share/emacs/site-lisp/org"
+;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/common"
+;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/cogre"
+;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/contrib"
+;;;	 "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/ede"
+;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/eieio"
+;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/semantic"
+;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/speedbar"
+;;;
+;;;         "c:/usr/local/emacs/Add-ons/elib-1.0"
+;;;         "c:/usr/local/emacs/Add-ons/GnuServe"
+;;;         "c:/usr/local/emacs/Add-ons/psgml-1.3.2"
+;;;         "c:/usr/local/emacs/Add-ons/nxml-mode-20031018"
          )
         load-path)
        )
@@ -58,152 +58,21 @@ something fanciful or something totally random, whatever makes you happy.")
     (setq Info-default-directory-list nil)
   )
 
-(setq Info-default-directory-list
-      (append '(
-                "C:/usr/local/emacs/elisp-manual-21-2.8"
-                ;;"C:/usr/local/emacs/Add-ons/elib-1.0" ;Required by JDE 2.3.3.
-                "C:/usr/local/emacs/Add-ons/psgml-1.2.4"
-                "C:/usr/local/share/info"
-                "C:/usr/local/info"
-                )
-	      Info-default-directory-list))
+;;;(setq Info-default-directory-list
+;;;      (append '(
+;;;                "c:/usr/local/emacs/elisp-manual-21-2.8"
+;;;                "c:/usr/local/emacs/Add-ons/elib-1.0" ;Required by JDE 2.3.3.
+;;;                "c:/usr/local/emacs/Add-ons/psgml-1.3.2"
+;;;                "c:/usr/local/info"
+;;;                )
+;;;	      Info-default-directory-list))
 
-;;---------------------------------  fonts  ----------------------------------
+;;--------------------------------  packages  --------------------------------
 
-					;Use (insert (prin1-to-string
-					;  (w32-select-font))) in *scratch* to
-					;  get an actual font name string.
-
-					;  Shift-click mouse-1 will also work.
-
-(if (eq 'w32 window-system)
-    (progn
-      (setq w32-enable-italics t)       ;This must be done before font
-					;  settings!  There is a requirement
-					;  for italics: the italic version of
-					;  a font must be exactly the same
-					;  pixel height as the non-italic
-					;  version.  Of the monospaced fonts,
-					;  "Courier New" seems to the only one
-					;  for which this is true.
-
-      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-11-82-96-96-c-*-iso10646-1")
-      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-*-iso10646-1")
-					;8- and 9-point courier:
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-96-96-c-*-iso8859-1")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-96-96-c-*-iso8859-1") ;Previous default, before Consolas.
-      ;; (setq my-default-font "Lucida Console-9")
-      (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
-      )
-  )
-
-(if (eq 'x window-system)
-    (progn
-      (setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
-      )
-  )
-
-(if (not (null window-system))
-    (progn
-      (set-default-font my-default-font)
-
-      ;; (make-face-italic 'italic)
-      ;; (make-face-italic 'bold-italic)
-      ;; (make-face-bold 'bold-italic)
-;;;      (make-face-bold 'mode-line)
-
-					;We seem to tickle a nasty emacs bug
-					;  when we put this item in the
-					;  default-frame-alist above, so we
-					;  add it separately here, AFTER
-					;  initial-frame-alist.
-
-      (setq default-frame-alist
-            (append (list (cons 'font my-default-font)) default-frame-alist))
-
-					;List colors available with
-					;  "ESC x list-colors-display".
-;;;      (set-face-inverse-video-p 'mode-line nil)
-      (set-face-background 'mode-line
-                           (if (eq 'dark preferred-background-mode)
-                               "gainsboro"
-                             "saddlebrown"
-                             ))
-      ;; (set-face-background 'mode-line "gainsboro")
-
-                                        ;Mode-Line foreground is same as
-                                        ;  default frame background (see
-                                        ;  below). 
-      (set-face-foreground 'mode-line
-                           (if (eq 'dark preferred-background-mode)
-                               ;; "DarkSlateGray"
-                               "#254745"
-                             "FloralWhite"
-                             ))
-      ;; (set-face-foreground 'mode-line "DarkSlateGray")
-      ;; (set-face-foreground 'mode-line "Linen")	
-
-      (set-face-background 'mode-line-inactive
-                           "#DAAF91")   ;Version of SaddleBrown
-
-                                        ; The "fringe" is the strips to the
-                                        ;   left and right of the text area
-                                        ;   that shows continuation lines.
-      (set-face-background 'fringe
-                           (if (eq 'dark preferred-background-mode)
-                               "DarkSlateGray"
-                             ;; "#254745"
-                             "FloralWhite"
-                             ;; "#E6E1B9"
-                             ;; "#f7f3e9"  ;slightly darker shade of FloralWhite
-                             ;; "#f0ebe2" ;slightly darker shade of FloralWhite
-                             ))
-      (set-face-foreground 'fringe
-                           (if (eq 'dark preferred-background-mode)
-                               ;; "DarkSlateGray"
-                               "gainsboro"
-                             "gray50"
-                             ))
-      )
-  )
-
-;;---------------------------------  cygwin  ---------------------------------
-;;;;
-;;;; cygwin support
-;;;;
-;; Sets your shell to use cygwin's bash, if Emacs finds it's running
-;; under Windows and c:\cygwin exists. Assumes that C:\cygwin\bin is
-;; not already in your Windows Path (it generally should not be).
-;;
-(let* ((cygwin-root "c:")               ;was "c:/cygwin"
-       (cygwin-bin (concat cygwin-root "/bin")))
-  (when (and (eq 'windows-nt system-type)
-  	     (file-readable-p cygwin-root))
-    
-    (setq exec-path (cons cygwin-bin exec-path))
-    (setenv "CYGWIN" "nodosfilewarning")
-    (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
-    
-    ;; By default use the Windows HOME.
-    ;; Otherwise, uncomment below to set a HOME
-    ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
-    
-    ;; NT-emacs assumes a Windows shell. Change to bash.
-    (setq shell-file-name "bash")
-    (setenv "SHELL" shell-file-name) 
-    (setq explicit-shell-file-name shell-file-name) 
-    
-    ;; This removes unsightly ^M characters that would otherwise
-    ;; appear in the output of java applications.
-    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
-
-;;------------------------------  cygwin ends  -------------------------------
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
 
 ;;--------------------------------  requires  --------------------------------
 
@@ -289,10 +158,15 @@ something fanciful or something totally random, whatever makes you happy.")
                                         ;"TZ" env. var, so you'll have to
                                         ;hardcode it here if you want it.
 
-;;; (require 'gnuserv)			;Enables external requests to
-					;  edit files.
-;;; (gnuserv-start)
-(server-start)
+;;;(message "Attempting to load gnuserv...")
+;;;(require 'gnuserv nil t)		;Enables external requests to
+;;;					;  edit files.
+;;;(if (featurep 'gnuserv)
+;;;	(gnuserv-start)
+;;;	(message "No gnuserv")
+;;;)
+(server-start)              ;Runs built-in server in absence of gnuserv.
+;;;(message "Attempting to load gnuserv... done.")
 
 (require 'comment-indent)
 
@@ -307,9 +181,11 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  csharp  ---------------------------------
 
-(require 'csharp-mode)
-(setq auto-mode-alist
-      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+(with-demoted-errors
+  (progn
+    (require 'csharp-mode)
+    (setq auto-mode-alist
+          (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
 ;;;(defun my-csharp-mode-fn ()
 ;;;      "function that runs when csharp-mode is initialized for a buffer."
@@ -318,18 +194,28 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;   )
 ;;;   (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
 
-(if (member 'csharp-mode features)
-    (progn
-      (add-hook 'csharp-mode-hook (lambda ()
-                                    (c-set-style "c#")
-                                    )
-                )
+    (if (member 'csharp-mode features)
+        (progn
+          (add-hook 'csharp-mode-hook (lambda ()
+                                        (c-set-style "c#")
+                                        )
+                    )
+          )
       )
+    )
   )
+
+;;--------------------------------  haskell  ---------------------------------
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
 ;;----------------------------------  calc  ----------------------------------
 
 (require 'calc-mode)
+
 (if (member 'calc-mode features)
     (progn
       ;;(setq calc-gnuplot-name "wgnuplot.exe")
@@ -387,45 +273,45 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  psgml  ----------------------------------
 
-;;(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
-;;(autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
-(setq sgml-catalog-files '("c:/usr/local/lib/sgml/catalog"))
+;; (autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
+;; (autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+;; (setq sgml-catalog-files '("c:/usr/local/lib/sgml/catalog"))
 
 ;;----------------------------------  sgml  ----------------------------------
 
-(require 'psgml)
-
-(setq sgml-markup-faces
-      (mapcar (lambda (x)
-                (if (or (equal 'start-tag (car x))
-                        (equal 'end-tag (car x)))
-                    nil
-                  x))
-              sgml-markup-faces)
-      )
-
-(defun group-psgml-mode-hook ()
-  (message "Running group-psgml-mode-hook")
-  (font-lock-mode 1)
-  (setq sgml-set-face t)
-;;;   (if (and (boundp 'uses-javaserver-faces)
-;;;            uses-javaserver-faces
-;;;            )
-;;;       (progn
-        (setq comment-start "<%-- ")
-        (setq comment-start-skip "<%-- *")
-        (setq comment-end " --%>")
-;;;         )
-;;;     (setq comment-start "<!-- ")
-;;;     (setq comment-start-skip "<!-- *")
-;;;     (setq comment-end " -->")
-;;;     )
-  (setq comment-multi-line nil)
-  (setq comment-column 32)
-  (setq indent-line-function 'indent-relative-maybe)
-  )
-
-(add-hook 'sgml-mode-hook 'group-psgml-mode-hook)
+;; (require 'psgml)
+;; 
+;; (setq sgml-markup-faces
+;;       (mapcar (lambda (x)
+;;                 (if (or (equal 'start-tag (car x))
+;;                         (equal 'end-tag (car x)))
+;;                     nil
+;;                   x))
+;;               sgml-markup-faces)
+;;       )
+;; 
+;; (defun group-psgml-mode-hook ()
+;;   (message "Running group-psgml-mode-hook")
+;;   (font-lock-mode 1)
+;;   (setq sgml-set-face t)
+;; ;;;   (if (and (boundp 'uses-javaserver-faces)
+;; ;;;            uses-javaserver-faces
+;; ;;;            )
+;; ;;;       (progn
+;;         (setq comment-start "<%-- ")
+;;         (setq comment-start-skip "<%-- *")
+;;         (setq comment-end " --%>")
+;; ;;;         )
+;; ;;;     (setq comment-start "<!-- ")
+;; ;;;     (setq comment-start-skip "<!-- *")
+;; ;;;     (setq comment-end " -->")
+;; ;;;     )
+;;   (setq comment-multi-line nil)
+;;   (setq comment-column 32)
+;;   (setq indent-line-function 'indent-relative-maybe)
+;;   )
+;; 
+;; (add-hook 'sgml-mode-hook 'group-psgml-mode-hook)
 
 ;;----------------------------------  html  ----------------------------------
 
@@ -446,21 +332,6 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;          (setq comment-column 32)
 ;;;          )
 ;;;       )
-
-
-;;----------------------------------  nxml  ----------------------------------
-
-(setq auto-mode-alist
-      (append (list '("\\.xml$" . nxml-mode))
-              auto-mode-alist))
-
-(add-hook 'nxml-mode-hook
-          (lambda ()
-            (set-face-foreground 'nxml-attribute-local-name
-                                 (face-foreground 'font-lock-string-face))
-            (set-face-foreground 'nxml-attribute-value
-                                 (cdr (assoc 'foreground-color (frame-parameters))))
-            ))
 
 ;;-------------------------------  multi-mode  -------------------------------
 
@@ -489,11 +360,11 @@ something fanciful or something totally random, whatever makes you happy.")
       (cond ((and (null html-locn) (null xhtml-locn))
              (setq ml-mode 'sgml-mode))
             ((null html-locn)
-             (setq ml-mode 'nxml-mode))
+             (setq ml-mode 'xml-mode))
             ((null xhtml-locn)
              (setq ml-mode 'sgml-mode))
             ((< xhtml-locn html-locn)
-             (setq ml-mode 'nxml-mode))
+             (setq ml-mode 'xml-mode))
             (t
              (setq ml-mode 'sgml-mode))
             )
@@ -518,8 +389,8 @@ something fanciful or something totally random, whatever makes you happy.")
                     '("\\.sql8$" . sql-mode)
                     '("\\.prc$" . sql-mode)
                     '("\\.tab$" . sql-mode)
-                    '("\\.xsl$" . nxml-mode)
-                    '("\\.xsp$" . nxml-mode)
+                    '("\\.xsl$" . xml-mode)
+                    '("\\.xsp$" . xml-mode)
                     )
               auto-mode-alist))
 
@@ -704,7 +575,7 @@ something fanciful or something totally random, whatever makes you happy.")
   (column-number-mode 1)
   (local-set-key "\C-j" 'newline)
   (local-set-key "\C-m" 'newline-and-indent) ;Auto-indent.
-  ;;(local-set-key "\M-o" 'one-line-section-break)
+  (local-set-key "\M-o" 'one-line-section-break)
   (make-variable-buffer-local 'comment-start)
   (make-variable-buffer-local 'comment-end)
   (make-variable-buffer-local 'comment-start-skip)
@@ -799,7 +670,7 @@ something fanciful or something totally random, whatever makes you happy.")
 	 ;; (setq ediff-narrow-control-frame-leftward-shift 134)
          (setq ediff-narrow-control-frame-leftward-shift 0)
 	 (setq ediff-wide-control-frame-rightward-shift 0)
-	 ;; (setq ediff-control-frame-upward-shift -1100)
+	 (setq ediff-control-frame-upward-shift -1100)
 	     
 	 ;; (setq ediff-diff-program "diff")
 	 (setq ediff-diff-options "-dw")
@@ -864,9 +735,6 @@ something fanciful or something totally random, whatever makes you happy.")
         "Face for IN-PROGRESS keywords."
         :group 'org-faces)
       (set-face-foreground 'org-table "Blue4")
-      (if (boundp 'my-default-font)
-          (set-face-font 'org-column my-default-font)
-      )
 ;;;      (defface org-table
 ;;;        (org-compatible-face nil
 ;;;          '((((class color) (min-colors 16) (background light)) (:foreground "Blue4" :bold nil))
@@ -881,17 +749,6 @@ something fanciful or something totally random, whatever makes you happy.")
               ("IN-PROGRESS" . org-in-progress)
               ("DONE" . org-done)
               ))
-
-      ;; The following seems to muck up org-mode's headline fontification:
-      ;; The words get fontified, but then, after them, the rest of the
-      ;; headline's fontification is apparently completely missing (although
-      ;; the "fontified" property on that text is t).
-;;;      (font-lock-add-keywords 'org-mode
-;;;                        (list
-;;;                         (cons "\\bTODO\\b:?" '(0 'org-todo keep))
-;;;                         (cons "\\bDONE\\b:?" '(0 'org-done keep))
-;;;                         ))
-
 
       (setq org-export-html-style-include-default nil) ;Turn off hardcoded
                                         ;default in org-mode in favor of style
@@ -915,14 +772,14 @@ something fanciful or something totally random, whatever makes you happy.")
   .timestamp { color: #bebebe; }
   .timestamp-kwd { color: #5f9ea0; }
   p.verse { margin-left: 3% }
-  /* pre {	*/
-  /*       border: 1pt solid #AEBDCC;	*/
-  /*       background-color: #F3F5F7;	*/
-  /*       padding: 5pt;	*/
-  /*       font-family: monospace;	*/
-  /*       font-size: 90%;	*/
-  /*       overflow:auto;	*/
-  /* }	*/
+  pre {
+        border: 1pt solid #AEBDCC;
+        background-color: #F3F5F7;
+        padding: 5pt;
+        font-family: monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
   table { border-collapse: collapse; }
   td, th { vertical-align: top; }
   dt { font-weight: bold; }
@@ -992,7 +849,141 @@ something fanciful or something totally random, whatever makes you happy.")
     )
   )
 
+;;------------------------------  end org-mode  ------------------------------
+
 ;;===============================  end modes  ================================
+
+;;---------------------------------  cygwin  ---------------------------------
+;;;;
+;;;; cygwin support
+;;;;
+;; Sets your shell to use cygwin's bash, if Emacs finds it's running
+;; under Windows and c:\cygwin exists. Assumes that C:\cygwin\bin is
+;; not already in your Windows Path (it generally should not be).
+;;
+(let* ((cygwin-root "c:")               ;was "c:/cygwin"
+       (cygwin-bin (concat cygwin-root "/bin")))
+  (when (and (eq 'windows-nt system-type)
+  	     (file-readable-p cygwin-root))
+    
+    (setq exec-path (cons cygwin-bin exec-path))
+    (setenv "CYGWIN" "nodosfilewarning")
+    (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
+    
+    ;; By default use the Windows HOME.
+    ;; Otherwise, uncomment below to set a HOME
+    ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
+    
+    ;; NT-emacs assumes a Windows shell. Change to bash.
+    (setq shell-file-name "bash")
+    (setenv "SHELL" shell-file-name) 
+    (setq explicit-shell-file-name shell-file-name) 
+    
+    ;; This removes unsightly ^M characters that would otherwise
+    ;; appear in the output of java applications.
+    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+
+;;------------------------------  cygwin ends  -------------------------------
+
+;;---------------------------------  fonts  ----------------------------------
+
+					;Use (insert (prin1-to-string
+					;  (w32-select-font))) in *scratch* to
+					;  get an actual font name string.
+
+					;  Shift-click mouse-1 will also work.
+
+(if (eq 'w32 window-system)
+    (progn
+      (setq w32-enable-italics t)       ;This must be done before font
+					;  settings!  There is a requirement
+					;  for italics: the italic version of
+					;  a font must be exactly the same
+					;  pixel height as the non-italic
+					;  version.  Of the monospaced fonts,
+					;  "Courier New" seems to the only one
+					;  for which this is true.
+
+      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-11-82-96-96-c-*-iso10646-1")
+      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-*-iso10646-1")
+					;8- and 9-point courier:
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-96-96-c-*-iso8859-1")
+      (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-96-96-c-*-iso8859-1")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
+      (setq my-default-font "Consolas-9")
+      )
+  )
+
+(if (eq 'x window-system)
+    (progn
+      (setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
+      )
+  )
+
+(if (not (null window-system))
+    (progn
+      (set-default-font my-default-font)
+
+      ;; (make-face-italic 'italic)
+      ;; (make-face-italic 'bold-italic)
+      ;; (make-face-bold 'bold-italic)
+;;;      (make-face-bold 'mode-line)
+
+					;We seem to tickle a nasty emacs bug
+					;  when we put this item in the
+					;  default-frame-alist above, so we
+					;  add it separately here, AFTER
+					;  initial-frame-alist.
+
+      (setq default-frame-alist
+            (append (list (cons 'font my-default-font)) default-frame-alist))
+
+					;List colors available with
+					;  "ESC x list-colors-display".
+
+      (set-face-background 'mode-line
+                           (if (eq 'dark preferred-background-mode)
+                               "gainsboro"
+                             "saddlebrown"
+                             ))
+      ;; (set-face-background 'mode-line "gainsboro")
+
+                                        ;mode-line foreground is same as
+                                        ;  default frame background (see
+                                        ;  below). 
+      (set-face-foreground 'mode-line
+                           (if (eq 'dark preferred-background-mode)
+                               ;; "DarkSlateGray"
+                               "#254745"
+                             "FloralWhite"
+                             ))
+      ;; (set-face-foreground 'mode-line "DarkSlateGray")
+      ;; (set-face-foreground 'mode-line "Linen")	
+
+                                        ; The "fringe" is the strips to the
+                                        ;   left and right of the text area
+                                        ;   that shows continuation lines.
+      (set-face-background 'fringe
+                           (if (eq 'dark preferred-background-mode)
+                               ;; "DarkSlateGray"
+                               "#254745"
+                             ;; "FloralWhite"
+                             "#f7f3e9"  ;slightly darker shade of FloralWhite
+                             ;; "#f0ebe2" ;slightly darker shade of FloralWhite
+                             ))
+      (set-face-foreground 'fringe
+                           (if (eq 'dark preferred-background-mode)
+                               ;; "DarkSlateGray"
+                               "gainsboro"
+                             "gray50"
+                             ))
+      )
+  )
 
 ;;-------------------------------  font-lock  --------------------------------
 
@@ -1184,9 +1175,12 @@ language.")
   "*Extra keywords for font-lock mode."
   )
 
-;;;(require 'jde-java-font-lock)           ;Slurp in face definitions so we can
-;;;                                        ;modify some of 'em.
-;;;(set-face-foreground 'jde-java-font-lock-number-face "OrangeRed")
+(require 'jde-java-font-lock nil t)     ;Slurp in face definitions so we can
+                                        ;modify some of 'em.
+(if (featurep 'jde-java-font-lock)
+	(set-face-foreground 'jde-java-font-lock-number-face "OrangeRed")
+	(message "No jde-java-font-lock")
+)
 
 (require 'non-greedy-search)
 
@@ -1215,9 +1209,7 @@ language.")
 (font-lock-add-keywords 'sgml-mode group-sgml-font-lock-keywords)
 (font-lock-add-keywords 'sgml-mode group-html-tag-keywords)
 (font-lock-add-keywords 'xml-mode group-sgml-font-lock-keywords)
-(font-lock-add-keywords 'nxml-mode group-sgml-font-lock-keywords)
 (font-lock-add-keywords 'xml-mode group-html-tag-keywords)
-(font-lock-add-keywords 'nxml-mode group-html-tag-keywords)
 
                                         ;color Transitions in html-mode:
                                         ;  <%		to java
@@ -1272,14 +1264,13 @@ language.")
 (font-lock-add-keywords 'cc-mode group-extra-keyword-list)
 (font-lock-add-keywords 'c++-mode group-extra-keyword-list)
 (font-lock-add-keywords 'java-mode group-extra-keyword-list)
-;;;(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
+(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
 
 (font-lock-add-keywords 'java-mode group-java-other-lang-keywords)
 (font-lock-add-keywords 'html-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'sgml-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'xml-mode group-html-other-lang-keywords)
-(font-lock-add-keywords 'nxml-mode group-html-other-lang-keywords)
-;;;(font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
+(font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
 
 (font-lock-add-keywords 'lisp-mode
                         (list
@@ -1333,7 +1324,10 @@ language.")
 
 (setq default-frame-alist
       (append 
-       (x-parse-geometry "80x48+64+-1") ;Slightly in from top left.
+       (x-parse-geometry                ;Slightly in from top left.
+        "80x48" 
+        ;; "80x48+64+-1" 
+        )
 
 					;List colors available with
 					;  "ESC x list-colors-display".
@@ -1369,7 +1363,10 @@ language.")
       )
 
 (setq initial-frame-alist
-      (append (x-parse-geometry "80x48--4+-1") ;Top right.
+      (append (x-parse-geometry         ;Top right.
+               "80x48"              
+               ;;"80x48--4+-1"
+               )                        
               nil                       ;In case the geometry above gets
                                         ;  commented out.
 	      initial-frame-alist
@@ -1446,26 +1443,12 @@ language.")
 ;; 
 (if (not (member 'align features))
     (message "Warning:  feature `align' not loaded.")
-;;   (setq align-c++-modes (cons 'jde-mode align-c++-modes))
-;; 
-;;                                         ; These func-call align rules require
-;;                                         ; that the `exc-c-func-params'
-;;                                         ; exclusion rule NOT be in play.  I
-;;                                         ; had to comment it out of align.el.
-;;   (setq align-exclude-rules-list
-;;         (append
-;;          (list
-;;           '(sql
-;;             (regexp . "\\(^\\s-*\\)")
-;;             (modes . '(sql-mode))
-;;             )
-;;           '(sql-comment
-;;             (regexp . "\\(\\s-*--.*\\)")
-;;             (modes . '(sql-mode))
-;;             )
-;;           )
-;;          align-exclude-rules-list))
-;;   
+  (setq align-c++-modes (cons 'jde-mode align-c++-modes))
+
+                                        ; These func-call align rules require
+                                        ; that the `exc-c-func-params'
+                                        ; exclusion rule NOT be in play.  I
+                                        ; had to comment it out of align.el.
   (setq align-rules-list
         (append
          (list
@@ -1476,45 +1459,11 @@ language.")
             (tab-stop . t)
             (modes . '(sql-mode))
             )
-;;           `(wiki-table
-;;             (regexp . "|?  *[^| ]*\\(  *\\)|")
-;;             (valid . (lambda ()
-;;                        (save-excursion
-;;                          (beginning-of-line)
-;;                          (looking-at "^|.*|$")
-;;                          )))
-;;             (repeat . t)
-;;             (modes . '(text-mode))
-;;             )
-;;           `(func-call-first-parm
-;;             (regexp . "\\(\\(\\sw\\|\\s_\\)+\\)\\s-*(\\(\\s-*\\)\\(\\(\\sw\\|\\s_\\)+\\).*)")
-;;             (group  . 3)
-;;             ;; (repeat . t)
-;;             (modes  . align-c++-modes)
-;; ;;;                (valid  . (lambda ()
-;; ;;;                            (message (debug-align
-;; ;;;                                      "align rule `func-call-first-parm' matched"
-;; ;;;                                      '(0 1 3 4)))
-;; ;;;                            t
-;; ;;;                            ))
-;;             )
-;; ;;;          `(func-call-other-parms
-;; ;;;            (regexp . "\\(\\sw\\|\\s_\\)+\\s-*(.*,\\(\\s-*\\).*)")
-;; ;;;            (group  . 2)
-;; ;;;            (repeat . t)
-;; ;;;            (modes  . align-c++-modes)
-;; ;;;                (valid  . (lambda ()
-;; ;;;                            (message (debug-align
-;; ;;;                                      "align rule `func-call-other-parms' matched"
-;; ;;;                                      '(0 1 2)))
-;; ;;;                            t
-;; ;;;                            ))
-;; ;;;            )
           )
          align-rules-list)
         )
   
-;;   (setq align-to-tab-stop nil)
+  (setq align-to-tab-stop nil)
   )
 
 ;;-------------------------------  end align  --------------------------------
@@ -1564,7 +1513,7 @@ side of the display."
   (set-frame-position (selected-frame)
                       (- (x-display-pixel-width)
                          (* width (frame-char-width))
-                         56             ;scroll bar, window border fudge
+                         55             ;scroll bar, window border fudge
                                         ;  factor
                          )
                       0)
@@ -1586,28 +1535,6 @@ accidentally repositioned it, or whatever."
   )
 
 ;;----------------------------  end frame sizing  ----------------------------
-
-;;----------------------------------  wiki  ----------------------------------
-
-(defun wiki-comment ()
-  "Insert an empty comment into a wiki page at point."
-  (interactive)
-  (if (not (bolp))
-      (forward-line))
-  (beginning-of-line)
-  (open-line 3)
-  (insert-string "<blockquote><em>")
-  (forward-line 2)
-  (insert-string "</em></blockquote>")
-  (forward-line -1)                     ;backwards :)
-  )
-
-(defun wc ()
-  (interactive)
-  (wiki-comment)
-  )
-
-;;--------------------------------  end wiki  --------------------------------
 
 ;; ----------------------------  misc  ----------------------------
 
@@ -1799,8 +1726,5 @@ version.  This is true for `Courier New'."
 ;;; Local Variables:
 ;;; fill-column: 78
 ;;; End:
-
-
-
 
 

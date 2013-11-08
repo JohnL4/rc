@@ -1,12 +1,12 @@
 ;;; Personal config, as opposed to group config.
 ;;;
-;;; $Header: v:/J80Lusk/CVSROOT/usr/local/emacsLisp/personal-config.el,v 1.29 2003/10/30 13:49:42 J80Lusk Exp $
+;;; $Header: v:/J80Lusk/CVSROOT/EmacsLisp/personal-config.el,v 1.29 2003/10/30 13:49:42 J80Lusk Exp $
 
 ;;-------------------------  Configurable variables  -------------------------
 
 (set-default 'author-short-name "Lusk")
 (set-default 'jdex-package-root-dir
-             "e:/Work/Canopy/.*/CanopyIA/Source")
+             "c:/Work/Canopy/.*/CanopyIA/Source")
 
 ;; (set-default 'jdex-package "com.ibm.RemoteConnect.ServiceAgent")
 
@@ -31,10 +31,10 @@
        '(
 	 "~/Info"
 	 "C:/Local/Info"
-	 "C:/usr/local/emacs/Info/"
-	 ;; "C:/usr/local/emacs/Add-ons/w3-4.0pre.39/texi"
-	 ;; "C:/usr/local/emacs/Add-ons/elib-1.0" ;Added in group-cnfig.el
-         "C:/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
+	 "c:/usr/local/emacs/Info/"
+	 ;; "c:/usr/local/emacs/Add-ons/w3-4.0pre.39/texi"
+	 ;; "c:/usr/local/emacs/Add-ons/elib-1.0" ;Added in group-cnfig.el
+         "c:/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
 	 )
        Info-default-directory-list
        )
@@ -46,22 +46,6 @@
 ;;;     (require 'w3-auto)
 ;;;   (message "personal-config: Warning: w3-auto not loaded.")
 ;;;   )
-
-(require 'bookmark+)
-(if (featurep 'bookmark+)
-    (progn
-      ;;(setq bmkp-light-style-autonamed 'lfringe)
-      ;;(setq bmkp-light-style-non-autonamed 'lfringe)
-      ))
-
-;;------------------------------  text cursor  -------------------------------
-
-;; (require 'cursor-chg)  ; Load the library
-;; (if (featurep 'cursor-chg)
-;;     (progn
-;;       (toggle-cursor-type-when-idle 1) ; Turn on cursor change when Emacs is idle
-;;       (change-cursor-mode 1) ; Turn on change for overwrite, read-only, and input mode
-;;       ))
 
 ;;---------------------------------  mouse  ----------------------------------
 
@@ -89,7 +73,7 @@
 ;; ----------------------------  mail  ----------------------------
 ;; Also used when posting news articles via "gnus".
 
-;;;(setq system-name "jl_spambucket-yahoo.com") ;To spoof message-make-message-id
+(setq system-name "jl_spambucket-yahoo.com") ;To spoof message-make-message-id
                                              ;and message-make-sender
                                              ;into making something other than
                                              ;"localhost@localdomain" or
@@ -122,13 +106,13 @@
 
                                         ;For people I trust not to spam me or
                                         ;  get my name on a spammer's list.
-      (setq real-user-mail-address "john-emacs-work@how-hard-can-it-be.com")
+      (setq real-user-mail-address "john-emacs-work@ahnlusk.net")
       ;; (setq real-user-mail-address "john.lusk@canopysystems.com")
 
 					;Public address is for those
 					;  situations in which I'm worried
                                         ;  about getting spammed.
-      (setq public-user-mail-address "john-public@how-hard-can-it-be.com")
+      (setq public-user-mail-address "john-public@ahnlusk.net")
 
       (setq user-mail-address public-user-mail-address)
 
@@ -156,11 +140,14 @@
 
 ;;-------------------------------  mailcrypt  --------------------------------
 
-(require 'mailcrypt)
-(mc-setversion "gpg")
-(setq mc-gpg-user-id "john-gpg@ahnlusk.net")
-(setq mc-passwd-timeout 1800)
-(require 'mc-gpg-file-mode)
+(require 'mailcrypt nil t)
+(if (featurep 'mailcrypt)
+	(progn
+	(mc-setversion "gpg")
+	(setq mc-gpg-user-id "john-gpg@ahnlusk.net")
+	(setq mc-passwd-timeout 1800)
+	(require 'mc-gpg-file-mode)
+))
 
 ;;-----------------------------  end mailcrypt  ------------------------------
 			       
@@ -223,12 +210,6 @@
 ;;       ispell-command-options (list "-d" "c:/usr/local/emacs/Add-ons/ispell4/ispell.dict")
 ;;       )
 
-(require 'flyspell)
-(if (featurep 'flyspell)
-    (progn
-      (set-face-foreground 'flyspell-duplicate "Tan3")
-      ))
-
 ;;-------------------------------  end ispell  -------------------------------
 
 ;;-------------------------------  vc  -------------------------------
@@ -242,14 +223,6 @@
 ;;; (condition-case () (require 'w3-auto "w3-auto") (error nil))
 
 ;;-----------------------------  end W3  -----------------------------
-
-;;---------------------------------  maxima  ---------------------------------
-;; TODO: surround w/try/catch.
-;; (load "c:/Program Files/Maxima-5.22.1/share/maxima/5.22.1/emacs/setup-imaxima-imath.el")
-
-;;-------------------------------  end maxima  -------------------------------
-
-(load-library "powershell")             ; http://www.emacswiki.org/emacs/PowerShell
 
 ;;=================================  modes  ==================================
 
@@ -272,13 +245,13 @@ values turn on auto-fill mode, non-positive values turn it off."
            (> turn-on-fill-mode 0))
       (progn
         (auto-fill-mode 1)
-        (setq auto-hscroll-mode 0)
+        ;; (hscroll-mode 0)
         (setq truncate-lines nil)
         (if (interactive-p)
             (message "auto-fill mode turned ON, hscroll mode OFF"))
         )
     (auto-fill-mode 0)
-    (setq auto-hscroll-mode 1)
+    ;; (hscroll-mode 1)
     (setq truncate-lines t)
     (if (interactive-p)
         (message "auto-fill mode turned OFF, hscroll mode ON"))
@@ -294,6 +267,21 @@ values turn on auto-fill mode, non-positive values turn it off."
 		)
 	      auto-mode-alist)
       )
+
+;;---------------------------------  scala  ----------------------------------
+
+(require 'scala-mode-auto)
+(setq auto-mode-alist
+      (append '(
+                ("\\.scala$" . scala-mode)
+                )
+              auto-mode-alist)
+      )
+
+(add-hook 'scala-mode-hook
+          (lambda ()
+            )
+          )
 
 ;;----------------------------  jde-mode  ----------------------------
 
@@ -316,10 +304,20 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;--------------------------------  end c++  ---------------------------------
 
-;;----------------------------------  sql  -----------------------------------
+;;--------------------------------  haskell  ---------------------------------
 
-(eval-after-load "sql"
-   '(load-library "tsql-indent"))
+(load "/usr/local/share/lisp/haskell-mode-2.7.0/haskell-site-file")
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+
+(add-hook 'haskell-mode-hook 'font-lock-mode)
+(add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
+
+
+;;------------------------------  end haskell  -------------------------------
 
 ;;------------------------------  sgml  ------------------------------
 
@@ -391,29 +389,6 @@ values turn on auto-fill mode, non-positive values turn it off."
 ;;; 	    )
 ;;; 	   )
 ;;;   )
-
-;;--------------------------------  htmlize  ---------------------------------
-
-(require 'htmlize)
-
-;;----------------------------------  diff  ----------------------------------
-
-(add-hook 'diff-mode-hook
-          (lambda ()
-            (set-face-attribute 'diff-refine-change nil
-                                :background "yellow"
-                                )
-            (set-face-attribute 'diff-added nil
-                                :background "#baff73"       ; "Chartreuse1"
-                                )
-            (set-face-attribute 'diff-changed nil
-                                :background "#c6faff"       ; "CadetBlue1"
-                                )
-            (set-face-attribute 'diff-removed nil
-                                :background  "#ffadad"      ; "IndianRed1"
-                                )
-            )
-          )
 
 ;;-------------------------  enriched text  --------------------------
 
@@ -540,15 +515,15 @@ values turn on auto-fill mode, non-positive values turn it off."
       ;(set-face-foreground 'org-level-7 "")
       ;(set-face-foreground 'org-level-8 "")
 
-      (setq org-directory "C:/Personal/Org")
-      (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
-      (setq org-mobile-inbox-for-pull
-            "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
-      (setq org-mobile-files
-            '(
-              "journal.org"
-              "org-mobile-setup.org"
-              ))
+;;;      (setq org-directory "C:/Personal/Org")
+;;;      (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
+;;;      (setq org-mobile-inbox-for-pull
+;;;            "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
+;;;      (setq org-mobile-files
+;;;            '(
+;;;              "journal.org"
+;;;              "org-mobile-setup.org"
+;;;              ))
 
       (add-hook 'org-mode-hook
                 (lambda ()
@@ -563,38 +538,6 @@ values turn on auto-fill mode, non-positive values turn it off."
       ))
 
 ;;--------------------------------  end org  ---------------------------------
-
-;;---------------------------------  nxhtml  ---------------------------------
-
-;; (load "c:/usr/local/nxhtml/autostart.el")
-
-;; Workaround the annoying warnings:
-;;    Warning (mumamo-per-buffer-local-vars):
-;;    Already 'permanent-local t: buffer-file-name
-(when (string< "24.1" (format "%d.%d" emacs-major-version emacs-minor-version))
-  (eval-after-load "mumamo"
-    '(setq mumamo-per-buffer-local-vars
-           (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
-
-;;-------------------------------  end nxhtml  -------------------------------
-
-;;---------------------------------  tramp  ----------------------------------
-
-(require 'tramp)
-(require 'ange-ftp)
-(if (member 'tramp features)
-    (progn
-      (if (member 'ange-ftp features)
-          (progn
-            (setq ange-ftp-ftp-program-name "c:/usr/local/bin/ftp")
-            '(setq ange-ftp-ftp-program-args nil)
-            )
-        )
-      (add-to-list 'tramp-default-method-alist '("triangle-enlightened.zzl.org" "" "ftp"))
-      )
-  )
-
-;;-------------------------------  end tramp  --------------------------------
 
 ;;===============================  end modes  ================================
 
@@ -652,7 +595,7 @@ different behavior from `newline-and-indent'."
                                         ;hscroll-mode is now obsolete and
                                         ;  apparently no longer sets
                                         ;  truncate-lines.
-  (setq auto-hscroll-mode 1)                 ;sets truncate-lines
+  ;; (hscroll-mode)                        ;sets truncate-lines
   (auto-fill-mode (if truncate-lines 0 1))
   )
 
@@ -668,8 +611,7 @@ different behavior from `newline-and-indent'."
 
 ;;; (define-key function-key-map [delete] "\C-d")
 
-(setq explicit-shell-file-name "c:/bin/bash") ;Note: may be messed up by
-                                        ;powershell.el
+(setq explicit-shell-file-name "c:/bin/bash")
 
 (setq completion-ignored-extensions
       (append '(".$el"
@@ -687,26 +629,16 @@ different behavior from `newline-and-indent'."
 
 (set-face-background 'secondary-selection "#b6ffe6")
 
-;; (require 'jde)
-;; (load-library "jde-extra")
-
-;; Bug in remoting to my Allscripts Raleigh workstation:
-;; (x-display-color-cells) returns 20 when many more colors are available.
-(if (<= (x-display-color-cells) 20)
-    (progn
-      (message (format "x-display-color-cells returns %d; redefining..." (x-display-color-cells)))
-      (defun x-display-color-cells (&optional rest)
-        65536
-        )
-      )
-  )
+(require 'jde nil t)
+(if (featurep 'jde)
+	(load-library "jde-extra")
+)
 
 ;;-----------------------  end miscellaneous  ------------------------
 
 ;;---------------------------  customize  ----------------------------
 
 (custom-set-variables
- '(archive-zip-use-pkzip nil)
  '(ange-ftp-default-user "anonymous")
  '(gnus-summary-highlight (quote (((= mark gnus-canceled-mark) . gnus-summary-cancelled-face) ((and (> score default) (or (= mark gnus-dormant-mark) (= mark gnus-ticked-mark))) . gnus-summary-high-ticked-face) ((and (< score default) (or (= mark gnus-dormant-mark) (= mark gnus-ticked-mark))) . gnus-summary-low-ticked-face) ((or (= mark gnus-dormant-mark) (= mark gnus-ticked-mark)) . gnus-summary-normal-ticked-face) ((and (> score default) (= mark gnus-ancient-mark)) . gnus-summary-high-ancient-face) ((and (< score default) (= mark gnus-ancient-mark)) . gnus-summary-low-ancient-face) ((= mark gnus-ancient-mark) . gnus-summary-normal-ancient-face) ((and (> score default) (= mark gnus-unread-mark)) . gnus-summary-high-unread-face) ((and (< score default) (= mark gnus-unread-mark)) . gnus-summary-low-unread-face) ((= mark gnus-unread-mark) . gnus-summary-normal-unread-face) ((and (> score default) (memq mark (list gnus-downloadable-mark gnus-undownloaded-mark))) . gnus-summary-high-unread-face) ((and (< score default) (memq mark (list gnus-downloadable-mark gnus-undownloaded-mark))) . gnus-summary-low-unread-face) ((memq mark (list gnus-downloadable-mark gnus-undownloaded-mark)) . gnus-summary-normal-unread-face) ((> score default) . gnus-summary-high-read-face) ((< score default) . gnus-summary-low-read-face) (t . gnus-summary-normal-read-face))))
  )

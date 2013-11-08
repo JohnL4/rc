@@ -33,7 +33,7 @@
 
                                         ;Drive U: is the backed-up, private
                                         ;drive.
-(defvar journal-dir "C:/Personal/Journals"
+(defvar journal-dir "~/Journals"
   "*The directory where journal files will be stored.")
 
 (defun journal-filename (time)
@@ -719,14 +719,7 @@ current line."
 blasts ALL text properties."
   (interactive)
   (let ((buffer-modified (buffer-modified-p)))
-    (remove-text-properties (point-min) (point-max) '(category)) ;Note that
-                                        ;copy-paste seems to screw up the
-                                        ;'category property, preserving
-                                        ;(xforming) only 'face.
-    (set-text-properties (point-min) (point-max) nil) ;Brutal hack to address
-                                        ;the fact that copying/pasting text in
-                                        ;the journal converts the "category"
-                                        ;property to a "face" property. :(
+    (remove-text-properties (point-min) (point-max) '(category nil))
     (set-buffer-modified-p buffer-modified)
     )
   )
