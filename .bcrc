@@ -1,0 +1,3 @@
+print "----  .bcrc ----\n"
+scale=4
+print "----  .bcrc done  ----\n"
