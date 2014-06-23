@@ -1,3 +1,6 @@
 print "----  .bcrc ----\n"
+scale=16
+pi=a(1)*4
+print "pi is ", pi, "\n"
 scale=4
 print "----  .bcrc done  ----\n"

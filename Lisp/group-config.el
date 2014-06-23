@@ -921,7 +921,8 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (if (eq 'x window-system)
     (progn
-      (setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
+      ;;(setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
+      (setq my-default-font "Courier 10 Pitch-9") ;name-size (Linux Mint 17 (Ubuntu))
       )
   )
 

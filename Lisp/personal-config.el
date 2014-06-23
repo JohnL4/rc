@@ -270,18 +270,18 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;---------------------------------  scala  ----------------------------------
 
-(require 'scala-mode-auto)
-(setq auto-mode-alist
-      (append '(
-                ("\\.scala$" . scala-mode)
-                )
-              auto-mode-alist)
-      )
-
-(add-hook 'scala-mode-hook
-          (lambda ()
-            )
-          )
+;;(require 'scala-mode-auto)
+;;(setq auto-mode-alist
+;;      (append '(
+;;                ("\\.scala$" . scala-mode)
+;;                )
+;;              auto-mode-alist)
+;;      )
+;;
+;;(add-hook 'scala-mode-hook
+;;          (lambda ()
+;;            )
+;;          )
 
 ;;----------------------------  jde-mode  ----------------------------
 
@@ -306,7 +306,7 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;--------------------------------  haskell  ---------------------------------
 
-(load "/usr/local/share/lisp/haskell-mode-2.7.0/haskell-site-file")
+;;(load "/usr/local/share/lisp/haskell-mode-2.7.0/haskell-site-file")
 
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
