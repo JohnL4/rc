@@ -35,6 +35,7 @@
 	 ;; "c:/usr/local/emacs/Add-ons/w3-4.0pre.39/texi"
 	 ;; "c:/usr/local/emacs/Add-ons/elib-1.0" ;Added in group-cnfig.el
          "c:/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
+         "/usr/share/info"
 	 )
        Info-default-directory-list
        )

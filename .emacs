@@ -26,6 +26,7 @@ the JDE directory to be placed on `load-path'."
        (append
         (list
          (concat (getenv "HOME") "/Lisp")
+         "/usr/share/emacs/site-lisp"
          "/usr/local/share/emacs/site-lisp"
          )
         load-path

@@ -26,7 +26,10 @@ something fanciful or something totally random, whatever makes you happy.")
       (fix-filesystem-paths
        (append
         (list
+            "/usr/local/share/emacs/site-lisp/org"
             "c:/usr/local/share/emacs/site-lisp/org"
+            "/usr/share/emacs/site-lisp/org"
+            "c:/usr/share/emacs/site-lisp/org"
 ;;;         (concat group-emacs-directory
 ;;;                 "/usr/local/emacs/Add-ons/jde-"
 ;;;                 group-jde-version
