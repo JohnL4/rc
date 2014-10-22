@@ -2,7 +2,15 @@
 
 # $Header: v:/J80Lusk/CVSROOT/Dotfiles/.bashrc,v 1.62 2003/05/02 00:57:30 J80Lusk Exp $
 
+if [[ $- == *i* ]]; then
+    isInteractive=true
+else
+    isInteractive=false
+fi
+
+if $isInteractive; then
 echo "----------------  .bashrc  ----------------"
+fi
 
 # ----------------------------------------------------------------
 
@@ -10,6 +18,9 @@ case `uname -s` in
     CYGWIN*)
         export SHELL_TYPE=CYGWIN
         ;;
+    Darwin)
+    	export SHELL_TYPE=Darwin
+	;;
     *)
         export SHELL_TYPE=OTHER
         ;;
@@ -23,7 +34,8 @@ export CYGWIN=nodosfilewarning
 export CYGWIN_NOTITLE=1
 # export HISTCONTROL=ignoredups
 # export HISTIGNORE="?:??:???"	# Don't add short cmd lines to history.
-export JAVA_HOME=`echo $JAVA_HOME | sed -e's|\\\\|/|g'`
+# export JAVA_HOME=`echo $JAVA_HOME | sed -e's|\\\\|/|g'`
+export JAVA_HOME=`/usr/libexec/java_home`
 
 if [ $SHELL_TYPE = CYGWIN ]; then
     case "$HOSTNAME" in
@@ -299,6 +311,8 @@ jtags()		{
 labelwin()	{
         	  if [ $TERM = xterm ]; then
                       echo -ne "\\e]0;$@\\a" # \e]0 -- window and icon; \e]1 -- icon; \e]2 -- window
+                  elif [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
+                      echo -ne "\\033]0;$@\\007"
                   else
         	      cmd /c title "$@";
     		  fi
@@ -324,7 +338,13 @@ lgsrc()		{
                       | grep -v ": No such file or directory$"
 		}
 logmon()	{ v:/j80lusk/canopy/tuning/log-monitor.pl "$@"; }
-lscf()		{ ls --color -CF "$@"; }
+lscf()		{ 
+		  if [ "$SHELL_TYPE" == "Darwin" ]; then
+		    ls -GCF "$@";
+		  else
+		    ls --color -CF "$@"; 
+		  fi
+		}
 mann()		{ labelwin man "$@"; man "$@"; updtb; }
 np()		{ notepad /P "$@"; }
 npp()		{ /Program\ Files/Notepad++/notepad++.exe "$@"; }
@@ -383,6 +403,8 @@ updtb()		{
                       echo -ne "\\e]0;"`pwd`"\\a"
     		  elif [ $SHELL_TYPE = CYGWIN ]; then
     		      cmd /c title `pwd` >/dev/null 2>&1;
+                  elif [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
+                      echo -ne "\\033]0;${PWD##*}\\007"
                   fi
                 }
 
@@ -471,7 +493,9 @@ xm()		{ alert "$@"; }
 
 updtb
 
+if $isInteractive; then
 echo "--------------  .bashrc ends  -------------"
+fi
 
 # Local Variables:
 # sh-indentation: 3
