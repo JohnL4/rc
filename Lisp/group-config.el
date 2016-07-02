@@ -13,6 +13,8 @@
 ;;; colors separately (unfortunately, but hey I can only do so much color
 ;;; hacking while I'm supposed to be working).
 
+(message "Begin group-config.el...")
+
 ;;--------------------------  reconfigurable items  --------------------------
 
 (defvar author-short-name (user-login-name)
@@ -22,14 +24,13 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  paths  ----------------------------------
 
+(message "paths")
 (setq load-path
       (fix-filesystem-paths
        (append
         (list
             "/usr/local/share/emacs/site-lisp/org"
-            "c:/usr/local/share/emacs/site-lisp/org"
             "/usr/share/emacs/site-lisp/org"
-            "c:/usr/share/emacs/site-lisp/org"
 ;;;         (concat group-emacs-directory
 ;;;                 "/usr/local/emacs/Add-ons/jde-"
 ;;;                 group-jde-version
@@ -61,6 +62,8 @@ something fanciful or something totally random, whatever makes you happy.")
     (setq Info-default-directory-list nil)
   )
 
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
 ;;;(setq Info-default-directory-list
 ;;;      (append '(
 ;;;                "c:/usr/local/emacs/elisp-manual-21-2.8"
@@ -72,16 +75,18 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;--------------------------------  packages  --------------------------------
 
-(require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(package-initialize)
+;;; (require 'package)
+;;; (add-to-list 'package-archives
+;;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
+;;; (package-initialize)
 
 ;;--------------------------------  requires  --------------------------------
 
+(message "requires")
 (require 'generic-util)
-(require 'edebug)			;LISP source-level debugging.
-(require 'fix-pathnames)                ;For use in converting MS-style
+(message "edebug")
+;;; (require 'edebug)			;LISP source-level debugging.
+;;; (require 'fix-pathnames)                ;For use in converting MS-style
                                         ;  pathnames to Unix-style, for use
                                         ;  w/Cygnus utilities like diff(1).
                                         ;  Requires local mod to
@@ -90,6 +95,7 @@ something fanciful or something totally random, whatever makes you happy.")
                                         ;  pathname args.  (Make copy in
                                         ;  site-lisp.)
 
+(message "group-jde-mode-hook")
 (defun group-jde-mode-hook ()
   ;; (message "jde-mode-hook defined in group-config.el section that requires jde.")
   (setq fill-column 78)
@@ -99,54 +105,9 @@ something fanciful or something totally random, whatever makes you happy.")
   (modify-syntax-entry 95 "_")
   )
 
-;;;(condition-case signaled-conditions
-;;;    (progn
-;;;      ;; (setq semantic-load-turn-fewer-useful-features-on t)
-;;;
-;;;      (setq chart-face-color-list
-;;;            '("tomato"                  ;red
-;;;              "dodger blue"             ;blue
-;;;              "gold"                    ;yellow
-;;;              "turquoise"               ;cyan
-;;;              "orchid"                  ;purple
-;;;              "medium sea green"        ;green
-;;;              ))
-;;;      ;; (setq jde-check-version-flag nil)
-;;;      (require 'cedet)
-;;;      (require 'semantic-sb)
-;;;      (require 'jde)			;Java Development Environment
-;;;      (if (not (featurep 'jde))
-;;;          (message "Warning:  `jde' not loaded.")
-;;;        (let*
-;;;            (
-;;;             (jde-extra-filename "jde-extra")
-;;;             (jde-extra-location (locate-library jde-extra-filename))
-;;;             )
-;;;;;           (if (and (string= "2.1.5" jde-version)
-;;;;;                    jde-extra-location)
-;;;          (progn
-;;;              (load-library jde-extra-filename) ;Customizations for Remote
-;;;                                        ;Connect group.
-;;;              (message (concat jde-extra-filename " loaded"))
-;;;              )
-;;;;;             (message (concat "Warning:  " jde-extra-filename " not loaded."))
-;;;;;             )					
-;;;          )
-;;;        (setq jdex-package "")
-;;;        (add-hook 'jde-mode-hook 'group-jde-mode-hook)
-;;;        )
-;;;      )
-;;;  (error (message (format "Error occurred loading jde, error was:\n\t%S"
-;;;                          signaled-conditions))
-;;;         (if (and (eq 'file-error (car signaled-conditions))
-;;;                  (string= "Cannot open load file" (cadr
-;;;                                                    signaled-conditions)))
-;;;             (message (format "load-path: %S" load-path))
-;;;           )
-;;;         )
-;;;  )
 
 (require 'calendar)
+
 (setq calendar-daylight-savings-starts '(calendar-nth-named-day 1 0 4 year))
 (setq calendar-daylight-savings-ends '(calendar-nth-named-day -1 0 10 year))
 
@@ -168,9 +129,11 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;	(gnuserv-start)
 ;;;	(message "No gnuserv")
 ;;;)
-(server-start)              ;Runs built-in server in absence of gnuserv.
+(message "skipping server-start")
+;;; (server-start)              ;Runs built-in server in absence of gnuserv.
 ;;;(message "Attempting to load gnuserv... done.")
 
+(message "comment-indent")
 (require 'comment-indent)
 
 (require 'uniquify)
@@ -178,13 +141,36 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;------------------------------  end requires  ------------------------------
 
+(message "modes")
+
 ;;=================================  modes  ==================================
 				
 (setq default-major-mode 'text-mode)
 
+;;-------------------------------  typescript  -------------------------------
+
+(add-hook 'typescript-mode-hook
+          (lambda ()
+            (tide-setup)
+            (flycheck-mode +1)
+            (eldoc-mode +1)
+            (company-mode)
+            (setq company-tooltip-align-annotations t) ;Align tooltip annotations on right side of tooltip. 
+            (setq fill-column 120)
+            (local-set-key "\C-j" 'newline)
+            (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
+            (local-set-key "\M-o" 'one-line-section-break)
+            (local-set-key (kbd "<f2> r") 'tide-rename-symbol)
+            (local-set-key (kbd "S-<f12>") 'tide-references)
+            ))
+
+;; Note that the following don't work for me when set inside the mode hook.  Don't know why.
+(setq typescript-indent-level 3)
+(setq tide-format-options '(:placeOpenBraceOnNewLineForFunctions t :placeOpenBraceOnNewLineForControlBlocks t))
+
 ;;---------------------------------  csharp  ---------------------------------
 
-(with-demoted-errors
+(condition-case err
   (progn
     (require 'csharp-mode)
     (setq auto-mode-alist
@@ -206,14 +192,47 @@ something fanciful or something totally random, whatever makes you happy.")
           )
       )
     )
+  (error (message (format "Error: %s" (cdr err))))
+  )
+
+;;--------------------------------  mmm-mode  --------------------------------
+
+(defun setup-mmm-mode ()
+  "Set up mmm-mode.  Called lazily for a mode that requires it (because the
+load path isn't set up until the of .emacs), but setup for all modes should go in here."
+  (when (not (featurep 'mmm-mode))
+    (require 'mmm-mode)
+    (when (featurep 'mmm-mode)
+      (setq mmm-global-mode 'maybe)
+      (mmm-add-classes
+       '((literate-haskell-bird
+          :submode text-mode
+          :front "^[^>]"
+          :include-front true
+          :back "^>\\|$"
+          )
+         (literate-haskell-latex
+          :submode literate-haskell-mode
+          :front "^\\\\begin{code}"
+          :front-offset (end-of-line 1)
+          :back "^\\\\end{code}"
+          :include-back nil
+          :back-offset (beginning-of-line -1)
+          )))
+      (setq mmm-save-local-variables (cons '(auto-fill-function buffer) mmm-save-local-variables))
+      ))
   )
 
 ;;--------------------------------  haskell  ---------------------------------
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+;;(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+
+(add-hook 'literate-haskell-mode-hook (lambda () (setup-mmm-mode)))
+(add-hook 'literate-haskell-mode-hook (lambda () (filladapt-mode 1)))
 
 ;;----------------------------------  calc  ----------------------------------
 
@@ -318,25 +337,29 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;----------------------------------  html  ----------------------------------
 
-;;; (setq html-mode-hook
-;;;       '(lambda ()
-;;; ;;;          (auto-fill-mode 1)
-;;; ;;;          (show-paren-mode 1)
-;;; ;;;          (abbrev-mode 1)
-;;; ;;;          (local-set-key "\C-j" 'newline)
-;;; ;;;          (local-set-key "\C-m" 'newline-and-indent)
-;;; ;;;          (local-set-key "\M-o" 'comment)
-;;; ;;;          (local-set-key [C-tab] 'indent-relative)
-;;; ;;;          (local-set-key [C-return] 'newline-and-indent-relative)
-;;;          (setq comment-start "<!-- ")
-;;;          (setq comment-start-skip "<!-- *")
-;;;          (setq comment-end " -->")
-;;;          (setq comment-multi-line nil)
-;;;          (setq comment-column 32)
-;;;          )
-;;;       )
+(setq html-mode-hook
+      '(lambda ()
+;;;          (auto-fill-mode 1)
+;;;          (show-paren-mode 1)
+;;;          (abbrev-mode 1)
+;;;          (local-set-key "\C-j" 'newline)
+;;;          (local-set-key "\C-m" 'newline-and-indent)
+;;;          (local-set-key "\M-o" 'comment)
+;;;          (local-set-key [C-tab] 'indent-relative)
+;;;          (local-set-key [C-return] 'newline-and-indent-relative)
+         (setq comment-start "<!-- ")
+         (setq comment-start-skip "<!-- *")
+         (setq comment-end " -->")
+         (setq comment-multi-line nil)
+         (setq comment-column 32)
+         )
+      )
 
 ;;-------------------------------  multi-mode  -------------------------------
+
+(message "multi-mode")
+
+(require 'css-mode)
 
 (autoload 'multi-mode
   "multi-mode"
@@ -376,10 +399,16 @@ something fanciful or something totally random, whatever makes you happy.")
                 ml-mode
                 `("<%!" jde-mode)
                 `("%>" ,ml-mode)
-                `("<script" c++-mode)
-                `("<SCRIPT" c++-mode)
+                `("<style" css-mode)
+                `("<STYLE" css-mode)
+                `("</style" ,ml-mode)
+                `("</STYLE" ,ml-mode)
+                `("<script" js-mode)
+                `("<SCRIPT" js-mode)
                 `("</script" ,ml-mode)
                 `("</SCRIPT" ,ml-mode)
+;;                `("</\\(script\\|style\\)" ,ml-mode)
+;;                `("</\\(SCRIPT\\|STYLE\\)" ,ml-mode)
                 )
     )
   )
@@ -553,7 +582,9 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;-------------------------------  javascript  -------------------------------
 
-(require 'generic-x)
+;;; (message "javascript")
+;;; (require 'generic-x)
+;;; (require 'js)
 ;;; (add-to-list 'generic-extras-enable-list 'javascript-generic-mode)
 
 ;;; (autoload 'javascript-mode
@@ -561,15 +592,15 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;; ;;;   "javascript-cust"
 ;;;   "JavaScript mode"
 ;;;   t nil)
-;;; 
+
 ;;; (setq auto-mode-alist
 ;;;       (append '(("\\.js$" . javascript-mode))
 ;;;               auto-mode-alist))
 
-(setq auto-mode-alist
-      (append (list '("\\.js$" . c++-mode)
-                    )
-              auto-mode-alist))
+;;; (setq auto-mode-alist
+;;;       (append (list '("\\.js$" . c++-mode)
+;;;                     )
+;;;               auto-mode-alist))
 
 ;;----------------------------------  text  ----------------------------------
 
@@ -624,6 +655,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  ediff  ----------------------------------
 
+(message "ediff")
 (setq ediff-load-hook
       (function
        (lambda () 
@@ -696,8 +728,13 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;----------------------------------  org  -----------------------------------
 
+(condition-case err
+  (progn
 (require 'org-install)
-(require 'org)
+(require 'org))
+(error (message (format "Error: %s" (cdr err))))
+)
+
 (if (member 'org features)
     (progn
       ;; The following lines are always needed.  Choose your own keys.
@@ -896,6 +933,8 @@ something fanciful or something totally random, whatever makes you happy.")
 
 					;  Shift-click mouse-1 will also work.
 
+(message (format "window-system: %s" window-system))
+
 (if (eq 'w32 window-system)
     (progn
       (setq w32-enable-italics t)       ;This must be done before font
@@ -929,7 +968,15 @@ something fanciful or something totally random, whatever makes you happy.")
       )
   )
 
-(if (not (null window-system))
+(if (and (eq 'ns window-system)
+	 (eq 'darwin system-type))
+    ;; Mac OSX
+    (progn
+      (setq my-default-font "Monaco")
+      )
+  )
+
+(if (boundp 'my-default-font)		; (not (null window-system))
     (progn
       (set-default-font my-default-font)
 
@@ -937,6 +984,11 @@ something fanciful or something totally random, whatever makes you happy.")
       ;; (make-face-italic 'bold-italic)
       ;; (make-face-bold 'bold-italic)
 ;;;      (make-face-bold 'mode-line)
+      )
+  )
+
+(if (not (null window-system))
+    (progn
 
 					;We seem to tickle a nasty emacs bug
 					;  when we put this item in the
@@ -1326,6 +1378,7 @@ language.")
                      )
 		     )
 
+(condition-case err
 (setq default-frame-alist
       (append 
        (x-parse-geometry                ;Slightly in from top left.
@@ -1365,7 +1418,10 @@ language.")
        ;; (list (cons 'font my-default-font))
        default-frame-alist)
       )
+(error (message (format "Error: %s" (cdr err))))
+)
 
+(condition-case err
 (setq initial-frame-alist
       (append (x-parse-geometry         ;Top right.
                "80x48"              
@@ -1376,6 +1432,8 @@ language.")
 	      initial-frame-alist
 	      )
       )
+(error (message (format "Error: %s" (cdr err))))
+)
 
 					;We seem to tickle a nasty emacs bug
 					;  when we put this item in the
@@ -1517,7 +1575,7 @@ side of the display."
   (set-frame-position (selected-frame)
                       (- (x-display-pixel-width)
                          (* width (frame-char-width))
-                         55             ;scroll bar, window border fudge
+                         40             ;scroll bar, window border fudge
                                         ;  factor
                          )
                       0)

@@ -16,11 +16,11 @@
       (fix-filesystem-paths
        (append
         '(
-          "C:/usr/Local/Lib"		;Machine-specific.
+          "/usr/Local/Lib"		;Machine-specific.
           ;; "c:/usr/local/emacs/Add-ons/w3-4.0pre.39/lisp"
-          "c:/usr/local/emacs/Add-ons/ep3m-097"
+          "/usr/local/emacs/Add-ons/ep3m-097"
           ;; "c:/usr/local/emacs/Add-ons/elib-1.0" ;Added in group-config.el
-          "c:/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
+          "/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
           )
         load-path)
        )
@@ -29,13 +29,14 @@
 (setq Info-default-directory-list
       (append
        '(
-	 "~/Info"
-	 "C:/Local/Info"
-	 "c:/usr/local/emacs/Info/"
+         "/usr/local/share/info"
+	 ;;"~/Info"
+	 ;;"/Local/Info"
+	 ;;"/usr/local/emacs/Info/"
 	 ;; "c:/usr/local/emacs/Add-ons/w3-4.0pre.39/texi"
 	 ;; "c:/usr/local/emacs/Add-ons/elib-1.0" ;Added in group-cnfig.el
-         "c:/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
-         "/usr/share/info"
+         ;;"/usr/local/emacs/Add-ons/mailcrypt-3.5.8"
+         ;;"/usr/share/info"
 	 )
        Info-default-directory-list
        )
@@ -309,8 +310,8 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;(load "/usr/local/share/lisp/haskell-mode-2.7.0/haskell-site-file")
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
@@ -470,7 +471,7 @@ values turn on auto-fill mode, non-positive values turn it off."
       (setq message-sendmail-envelope-from 'header)
       (if (equal system-type 'windows-nt)
           (setq sendmail-program
-                "c:/usr/sbin/ssmtp.exe"))
+                "/usr/sbin/ssmtp.exe"))
       ;; (setq message-send-mail-function 'smtpmail-send-it)
       )
   (error				;Catch all errors (I hope).
@@ -612,7 +613,7 @@ different behavior from `newline-and-indent'."
 
 ;;; (define-key function-key-map [delete] "\C-d")
 
-(setq explicit-shell-file-name "c:/bin/bash")
+(setq explicit-shell-file-name "/bin/bash")
 
 (setq completion-ignored-extensions
       (append '(".$el"
