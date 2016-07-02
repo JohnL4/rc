@@ -93,7 +93,7 @@ the JDE directory to be placed on `load-path'."
  '(jde-gen-code-templates (append (list (cons "Data Member" (quote tempo-template-jdex-data-member)) (cons "Function Member" (quote template-jdex-function-member))) jde-gen-code-templates))
  '(jde-gen-console-buffer-template (double-quote-list-elts jdex-class-template))
  '(jde-key-bindings (append (list (cons "" (quote jde-gen-class)) (cons "" (quote tempo-template-jdex-data-member)) (cons "" (quote tempo-template-jdex-function-member)) (cons "[? ? (control ?.)]" (quote tempo-forward-mark)) (cons "[? ? (control ?,)]" (quote tempo-backward-mark)) (cons "" (quote jdex-insert-html-code))) (if (featurep (quote jdex-bean)) (list (cons "" (quote jdex-insert-property)))) jde-key-bindings))
- '(package-archives (quote (("marmalade" . "http://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/") ("melpa-stable" . "http://stable.melpa.org/packages/")))))
+ '(package-archives (quote (("marmalade" . "http://marmalade-repo.org/packages/") ("gnu" . "http://elpa.gnu.org/packages/") ("melpa-stable" . "http://stable.melpa.org/packages/") ("melpa" . "http://melpa.org/packages/"))))
  '(tide-tsserver-process-environment (quote ("--experimentalDecorators"))))
 (message "loading ~/.emacs...done")
 
