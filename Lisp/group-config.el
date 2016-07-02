@@ -27,9 +27,8 @@ something fanciful or something totally random, whatever makes you happy.")
        (append
         (list
             "/usr/local/share/emacs/site-lisp/org"
-            "c:/usr/local/share/emacs/site-lisp/org"
             "/usr/share/emacs/site-lisp/org"
-            "c:/usr/share/emacs/site-lisp/org"
+            "/usr/local/jdee-2.4.1/lisp"
 ;;;         (concat group-emacs-directory
 ;;;                 "/usr/local/emacs/Add-ons/jde-"
 ;;;                 group-jde-version
@@ -92,7 +91,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (defun group-jde-mode-hook ()
   ;; (message "jde-mode-hook defined in group-config.el section that requires jde.")
-  (setq fill-column 78)
+  (setq fill-column 120)
   (abbrev-mode 0)
   (setq adaptive-fill-mode nil)
   (setq jde-gen-cflow-enable nil)
@@ -188,7 +187,8 @@ something fanciful or something totally random, whatever makes you happy.")
   (progn
     (require 'csharp-mode)
     (setq auto-mode-alist
-          (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+          (append '(("\\.cs$" . csharp-mode)) auto-mode-alist)
+          )
 
 ;;;(defun my-csharp-mode-fn ()
 ;;;      "function that runs when csharp-mode is initialized for a buffer."
@@ -208,12 +208,75 @@ something fanciful or something totally random, whatever makes you happy.")
     )
   )
 
+;;----------------------------------  mmm  -----------------------------------
+
+(defun setup-mmm-mode ()
+  "Set up mmm-mode.  Called lazily for a mode that requires it (because the     
+load path isn't set up until the of .emacs), but setup for all modes should go \
+in here."
+  (when (not (featurep 'mmm-mode))
+    (require 'mmm-mode)
+    (when (featurep 'mmm-mode)
+      (setq mmm-global-mode 'maybe)
+      (mmm-add-classes
+       '((literate-haskell-bird
+          :submode text-mode
+          :front "^[^>]"
+          :include-front true
+          :back "^>"
+          :creation-hook (lambda () (message (format "mmm: Create text-mode submode with point = %d" (point))))
+          )
+         (literate-haskell-latex
+          :submode literate-haskell-mode
+          :front "^\\\\begin{code}"
+          :front-offset (end-of-line 1)
+          :back "^\\\\end{code}"
+          :include-back nil
+          :back-offset (beginning-of-line -1)
+          )))
+      (setq mmm-save-local-variables (cons '(auto-fill-function buffer) mmm-save-local-variables))
+      ))
+  )
+
+;;; (require 'mmm-mode)
+;;; (when (featurep 'mmm-mode)
+;;;   (setq mmm-global-mode 'maybe)
+;;;   
+;;;   (mmm-add-classes
+;;;    '((literate-haskell-bird
+;;;       :submode text-mode
+;;;       :front "^[^>]"
+;;;       :include-front true
+;;;       :back "^>"
+;;;       :creation-hook (lambda () (message (format "Create text-mode submode with point = %d" (point))))
+;;;       )
+;;; ;;;     (literate-haskell-latex
+;;; ;;;      :submode literate-haskell-mode
+;;; ;;;      :front "^\\\\begin{code}"
+;;; ;;;      :front-offset (end-of-line 1)
+;;; ;;;      :back "^\\\\end{code}"
+;;; ;;;      :include-back nil
+;;; ;;;      :back-offset (beginning-of-line -1)
+;;; ;;;      )
+;;;      ))
+;;;   )
+
 ;;--------------------------------  haskell  ---------------------------------
 
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+(eval-after-load "haskell-mode"
+  '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
+(add-hook 'haskell-mode-hook (lambda () (setq fill-column 100)))
+(add-hook 'literate-haskell-mode-hook
+          (lambda ()
+            (setup-mmm-mode)
+            (mmm-mode 1)
+            (filladapt-mode 1)
+            ))
 
 ;;----------------------------------  calc  ----------------------------------
 
@@ -262,7 +325,7 @@ something fanciful or something totally random, whatever makes you happy.")
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
   (local-set-key "\M-o" 'one-line-section-break)
-  (setq fill-column 78)
+  (setq fill-column 120)
   )
 
 (if (member 'python-mode features)
@@ -276,48 +339,53 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  psgml  ----------------------------------
 
-;; (autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
-;; (autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
-;; (setq sgml-catalog-files '("c:/usr/local/lib/sgml/catalog"))
+;; Why was this commented out?          ;Not available on Linux Mint Qiana,  
+                                        ;and obsolescent, besides. Trying nxhtml-mode.
+;;; (autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
+;;; (autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+;;; (setq sgml-catalog-files '("c:/usr/local/lib/sgml/catalog"))
 
 ;;----------------------------------  sgml  ----------------------------------
 
-;; (require 'psgml)
-;; 
-;; (setq sgml-markup-faces
-;;       (mapcar (lambda (x)
-;;                 (if (or (equal 'start-tag (car x))
-;;                         (equal 'end-tag (car x)))
-;;                     nil
-;;                   x))
-;;               sgml-markup-faces)
-;;       )
-;; 
-;; (defun group-psgml-mode-hook ()
-;;   (message "Running group-psgml-mode-hook")
-;;   (font-lock-mode 1)
-;;   (setq sgml-set-face t)
-;; ;;;   (if (and (boundp 'uses-javaserver-faces)
-;; ;;;            uses-javaserver-faces
-;; ;;;            )
-;; ;;;       (progn
-;;         (setq comment-start "<%-- ")
-;;         (setq comment-start-skip "<%-- *")
-;;         (setq comment-end " --%>")
-;; ;;;         )
-;; ;;;     (setq comment-start "<!-- ")
-;; ;;;     (setq comment-start-skip "<!-- *")
-;; ;;;     (setq comment-end " -->")
-;; ;;;     )
-;;   (setq comment-multi-line nil)
-;;   (setq comment-column 32)
-;;   (setq indent-line-function 'indent-relative-maybe)
-;;   )
-;; 
-;; (add-hook 'sgml-mode-hook 'group-psgml-mode-hook)
+;; Why was this commented out?
+;;; (require 'psgml)                        ;Not available on Linux Mint Qiana,
+;;;                                         ;and obsolescent, besides.  Trying nxhtml-mode.
+;;; 
+;;; (setq sgml-markup-faces
+;;;       (mapcar (lambda (x)
+;;;                 (if (or (equal 'start-tag (car x))
+;;;                         (equal 'end-tag (car x)))
+;;;                     nil
+;;;                   x))
+;;;               sgml-markup-faces)
+;;;       )
+;;; 
+;;; (defun group-psgml-mode-hook ()
+;;;   (message "Running group-psgml-mode-hook")
+;;;   (font-lock-mode 1)
+;;;   (setq sgml-set-face t)
+;;;   (if (and (boundp 'uses-javaserver-faces)
+;;;            uses-javaserver-faces
+;;;            )
+;;;       (progn
+;;;         (setq comment-start "<%-- ")
+;;;         (setq comment-start-skip "<%-- *")
+;;;         (setq comment-end " --%>")
+;;;         )
+;;;     (setq comment-start "<!-- ")
+;;;     (setq comment-start-skip "<!-- *")
+;;;     (setq comment-end " -->")
+;;;     )
+;;;   (setq comment-multi-line nil)
+;;;   (setq comment-column 32)
+;;;   (setq indent-line-function 'indent-relative-maybe)
+;;;   )
+;;; 
+;;; (add-hook 'sgml-mode-hook 'group-psgml-mode-hook)
 
 ;;----------------------------------  html  ----------------------------------
 
+;; Why was this commented out?
 ;;; (setq html-mode-hook
 ;;;       '(lambda ()
 ;;; ;;;          (auto-fill-mode 1)
@@ -417,12 +485,13 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;----------------------------------  jde  -----------------------------------
 
-;;; (add-hook 'java-mode-hook
-;;; 	  (lambda ()
-;;; 	    (abbrev-mode 0)
-;;;             (modify-syntax-entry 95 "_")
-;;; 	    )
-;;; 	  )
+(add-hook 'java-mode-hook
+	  (lambda ()
+	    (abbrev-mode 0)
+            (modify-syntax-entry 95 "_")
+	    )
+	  )
+(load "~/Lisp/jde.el")
 
 ;;----------------------------------  java  ----------------------------------
 
@@ -437,7 +506,9 @@ something fanciful or something totally random, whatever makes you happy.")
                                         ;cc-mode 5.30.9.
 (defun my-c-mode-common-hook ()
   (c-setup-filladapt)
-  (filladapt-mode 1))
+  (filladapt-mode 1)
+  (setq fill-column 120)
+  )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (defun group-java-mode-hook ()
@@ -487,7 +558,8 @@ something fanciful or something totally random, whatever makes you happy.")
   (local-set-key "\C-j" 'newline)
   (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'section-break)
-
+  (local-set-key "\C-cc" 'compile)
+  (local-set-key "\C-cd" 'gdb)
 					;Change behavior of electric braces.
 
   (c-toggle-auto-state 1)
@@ -502,6 +574,10 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;----------------------------------  c++  -----------------------------------
 
+(setq auto-mode-alist
+      (append '(("\\.ino$" . c++-mode)) auto-mode-alist)
+      )
+
 (defun group-c++-mode-hook ()
   (c-set-style "bsd")
   (setq c-basic-offset 3)
@@ -511,12 +587,15 @@ something fanciful or something totally random, whatever makes you happy.")
   (c-set-offset 'comment-intro 'c-lineup-comment-unless-on-far-right)
 
   (setq c-tab-always-indent nil)
+  (setq fill-column 120)
   (my-fill-mode)			;Auto Word-wrap
   (make-variable-buffer-local 'comment-padding)
   (setq comment-padding nil)
   (local-set-key "\C-j" 'newline)
   (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'section-break)
+  (local-set-key "\C-cc" 'compile)
+  (local-set-key "\C-cd" 'gdb)
 
 					;Change behavior of electric braces.
 
@@ -583,6 +662,7 @@ something fanciful or something totally random, whatever makes you happy.")
   (make-variable-buffer-local 'comment-end)
   (make-variable-buffer-local 'comment-start-skip)
   (make-variable-buffer-local 'comment-multi-line)
+  (setq fill-column 120)
   (setq comment-start "# ")
   (setq comment-end "")
   (setq comment-start-skip "#+\\s-*")
@@ -726,10 +806,10 @@ something fanciful or something totally random, whatever makes you happy.")
         (org-compatible-face nil
           '((((class color) (min-colors 16) (background light))
              ;;(:foreground "DarkOrange3" :bold t :background "White"))
-             (:foreground "magenta2" :bold t :background "White"))
+             (:foreground "purple2" :bold t :background "White"))
             (((class color) (min-colors 16) (background dark))
              ;;(:foreground "DarkOrange2" :bold t :background "Black"))
-             (:foreground "magenta2" :bold t :background "Black"))
+             (:foreground "purple1" :bold t :background "Black"))
             (((class color) (min-colors 8)  (background light))
              (:foreground "magenta"  :bold t :background "White"))
             (((class color) (min-colors 8)  (background dark))
@@ -759,46 +839,46 @@ something fanciful or something totally random, whatever makes you happy.")
 
       ;;For TODO colors, see http://colorschemedesigner.com/#4W51Ew0--w0w0
       ;;
-      (setq org-export-html-style       
-"<style type=\"text/css\">
- <!--/*--><![CDATA[/*><!--*/
-  html { }
-  body { margin-left: 7%; }
-  /* h1 is doc title */
-  h1, h2, h3 { margin-left: -6%; }
-  h4 { margin-left: -3%; }
-  .title  { text-align: center; }
-  .todo   { color: magenta /*#FF0090*/ /*red*/; }
-  .done   { color: green; }
-  .tag    { background-color: #add8e6; font-weight:normal }
-  .target { }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  p.verse { margin-left: 3% }
-  pre {
-        border: 1pt solid #AEBDCC;
-        background-color: #F3F5F7;
-        padding: 5pt;
-        font-family: monospace;
-        font-size: 90%;
-        overflow:auto;
-  }
-  table { border-collapse: collapse; }
-  td, th { vertical-align: top; }
-  dt { font-weight: bold; }
-  div.figure { padding: 0.5em; }
-  div.figure p { text-align: center; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size:smaller }
-  .code-highlighted {background-color:#ffff00;}
-  .org-info-js_info-navigation { border-style:none; }
-  #org-info-js_console-label { font-size:smaller; font-weight:bold;
-                               white-space:nowrap; }
-  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
-                                 font-weight:bold; }
-  /*]]>*/-->
-</style>"
-        )
+;;;       (setq org-export-html-style
+;;; "<style type=\"text/css\">
+;;;  <!--/*--><![CDATA[/*><!--*/
+;;;   html { }
+;;;   body { margin-left: 7%; }
+;;;   /* h1 is doc title */
+;;;   h1, h2, h3 { margin-left: -6%; }
+;;;   h4 { margin-left: -3%; }
+;;;   .title  { text-align: center; }
+;;;   .todo   { color: magenta /*#FF0090*/ /*red*/; }
+;;;   .done   { color: green; }
+;;;   .tag    { background-color: #add8e6; font-weight:normal }
+;;;   .target { }
+;;;   .timestamp { color: #bebebe; }
+;;;   .timestamp-kwd { color: #5f9ea0; }
+;;;   p.verse { margin-left: 3% }
+;;;   pre {
+;;;         border: 1pt solid #AEBDCC;
+;;;         background-color: #F3F5F7;
+;;;         padding: 5pt;
+;;;         font-family: monospace;
+;;;         font-size: 90%;
+;;;         overflow:auto;
+;;;   }
+;;;   table { border-collapse: collapse; }
+;;;   td, th { vertical-align: top; }
+;;;   dt { font-weight: bold; }
+;;;   div.figure { padding: 0.5em; }
+;;;   div.figure p { text-align: center; }
+;;;   textarea { overflow-x: auto; }
+;;;   .linenr { font-size:smaller }
+;;;   .code-highlighted {background-color:#ffff00;}
+;;;   .org-info-js_info-navigation { border-style:none; }
+;;;   #org-info-js_console-label { font-size:smaller; font-weight:bold;
+;;;                                white-space:nowrap; }
+;;;   .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+;;;                                  font-weight:bold; }
+;;;   /*]]>*/-->
+;;; </style>"
+;;;         )
       (setq org-html-head "
 <style type=\"text/css\">
  <!--/*--><![CDATA[/*><!--*/
@@ -884,7 +964,9 @@ something fanciful or something totally random, whatever makes you happy.")
     
     ;; This removes unsightly ^M characters that would otherwise
     ;; appear in the output of java applications.
-    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+    (message "Set up for Cygwin")
+    ))
 
 ;;------------------------------  cygwin ends  -------------------------------
 
@@ -924,8 +1006,9 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (if (eq 'x window-system)
     (progn
-      ;;(setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
-      (setq my-default-font "Courier 10 Pitch-9") ;name-size (Linux Mint 17 (Ubuntu))
+      ;; (setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
+      ;; (setq my-default-font "Courier 10 Pitch-9") ;name-size (Linux Mint 17 (Ubuntu))
+      (setq my-default-font "Liberation Mono-9") ;name-size (Linux Mint 17 (Ubuntu))      
       )
   )
 
@@ -1018,6 +1101,7 @@ something fanciful or something totally random, whatever makes you happy.")
   "Face name to use for ``@deprecated'' things."
   )
 
+
 					;Attempt to get numeric literals
 					;  highlighted in as many development
 					;  modes as possible.
@@ -1029,6 +1113,10 @@ something fanciful or something totally random, whatever makes you happy.")
                                         ;obnoxious.
   
   '(					;SPEC
+    (
+     ((class color) (min-colors 256))
+     (:foreground "brightred")
+     )
     (					;DISPLAY/ATTS pair
      ((class color) (background light)) ;DISPLAY: a list of pairs
      (:bold nil :foreground "OrangeRed") ;ATTS: another list of pairs
@@ -1039,11 +1127,25 @@ something fanciful or something totally random, whatever makes you happy.")
      )
     )					;end SPEC
   "The face to be used to display numeric literals." ;DOC
-  :group 'font-lock-highlighting-faces) ;KEYWORD VALUE
+  :group 'font-lock-highlighting-faces ;KEYWORD VALUE
+  )
 
 (defvar font-lock-numeric-literal-face 'font-lock-numeric-literal-face
   "Face name to use for numeric literals."
   )
+
+;;; ;; defface doesn't work because the face has already been defined.
+;;; (custom-set-faces
+;;;  '(font-lock-string-face
+;;;    (
+;;;     (((class color) (min-colors 256)) (:foreground "brightred"))
+;;;     )
+;;;    )
+;;; ;;;   "The face to be used to display string literals"
+;;; ;;;   :group 'font-lock-highlighting-faces
+;;;  )
+
+(setq x 20)
 
 (defface font-lock-todo-face
   '(
@@ -1263,28 +1365,21 @@ language.")
   "*Extra keywords indicating ``other languages'' embedded in JavaScript."
   )
 
-(font-lock-add-keywords 'perl-mode group-extra-keyword-list)
+(font-lock-add-keywords 'c++-mode group-extra-keyword-list)
 (font-lock-add-keywords 'c-mode group-extra-keyword-list)
 (font-lock-add-keywords 'cc-mode group-extra-keyword-list)
-(font-lock-add-keywords 'c++-mode group-extra-keyword-list)
-(font-lock-add-keywords 'java-mode group-extra-keyword-list)
-(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
-
-(font-lock-add-keywords 'java-mode group-java-other-lang-keywords)
+(font-lock-add-keywords 'emacs-lisp-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'html-mode group-html-other-lang-keywords)
-(font-lock-add-keywords 'sgml-mode group-html-other-lang-keywords)
-(font-lock-add-keywords 'xml-mode group-html-other-lang-keywords)
+(font-lock-add-keywords 'java-mode group-extra-keyword-list)
+(font-lock-add-keywords 'java-mode group-java-other-lang-keywords)
+(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
 (font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
-
-(font-lock-add-keywords 'lisp-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'emacs-lisp-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'sql-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'lisp-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'perl-mode group-extra-keyword-list)
+(font-lock-add-keywords 'python-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'sgml-mode group-html-other-lang-keywords)
+(font-lock-add-keywords 'sql-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'xml-mode group-html-other-lang-keywords)
 
 (defun fb ()
   "*Alias for `font-lock-fontify-buffer'"
@@ -1316,6 +1411,8 @@ language.")
 
 (defvar preferred-background-mode 'light
   "The user's preferred color scheme.  Should be one of 'light or 'dark.")
+
+(set-terminal-parameter nil 'background-mode preferred-background-mode)
 
 (require 'sh-script)
 (if (boundp 'sh-heredoc-face)
@@ -1551,8 +1648,8 @@ accidentally repositioned it, or whatever."
 
 (autoload 'hl7 "hl7" "Functions for working with HL7 messages" t)
 
-(autoload 'hls "highlight" "Highlight a regexp" t)
-(autoload 'hlc "highlight" "Clear highlighting set with `hls'" t)
+(autoload 'hls "lusk-highlight" "Highlight a regexp" t)
+(autoload 'hlc "lusk-highlight" "Clear highlighting set with `hls'" t)
 (global-set-key [f3] 'hls)
 (global-set-key [S-f3] 'hlc)
 

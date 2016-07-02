@@ -269,6 +269,10 @@ values turn on auto-fill mode, non-positive values turn it off."
 	      auto-mode-alist)
       )
 
+;;----------------------------------  dart  ----------------------------------
+
+;;(require 'dart-mode)
+
 ;;---------------------------------  scala  ----------------------------------
 
 ;;(require 'scala-mode-auto)
@@ -305,20 +309,6 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;--------------------------------  end c++  ---------------------------------
 
-;;--------------------------------  haskell  ---------------------------------
-
-;;(load "/usr/local/share/lisp/haskell-mode-2.7.0/haskell-site-file")
-
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-
-(add-hook 'haskell-mode-hook 'font-lock-mode)
-(add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
-
-
-;;------------------------------  end haskell  -------------------------------
 
 ;;------------------------------  sgml  ------------------------------
 
@@ -326,9 +316,11 @@ values turn on auto-fill mode, non-positive values turn it off."
 	  (lambda ()
 	    (setq comment-indent-function
 		  (lambda () comment-column))
+            (setq comment-start "<!-- ")
+            (setq comment-end " -->")
 	    (setq comment-start-skip "<!--[ \t]*")
 	    (setq comment-multi-line t)
-            (setq fill-column 78)
+            (setq fill-column 100)
 	    )
 	  )
 
@@ -612,7 +604,7 @@ different behavior from `newline-and-indent'."
 
 ;;; (define-key function-key-map [delete] "\C-d")
 
-(setq explicit-shell-file-name "c:/bin/bash")
+;; (setq explicit-shell-file-name "c:/bin/bash")
 
 (setq completion-ignored-extensions
       (append '(".$el"
