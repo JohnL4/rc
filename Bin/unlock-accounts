@@ -1,0 +1,5 @@
+#!/bin/bash -f
+
+passwd -u conrad
+passwd -u albert
+passwd -u savannah

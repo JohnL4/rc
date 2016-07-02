@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# while getopts "" opt; do
+#     echo "opt: $opt"
+# done
+# echo "\$OPTIND: $OPTIND"
+# shift `expr $OPTIND - 1`
+
+# echo "\$@: " $@
+
+if [ $# -lt 1 ]; then
+    set albert albert2 conrad savannah
+fi
+
+kids=$@
+
+for kid in $kids; do
+    echo "Lock $kid"
+    sudo passwd -l $kid
+done

@@ -1,0 +1,16 @@
+#!/usr/bin/perl
+
+use lib '/usr/local/lib/';
+use XKPasswd;
+
+print "\n";
+
+# my $xkpasswd = XKPasswd->new( "/usr/local/share/sample_dict.txt", "XKCD");
+my $config = XKPasswd->preset_config('XKCD');
+$config->{case_transform} = "UPPER";
+$config->{num_words} = 4;
+$config->{separator_character} = " ";
+
+my $xkpasswd = XKPasswd->new( "/usr/local/share/sample_dict.txt", $config);
+
+print "\n", join( "\n", $xkpasswd->passwords(10)), "\n";

@@ -1,0 +1,10 @@
+[user]
+	name = John Lusk
+	email = john-git@how-hard-can-it-be.com
+[push]
+	default = simple
+[merge]
+	tool = ediff
+[mergetool "ediff"]
+	cmd = /home/john/Bin/git-ediff-merge.sh $LOCAL $REMOTE $MERGED $BASE
+	trustExitCode = true
