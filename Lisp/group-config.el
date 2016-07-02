@@ -148,6 +148,11 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;-------------------------------  typescript  -------------------------------
 
+;; Note that you have to install the "tide" package from melpa.org (not
+;; stable.melpa.org) in order for this to work automagically.  Which seems
+;; obvious, given that this is tide-mode configuration, but there's no other
+;; auto-mode-alist setup required, just install the package.
+
 (add-hook 'typescript-mode-hook
           (lambda ()
             (tide-setup)
