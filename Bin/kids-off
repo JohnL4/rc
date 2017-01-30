@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Log off kids and lock them out.  Usable as an at(1) job.
+
+# while getopts "" opt; do
+#     echo "opt: $opt"
+# done
+# echo "\$OPTIND: $OPTIND"
+# shift `expr $OPTIND - 1`
+
+# echo "\$@: " $@
+
+if [ $# -lt 1 ]; then
+    set albert albert2 conrad savannah
+fi
+
+# echo "\$@: " $@
+
+disable-kids-accounts $@
+slay-kids $@
