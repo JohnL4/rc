@@ -53,7 +53,7 @@ fi
 #     echo -ne "\\e]4;4;#4083FF\\a" # "blue" -- make it lighter so it's more visible on black background.
 # fi
 
-export PATH="${PATH}:~/Work/Tools/Bin:~/Bin"
+export PATH="${PATH}:/usr/local/bin:/usr/local/sbin:~/Work/Tools/Bin:~/Bin"
 export PERLLIB="/usr/local/lib/perl"
 export PRINTER='\\rprint1\NETprint37 (PS)'
 export TIMEFORMAT="real %lR	user %lU	sys %lS	cpu %P%%"
@@ -309,9 +309,10 @@ jtags()		{
                      /Emacs/emacs-23.3/bin/etags --append --members -
                 }
 labelwin()	{
-        	  if [ $TERM = xterm ]; then
+                        # -o \( $TERM = xterm-256color \) 
+        	  if [ \( $TERM = xterm \) ]; then
                       echo -ne "\\e]0;$@\\a" # \e]0 -- window and icon; \e]1 -- icon; \e]2 -- window
-                  elif [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
+                  elif [ \( "$TERM_PROGRAM" = "Apple_Terminal" \) -o \( "$TERM_PROGRAM" = "iTerm.app" \)  ]; then
                       echo -ne "\\033]0;$@\\007"
                   else
         	      cmd /c title "$@";
@@ -348,14 +349,14 @@ lscf()		{
 mann()		{ labelwin man "$@"; man "$@"; updtb; }
 np()		{ notepad /P "$@"; }
 npp()		{ /Program\ Files/Notepad++/notepad++.exe "$@"; }
-open()		{
-    		  # See also 'ii' function.
-    		  for f in "$@"; do
-                     chmod +x "$f"
-                     g=`cygpath -aw "$f"`
-                     cmd /c "$g" &
-                  done
-                }
+# open()		{
+#     		  # See also 'ii' function.
+#     		  for f in "$@"; do
+#                      chmod +x "$f"
+#                      g=`cygpath -aw "$f"`
+#                      cmd /c "$g" &
+#                   done
+#                 }
 pd()		{ perldoc "$@"; }
 plot-ProcMem()	{ plotPerfData.pl -f $1 -x 'Sample.*Time' \
                   -l --ls 2 -y 'Available Bytes' \
@@ -399,11 +400,12 @@ sdiff160()	{
                 }
 
 updtb()		{
-    		  if [ $TERM = xterm ]; then
+                        # -o \( $TERM = xterm-256color \) 
+    		  if [ \( $TERM = xterm \) ]; then
                       echo -ne "\\e]0;"`pwd`"\\a"
     		  elif [ $SHELL_TYPE = CYGWIN ]; then
     		      cmd /c title `pwd` >/dev/null 2>&1;
-                  elif [ "$TERM_PROGRAM" = "Apple_Terminal" ]; then
+                  elif [ \( "$TERM_PROGRAM" = "Apple_Terminal" \) -o \( "$TERM_PROGRAM" = "iTerm.app" \) ]; then
                       echo -ne "\\033]0;${PWD##*}\\007"
                   fi
                 }
@@ -504,3 +506,5 @@ fi
 
 
 # End:
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
