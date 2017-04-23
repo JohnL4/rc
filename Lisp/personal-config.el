@@ -270,10 +270,6 @@ values turn on auto-fill mode, non-positive values turn it off."
 	      auto-mode-alist)
       )
 
-;;----------------------------------  dart  ----------------------------------
-
-;;(require 'dart-mode)
-
 ;;---------------------------------  scala  ----------------------------------
 
 ;;(require 'scala-mode-auto)
@@ -319,8 +315,8 @@ values turn on auto-fill mode, non-positive values turn it off."
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
-;;(add-hook 'haskell-mode-hook 'font-lock-mode)
-;;(add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
+(add-hook 'haskell-mode-hook 'font-lock-mode)
+(add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
 
 
 ;;------------------------------  end haskell  -------------------------------
@@ -331,11 +327,9 @@ values turn on auto-fill mode, non-positive values turn it off."
 	  (lambda ()
 	    (setq comment-indent-function
 		  (lambda () comment-column))
-            (setq comment-start "<!-- ")
-            (setq comment-end " -->")
 	    (setq comment-start-skip "<!--[ \t]*")
 	    (setq comment-multi-line t)
-            (setq fill-column 100)
+            (setq fill-column 78)
 	    )
 	  )
 
@@ -477,7 +471,7 @@ values turn on auto-fill mode, non-positive values turn it off."
       (setq message-sendmail-envelope-from 'header)
       (if (equal system-type 'windows-nt)
           (setq sendmail-program
-                "c:/usr/sbin/ssmtp.exe"))
+                "/usr/sbin/ssmtp.exe"))
       ;; (setq message-send-mail-function 'smtpmail-send-it)
       )
   (error				;Catch all errors (I hope).
