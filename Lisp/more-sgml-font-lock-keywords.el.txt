@@ -1,0 +1,89 @@
+From: John Lusk [john4@ahnlusk.net]
+Sent: Monday, May 13, 2002 8:24 AM
+To: john.lusk@canopysystems.com
+Subject: more-sgml-font-lock-keywords.el
+
+					;Combinations of bold, italic,
+					;underline: 8.
+					;
+					;Standard faces: bold, italic,
+					;bold-italic, underline (and none).
+
+(defface bold-italic-underline
+  '((((type w32 x))
+     (:bold t :italic t :underline t))
+    )
+  "Bold italic underline"
+  )
+(defface bold-underline
+  '((((type w32 x))
+     (:bold t :underline t))
+    )
+  "Bold underline"
+  )
+(defface italic-underline
+  '((((type w32 x))
+     (:italic t :underline t))
+    )
+  "Italic underline"
+  )
+
+(defun group-add-other-html-keywords (keyword-spec-list keyword-alist)
+  "Add spec made from (car keyword-alist) to keyword-spec-list."
+  (if keyword-alist
+      (progn
+	(let* ((face-keywords (car keyword-alist))
+	       (face (car face-keywords))
+	       (keywords (cdr face-keywords))
+	       (kw-re (regexp-opt keywords  t))
+	       (kw-re-d (regexp-opt-depth kw-re))
+	       (kw-spec (list (concat "<" kw-re ">\\([^<]+\\)</" kw-re ">")
+			      (1+ kw-re-d)
+			      face))
+	       )
+	  (group-add-other-other-html-keywords
+	   (cons kw-spec keyword-spec-list)
+	   (cdr keyword-alist))
+	  )
+	)
+    keyword-spec-list
+    )
+  )
+
+					;HTML to be displayed in the various
+					;text styles.
+(let ((keyword-alist '((bold-italic-underline "h1" "h2")
+		       (bold-underline "h3")
+		       (bold-italic "h4")
+		       (italic-underline "h5")
+		       (underline "h6")
+		       (bold "strong" "b")
+		       (italic "em" "var" "dfn" "i")
+		       )))
+  (group-add-other-html-keywords nil keyword-alist)
+  )
+
+(setq group-html-b-i-u '("h1" "h2"))
+(setq group-html-b-u '("h3"))
+(setq group-html-b-i '("h4"))
+(setq group-html-i-u '("h5"))
+(setq group-html-u '("h6"))
+(setq group-html-b '("strong" "b"))
+(setq group-html-i '("em" "var" "dfn" "i"))
+
+(setq group-html-b-i-u-re (regexp-opt group-html-b-i-u t))
+(setq group-html-b-u-re (regexp-opt group-html-b-u t))
+(setq group-html-b-i-re (regexp-opt group-html-b-i t))
+(setq group-html-i-u-re (regexp-opt group-html-i-u t))
+(setq group-html-u-re (regexp-opt group-html-u t))
+(setq group-html-b-re (regexp-opt group-html-b t))
+(setq group-html-i-re (regexp-opt group-html-i t))
+
+(setq group-html-b-i-u-re-d (regexp-opt-depth group-html-b-i-u-re))
+(setq group-html-b-u-re-d (regexp-opt-depth group-html-b-u-re))
+(setq group-html-b-i-re-d (regexp-opt-depth group-html-b-i-re))
+(setq group-html-i-u-re-d (regexp-opt-depth group-html-i-u-re))
+(setq group-html-u-re-d (regexp-opt-depth group-html-u-re))
+(setq group-html-b-re-d (regexp-opt-depth group-html-b-re))
+(setq group-html-i-re-d (regexp-opt-depth group-html-i-re))
+

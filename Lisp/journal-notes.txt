@@ -1,0 +1,16 @@
+What a journalling system ought to do:
+
+single-key journal entry:
+
+<timestamp> <text line>
+            <text line> (auto-indented)
+
+start/stop phase/interrupt/defect (PSP)
+
+"start interrupt" should be easy (one keystroke?).  "end interrupt"
+should be where interrupt details are provided.
+
+"start <well-known task>" should be easy:  single keystroke, followed
+by easy well-known task pick.  Auto-complete.
+
+File syntax should obey UniKarlsRuhe's PSP log syntax (.pplog).
