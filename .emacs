@@ -183,6 +183,7 @@ the JDE directory to be placed on `load-path'."
          (cons ""
                (quote jdex-insert-property))))
     jde-key-bindings))
+ '(markdown-command "pandoc -f gfm -t html5")
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
@@ -190,7 +191,7 @@ the JDE directory to be placed on `load-path'."
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (tide csharp-mode lua-mode with-editor web-mode powershell ox-twbs ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
+    (ox-hugo magit ox-twbs markdown-mode markdown-mode+ markdown-preview-mode tide csharp-mode lua-mode with-editor web-mode powershell ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
  '(safe-local-variable-values (quote ((org-footnote-section))))
  '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow))))
 (message "loading .emacs...done")
@@ -210,6 +211,7 @@ the JDE directory to be placed on `load-path'."
  '(gnus-summary-normal-read ((((class color) (background light)) (:foreground "SlateGray"))))
  '(mmm-default-submode-face ((t (:background "linen"))))
  '(org-block ((t (:inherit shadow :foreground "gray40"))))
+ '(org-code ((t (:inherit org-verbatim))))
  '(org-column ((t (:background "grey90" :strike-through nil :underline nil :slant normal :weight normal :height 98))))
  '(org-todo ((t (:foreground "magenta" :weight bold))))
  '(region ((((class color) (background light)) (:background "LightSteelBlue1")) (((class color) (background dark)) (:background "DimGray"))))

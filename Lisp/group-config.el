@@ -23,6 +23,9 @@ something fanciful or something totally random, whatever makes you happy.")
 (defvar our-default-fill-column 120
   "*The default value for fill-column in new modes, for the group.")
 
+;; (setq define-font-lock-org-todo-face nil)
+(setq define-font-lock-org-todo-face t)
+
 ;;---------------------------------  paths  ----------------------------------
 
 (setq load-path
@@ -961,6 +964,8 @@ something fanciful or something totally random, whatever makes you happy.")
 (with-demoted-errors "ERROR: %S"
   (require 'org-install)
   (require 'org)
+  (require 'ox-hugo)
+  (require 'ox-hugo-auto-export)
   (require 'ox-reveal)                  ;Export to reveal.js presentation
   (require 'ox-twbs)                    ;Export to Twitter Bootstrap (i.e., just "Bootstrap")
   )
@@ -1115,8 +1120,23 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;</style>"
 ;;;        )
       (setq org-html-head "
+<link href=\"https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans\" rel=\"stylesheet\">
+<!-- <link href=\"https://fonts.googleapis.com/css?family=Asap\" rel=\"stylesheet\"> -->
+<!-- <link href=\"https://fonts.googleapis.com/css?family=Chivo|Source+Sans+Pro\" rel=\"stylesheet\"> -->
+
 <style type=\"text/css\">
  <!--/*--><![CDATA[/*><!--*/
+  body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  /* font-family: 'Source Sans Pro', sans-serif; */
+  /* font-family: 'Asap', sans-serif; */
+  }
+  pre, code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: smaller;
+  }
+  pre {
+  }
   body { margin-left: 7%; }
   /* h1 is doc title */
   h1, h2, h3 { margin-left: -6%; }
@@ -1258,37 +1278,42 @@ something fanciful or something totally random, whatever makes you happy.")
 (defvar font-lock-todo-face 'font-lock-todo-face
   "Face name for TODO items.")
 
-(if (facep 'font-lock-todo-face)
-    (message (format "font-lock-todo-face before defface: %S" (face-all-attributes 'font-lock-todo-face))))
-(if (facep 'font-lock-org-todo-face)
-    (message (format "font-lock-org-todo-face before defface: %S" (face-all-attributes 'font-lock-org-todo-face))))
-(defface font-lock-org-todo-face
-  '(
-    (
-     ((class color) (background light))
-     :inherit font-lock-todo-face
-     :background "yellow"
-     )
-    (
-     ((class color) (background dark))
-     :inherit font-lock-todo-face
-     :background "red"
-     )
-    (
-     t
-     :background "magenta"
-     :foreground "white"
-     :weight bold
-     )
-                 
-    )
-  "The face to be used to display ``TODO'' items in org-mode."
-  :group 'font-lock-highlighting-face)
-(if (facep 'font-lock-org-todo-face)
-    (message (format "font-lock-org-todo-face after defface: %S" (face-all-attributes 'font-lock-org-todo-face))))
+(if define-font-lock-org-todo-face
+    (progn
+      (if (facep 'font-lock-todo-face)
+          (message (format "font-lock-todo-face before defface: %S" (face-all-attributes 'font-lock-todo-face))))
+      (if (facep 'font-lock-org-todo-face)
+          (message (format "font-lock-org-todo-face before defface: %S" (face-all-attributes 'font-lock-org-todo-face))))
+      (defface font-lock-org-todo-face ;This seems to clobber TODO face in org-mode (items lose their foreground colors,
+                                       ;and return to the default (usually black)). 
+        '(
+          (
+           ((class color) (background light))
+           :inherit font-lock-todo-face
+           :background "yellow" 
+           )
+          (
+           ((class color) (background dark))
+           :inherit font-lock-todo-face
+           :background "red"
+           )
+          (
+           t
+           :background "magenta"
+           :foreground "white"
+           :weight bold
+           )
+          
+          )
+        "The face to be used to display ``TODO'' items in org-mode."
+        :group 'font-lock-highlighting-face)
 
-(defvar font-lock-org-todo-face 'font-lock-org-todo-face
-  "Face name for TODO items in org-mode.")
+      (defvar font-lock-org-todo-face 'font-lock-org-todo-face
+        "Face name for TODO items in org-mode.")
+
+      (if (facep 'font-lock-org-todo-face)
+          (message (format "font-lock-org-todo-face after defface: %S" (face-all-attributes 'font-lock-org-todo-face))))
+      ))
 
 ;;;(defface font-lock-done-face
 ;;;  '(
@@ -1521,9 +1546,13 @@ language.")
 (font-lock-add-keywords 'haskell-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'org-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-org-todo-face t))))
+(if define-font-lock-org-todo-face
+    (font-lock-add-keywords 'org-mode
+                            (list
+                             (cons "\\bTODO\\b:" ;Note REQUIRED colon after TODO.  Prevents bollixing up TODO keyword in
+                                                 ;headlines.
+                                   '(0 font-lock-org-todo-face t))))
+  )
 
 (defun fb ()
   "*Alias for `font-lock-fontify-buffer'"
