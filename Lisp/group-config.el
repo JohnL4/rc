@@ -1119,51 +1119,51 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;  /*]]>*/-->
 ;;;</style>"
 ;;;        )
-      (setq org-html-head "
-<link href=\"https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans\" rel=\"stylesheet\">
-<!-- <link href=\"https://fonts.googleapis.com/css?family=Asap\" rel=\"stylesheet\"> -->
-<!-- <link href=\"https://fonts.googleapis.com/css?family=Chivo|Source+Sans+Pro\" rel=\"stylesheet\"> -->
-
-<style type=\"text/css\">
- <!--/*--><![CDATA[/*><!--*/
-  body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  /* font-family: 'Source Sans Pro', sans-serif; */
-  /* font-family: 'Asap', sans-serif; */
-  }
-  pre, code {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: smaller;
-  }
-  pre {
-  }
-  body { margin-left: 7%; }
-  /* h1 is doc title */
-  h1, h2, h3 { margin-left: -6%; }
-  h4 { margin-left: -3%; }
-  h5, h6, h7, h8, h9, h10 { font-size: 1em; font-weight: bold; }
-  .title  { text-align: center; }
-  .todo   { color: magenta /*#FF0090*/ /*red*/; }
-  .done   { color: green; }
-  .tag    { background-color: #add8e6; font-weight:normal }
-  .target { }
-  .timestamp { color: #8681B2; font-style: italic; }
-  .timestamp-kwd { color: #5f9ea0; }
-  p.verse { margin-left: 3% }
-  pre.src, pre.example { background-color: #F3F5F7; overflow: auto;}
-  pre.src:before { top: 10px; } /* overrides -10px, to bring box into pre box, so 'overflow: auto;' won't clip it */
-  pre.src-csharp:before  { content: 'C#'; }
-  pre.src-css:before  { content: 'CSS'; }
-  pre.src-haskell:before  { content: 'Haskell'; }
-  pre.src-javascript:before  { content: 'JavaScript'; }
-  pre.src-powershell:before  { content: 'PowerShell'; }
-  pre.src-sql:before  { content: 'SQL'; }
-  pre.src-typescript:before  { content: 'TypeScript'; }
-  pre.src-vbnet:before  { content: 'VB.Net'; }
-  pre.src-xml:before  { content: 'XML'; }
-/*]]>*/-->
-</style>
-")
+;;;       (setq org-html-head "
+;;; <link href=\"https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans\" rel=\"stylesheet\">
+;;; <!-- <link href=\"https://fonts.googleapis.com/css?family=Asap\" rel=\"stylesheet\"> -->
+;;; <!-- <link href=\"https://fonts.googleapis.com/css?family=Chivo|Source+Sans+Pro\" rel=\"stylesheet\"> -->
+;;; 
+;;; <style type=\"text/css\">
+;;;  <!--/*--><![CDATA[/*><!--*/
+;;;   body {
+;;;   font-family: 'IBM Plex Sans', sans-serif;
+;;;   /* font-family: 'Source Sans Pro', sans-serif; */
+;;;   /* font-family: 'Asap', sans-serif; */
+;;;   }
+;;;   pre, code {
+;;;   font-family: 'IBM Plex Mono', monospace;
+;;;   font-size: smaller;
+;;;   }
+;;;   pre {
+;;;   }
+;;;   body { margin-left: 7%; }
+;;;   /* h1 is doc title */
+;;;   h1, h2, h3 { margin-left: -6%; }
+;;;   h4 { margin-left: -3%; }
+;;;   h5, h6, h7, h8, h9, h10 { font-size: 1em; font-weight: bold; }
+;;;   .title  { text-align: center; }
+;;;   .todo   { color: magenta /*#FF0090*/ /*red*/; }
+;;;   .done   { color: green; }
+;;;   .tag    { background-color: #add8e6; font-weight:normal }
+;;;   .target { }
+;;;   .timestamp { color: #8681B2; font-style: italic; }
+;;;   .timestamp-kwd { color: #5f9ea0; }
+;;;   p.verse { margin-left: 3% }
+;;;   pre.src, pre.example { background-color: #F3F5F7; overflow: auto;}
+;;;   pre.src:before { top: 10px; } /* overrides -10px, to bring box into pre box, so 'overflow: auto;' won't clip it */
+;;;   pre.src-csharp:before  { content: 'C#'; }
+;;;   pre.src-css:before  { content: 'CSS'; }
+;;;   pre.src-haskell:before  { content: 'Haskell'; }
+;;;   pre.src-javascript:before  { content: 'JavaScript'; }
+;;;   pre.src-powershell:before  { content: 'PowerShell'; }
+;;;   pre.src-sql:before  { content: 'SQL'; }
+;;;   pre.src-typescript:before  { content: 'TypeScript'; }
+;;;   pre.src-vbnet:before  { content: 'VB.Net'; }
+;;;   pre.src-xml:before  { content: 'XML'; }
+;;; /*]]>*/-->
+;;; </style>
+;;; ")
       ))
 
 (defun escape-code (&optional underscores-only opener closer)
@@ -1891,6 +1891,46 @@ accidentally repositioned it, or whatever."
 (setq archive-zip-use-pkzip nil)
 ;;; (mouse-avoidance-mode 'banish)
 
+                                        ;Coding system shortcuts
+
+(defun canopy-copyright-statement (date)
+  "Insert the Canopy Copyright statement using the year of the given date."
+  (interactive "*")
+  (concat
+   "Copyright "
+   (format-time-string "%Y" date)
+   " A4 Health Systems, Inc. TM All rights reserved."
+   ))
+
+(defun coding-system-argument (coding-system)
+  "Execute an I/O command using the latin-1-dos coding system."
+  (let* (
+	 (keyseq (read-key-sequence
+		  (format "Command to execute with %s:" coding-system)))
+	 (cmd (key-binding keyseq)))
+    (let ((coding-system-for-read coding-system)
+	  (coding-system-for-write coding-system))
+      (message "")
+      (call-interactively cmd))))
+
+(defun dos ()
+  "Alias for `coding-system-argument'"
+  (interactive)
+  (coding-system-argument 'raw-text-dos)
+  )
+
+(defun insert-timestamp ()
+  "Insert current date/time at point"
+  (interactive)
+  (insert (concat (format-time-string "%Y-%m-%d %H:%M:%S.%3N (%a) ") "-- "))
+  )
+
+(defun tm ()
+  "Alias for `insert-timestamp'"
+  (interactive)
+  (insert-timestamp)
+  )
+
 (defun set-default-font-w32 ()
   "*Allow the user to set the default font interactively, by picking from a
 Win32 font menu.  NOTE:  There is a requirement for italics: the italic
@@ -1912,39 +1952,12 @@ version.  This is true for `Courier New'."
       )
     )
   )
-                                        ;Coding system shortcuts
-
-(defun coding-system-argument (coding-system)
-  "Execute an I/O command using the latin-1-dos coding system."
-  (let* (
-	 (keyseq (read-key-sequence
-		  (format "Command to execute with %s:" coding-system)))
-	 (cmd (key-binding keyseq)))
-    (let ((coding-system-for-read coding-system)
-	  (coding-system-for-write coding-system))
-      (message "")
-      (call-interactively cmd))))
-
-(defun dos ()
-  "Alias for `coding-system-argument'"
-  (interactive)
-  (coding-system-argument 'raw-text-dos)
-  )
 
 (defun unix ()
   "Alias for `coding-system-argument'"
   (interactive)
   (coding-system-argument 'latin-1-unix)
   )
-
-(defun canopy-copyright-statement (date)
-  "Insert the Canopy Copyright statement using the year of the given date."
-  (interactive "*")
-  (concat
-   "Copyright "
-   (format-time-string "%Y" date)
-   " A4 Health Systems, Inc. TM All rights reserved."
-   ))
 
 					;Some key remappings
 (global-set-key "\M-%" 'query-replace-regexp)

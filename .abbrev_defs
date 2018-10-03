@@ -73,6 +73,8 @@
 
 (define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
 
+(define-abbrev-table 'elisp-byte-code-mode-abbrev-table '())
+
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table
@@ -258,10 +260,10 @@
 
 (define-abbrev-table 'org-mode-abbrev-table
   '(
-    ("bbq" "#+BEGIN_QUOTE" nil 0)
+    ("bbq" "#+BEGIN_QUOTE" nil 1)
     ("bex" "#+BEGIN_EXAMPLE" nil 2)
     ("bsrc" "#+BEGIN_SRC" nil 9)
-    ("ebq" "#+END_QUOTE" nil 0)
+    ("ebq" "#+END_QUOTE" nil 1)
     ("eex" "#+END_EXAMPLE" nil 1)
     ("esrc" "#+END_SRC" nil 6)
     ("hdt" "HierarchicalDataTemplate" nil 1)

@@ -1,0 +1,40 @@
+* Setup
+
+Albert knows the month.
+Bernard knows the day.
+
+Albert:  "I don't know".
+Bernard:  "I didn't know, but I do now."
+Albert:  "Therefore, I also know"
+
+** Possibilities
+
+   |        | May 15 | May 16 |        |        | May 19 |
+   |        |        |        | Jun 17 | Jun 18 |        |
+   | Jul 14 |        | Jul 16 |        |        |        |
+   | Aug 14 | Aug 15 |        | Aug 17 |        |        |
+
+** Execution
+
+   Bernard knows that even if Albert knows the month, he doesn't know the date.  But Bernard knows
+   the day.
+
+   Nope: I'm guessing the answer is "Jun 18" because it's the cell w/the minimum number of unknowns
+   (only one entry in the column and two in the row).  I'm guessing it's a "degrees of freedom" sort
+   of question.
+
+   I think they have to know it's a /knowable/ answer.
+
+   Nope: The other possibility is May 19, because Albert knows Bernard only knows the day.
+
+   Hmm, the day can't be 18 or 19 because that would give it away and Bernard would say he knows.
+
+   So, it's *neither* May 19 *nor* Jun 18.
+
+   That means the month isn't Jun, or Albert would know.  That leaves Aug 17 as the only day-17
+   possible answer.  She must have told Albert "Aug", otherwise, he'd know it was Jun 17.
+
+   So, Bernard knows the month is May, Jul or Aug.
+
+   I'm guessing it's Aug 17.
+   
