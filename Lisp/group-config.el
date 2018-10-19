@@ -144,8 +144,25 @@ something fanciful or something totally random, whatever makes you happy.")
 (message "modes")
 
 ;;=================================  modes  ==================================
-				
+;;(And other package configs)
+
 (setq default-major-mode 'text-mode)
+
+;;-----------------------------------------------------  company  ------------------------------------------------------
+
+(with-demoted-errors "Error loading company-mode: %S"
+  (require 'company)
+  (add-hook 'after-init-hook 'global-company-mode)
+  )
+
+;;---------------------------------  magit  ----------------------------------
+
+(require 'magit)
+(if (featurep 'magit)
+    (progn
+      (global-set-key (kbd "C-x g") 'magit-status)
+      )
+  )
 
 ;;-------------------------------  typescript  -------------------------------
 
@@ -233,6 +250,41 @@ load path isn't set up until the of .emacs), but setup for all modes should go i
 
 (add-hook 'literate-haskell-mode-hook (lambda () (setup-mmm-mode)))
 (add-hook 'literate-haskell-mode-hook (lambda () (filladapt-mode 1)))
+
+(add-hook 'haskell-mode-hook
+          (lambda ()
+            (setq fill-column 120)
+            ;; (fix-path-for-local-ghc-mod)
+            ;; (ghc-init)
+            (setq haskell-compile-cabal-build-command "stack build --test")
+            (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
+            )
+          )
+
+(eval-after-load "haskell-mode"
+  '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
+  )
+
+(eval-after-load "haskell-cabal"
+  '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
+
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+
+(add-to-list 'company-backends 'company-ghc)
+(custom-set-variables '(company-ghc-show-info t))
+
+(defun fix-path-for-local-ghc-mod ()
+  "Fix `exec-path' so that the correct version of ghc-mod will be
+found for the current project."
+  (interactive)
+  (if 't ()                             ;no-op until I figure this out.
+    (progn
+      (call-process "stack path --local-install-root") ;Or some such; then task on "/bin" and add it to exec-path.  First
+                                        ;remove existing dirs from exec-path (that match this).  Blah, this requires
+                                        ;creating a temporary buffer to capture the output, reading the output, etc.
+                                        ;Maybe later.
+      )))
 
 ;;----------------------------------  calc  ----------------------------------
 
@@ -1352,18 +1404,11 @@ language.")
 (font-lock-add-keywords 'xml-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
 
-(font-lock-add-keywords 'lisp-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'emacs-lisp-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'sql-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'typescript-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'emacs-lisp-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'haskell-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'lisp-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'sql-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'typescript-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 
 (defun fb ()
   "*Alias for `font-lock-fontify-buffer'"
@@ -1575,7 +1620,12 @@ language.")
 ;;; (load-library "vc-hooks")
 ;;; (load-library "vc")
 
-;;-------------------------  end Visual SourceSafe  --------------------------
+;;-----------------------  miscellaneous shell config  -----------------------
+
+(if (member "/usr/local/bin" (split-string (getenv "PATH") ":"))
+    nil
+  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+  )
 
 ;; ;; ---------------------------  shelex  ---------------------------
 ;; ;; (for browse-url, among others)
@@ -1590,8 +1640,6 @@ language.")
 ;; (setq browse-url-browser-function 'shell-execute-url)
 ;; (setq gnus-button-url 'shell-execute-url)		; GNUS
 ;; (setq vm-url-browser 'shell-execute-url)		; VM
-
-;; -------------------------  end shelex  -------------------------
 
 ;;------------------------------  frame sizing  ------------------------------
 
@@ -1636,8 +1684,8 @@ accidentally repositioned it, or whatever."
 
 (autoload 'hl7 "hl7" "Functions for working with HL7 messages" t)
 
-(autoload 'hls "highlight" "Highlight a regexp" t)
-(autoload 'hlc "highlight" "Clear highlighting set with `hls'" t)
+(autoload 'hls "lusk-highlight" "Highlight a regexp" t)
+(autoload 'hlc "lusk-highlight" "Clear highlighting set with `hls'" t)
 (global-set-key [f3] 'hls)
 (global-set-key [S-f3] 'hlc)
 
