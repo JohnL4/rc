@@ -22,6 +22,12 @@
 document (or piece of code).  This could be your last name, your initials,
 something fanciful or something totally random, whatever makes you happy.")
 
+(defvar our-default-fill-column 120
+  "*The default value for fill-column in new modes, for the group.")
+
+;; (setq define-font-lock-org-todo-face nil)
+(setq define-font-lock-org-todo-face t)
+
 ;;---------------------------------  paths  ----------------------------------
 
 (message "paths")
@@ -75,10 +81,19 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;--------------------------------  packages  --------------------------------
 
-;;; (require 'package)
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (proto (if no-ssl "http" "https")))
+  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
+  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
+  (when (< emacs-major-version 24)
+    ;; For important compatibility libraries like cl-lib
+    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
 ;;; (add-to-list 'package-archives
 ;;;              '("marmalade" . "http://marmalade-repo.org/packages/"))
-;;; (package-initialize)
+(package-initialize)
 
 ;;--------------------------------  requires  --------------------------------
 
@@ -98,7 +113,7 @@ something fanciful or something totally random, whatever makes you happy.")
 (message "group-jde-mode-hook")
 (defun group-jde-mode-hook ()
   ;; (message "jde-mode-hook defined in group-config.el section that requires jde.")
-  (setq fill-column 78)
+  (setq fill-column our-default-fill-column)
   (abbrev-mode 0)
   (setq adaptive-fill-mode nil)
   (setq jde-gen-cflow-enable nil)
@@ -164,7 +179,7 @@ something fanciful or something totally random, whatever makes you happy.")
       )
   )
 
-;;-------------------------------  typescript  -------------------------------
+;;----------------------------------------------------  typescript  ----------------------------------------------------
 
 (add-hook 'typescript-mode-hook
           (lambda ()
@@ -184,33 +199,6 @@ something fanciful or something totally random, whatever makes you happy.")
 ;; Note that the following don't work for me when set inside the mode hook.  Don't know why.
 (setq typescript-indent-level 3)
 (setq tide-format-options '(:placeOpenBraceOnNewLineForFunctions t :placeOpenBraceOnNewLineForControlBlocks t))
-
-;;---------------------------------  csharp  ---------------------------------
-
-(condition-case err
-  (progn
-    (require 'csharp-mode)
-    (setq auto-mode-alist
-          (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
-
-;;;(defun my-csharp-mode-fn ()
-;;;      "function that runs when csharp-mode is initialized for a buffer."
-;;;      ...insert your code here...
-;;;      ...most commonly, your custom key bindings ...
-;;;   )
-;;;   (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
-
-    (if (member 'csharp-mode features)
-        (progn
-          (add-hook 'csharp-mode-hook (lambda ()
-                                        (c-set-style "c#")
-                                        )
-                    )
-          )
-      )
-    )
-  (error (message (format "Error: %s" (cdr err))))
-  )
 
 ;;--------------------------------  mmm-mode  --------------------------------
 
@@ -286,6 +274,33 @@ found for the current project."
                                         ;Maybe later.
       )))
 
+;;---------------------------------  csharp  ---------------------------------
+
+(condition-case err
+  (progn
+    (require 'csharp-mode)
+    (setq auto-mode-alist
+          (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
+;;;(defun my-csharp-mode-fn ()
+;;;      "function that runs when csharp-mode is initialized for a buffer."
+;;;      ...insert your code here...
+;;;      ...most commonly, your custom key bindings ...
+;;;   )
+;;;   (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
+
+    (if (member 'csharp-mode features)
+        (progn
+          (add-hook 'csharp-mode-hook (lambda ()
+                                        (c-set-style "c#")
+                                        )
+                    )
+          )
+      )
+    )
+  (error (message (format "Error: %s" (cdr err))))
+  )
+
 ;;----------------------------------  calc  ----------------------------------
 
 (require 'calc-mode)
@@ -303,10 +318,14 @@ found for the current project."
                               auto-mode-alist))
 (add-hook 'powershell-mode-hook
           (lambda ()
-            (setq fill-column 120)
+            (setq fill-column our-default-fill-column)
             (setq powershell-indent 4)
             (setq powershell-continuation-indent 8)
             (setq tab-width 4)
+            (setq tab-stop-list nil)    ;Uses tab-wdith to generate
+            (setq comment-column 50)
+            (setq comment-start "# ")
+            (setq comment-start-skip "##*\\s-*")
             (local-set-key "\C-j" 'newline)
             (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
             (local-set-key "\M-o" 'one-line-section-break)
@@ -320,10 +339,11 @@ found for the current project."
                                  vbnet-mode)) auto-mode-alist))
 (add-hook 'vbnet-mode-hook
           (lambda ()
-            (setq fill-column 120)
+            (setq fill-column our-default-fill-column)
             (setq tab-width 4)
             (setq comment-start "'")
             (setq comment-padding nil)
+            (set-face-foreground 'vbnet-funcall-face "blue")
             ))
 
 ;;---------------------------------  python  ---------------------------------
@@ -333,7 +353,7 @@ found for the current project."
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
   (local-set-key "\M-o" 'one-line-section-break)
-  (setq fill-column 120)
+  (setq fill-column our-default-fill-column)
   )
 
 (if (member 'python-mode features)
@@ -497,7 +517,7 @@ found for the current project."
 
 (add-hook 'sql-mode-hook
           (lambda ()
-            (setq fill-column 120)
+            (setq fill-column our-default-fill-column)
             (auto-fill-mode 0)
             (column-number-mode 1)
             (setq indent-line-function 'indent-relative)
@@ -636,7 +656,7 @@ found for the current project."
 
   (make-variable-buffer-local 'comment-multi-line)
   (setq comment-multi-line nil)
-  (setq fill-column 120)
+  (setq fill-column our-default-fill-column)
   (my-fill-mode)			;Auto Word-wrap
   
   (local-set-key "\C-j" 'newline)
@@ -683,7 +703,8 @@ found for the current project."
 ;;----------------------------------  text  ----------------------------------
 
 (defun group-text-mode-hook ()
-  (my-fill-mode)
+  ;;(my-fill-mode)
+  (visual-line-mode)
   (column-number-mode 1)
   (local-set-key "\C-j" 'newline)
   (local-set-key "\C-m" 'newline-and-indent) ;Auto-indent.
@@ -696,6 +717,7 @@ found for the current project."
   (setq comment-end "")
   (setq comment-start-skip "#+\\s-*")
   (setq comment-multi-line nil)
+  (setq fill-column our-default-fill-column)
   )
 
 (add-hook 'text-mode-hook 'group-text-mode-hook)
@@ -704,7 +726,7 @@ found for the current project."
 
 (defun group-lisp-mode-hook ()
   (my-fill-mode)
-  (setq fill-column 120)
+  (setq fill-column our-default-fill-column)
   (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'one-line-section-break)
   )
@@ -800,14 +822,25 @@ found for the current project."
        )
       )
 
-;;----------------------------------  org  -----------------------------------
+;;--------------------------------  org-mode  --------------------------------
 
-(condition-case err
-  (progn
-(require 'org-install)
-(require 'org))
-(error (message (format "Error: %s" (cdr err))))
-)
+;; (condition-case err
+;;   (progn
+;; (require 'org-install)
+;; (require 'org))
+;; (error (message (format "Error: %s" (cdr err))))
+;; )
+
+(setq org-list-allow-alphabetical t)     ;Must be set before loading org.
+
+(with-demoted-errors "ERROR: %S"
+  (require 'org-install)
+  (require 'org)
+  (require 'ox-hugo)
+  (require 'ox-hugo-auto-export)
+  (require 'ox-reveal)                  ;Export to reveal.js presentation
+  (require 'ox-twbs)                    ;Export to Twitter Bootstrap (i.e., just "Bootstrap")
+  )
 
 (if (member 'org features)
     (progn
@@ -820,10 +853,25 @@ found for the current project."
       (setq org-agenda-files "~/org/org-agendas.txt")
 
       (setq org-export-headline-levels 12)
+
+      ;;-----------------------------------------------  export plugins  -----------------------------------------------
+
+      (if (member 'ox-reveal features)
+          (progn
+            ;; (setq org-reveal-root "file:///c:/usr/local/Reveal")
+            )
+        )
+      (if (member 'ox-twbs features)
+          (progn
+            )
+        )
+
+      ;;---------------------------------------------  end export plugins  ---------------------------------------------
       
       (add-hook 'org-mode-hook 'turn-on-font-lock)  ; org-mode buffers only
       (add-hook 'org-mode-hook
                 (lambda ()
+                  (auto-fill-mode 1)
                   (transient-mark-mode 1)
                   (abbrev-mode 1)
                   (setq comment-start "#+ ")
@@ -832,7 +880,11 @@ found for the current project."
                   ))
       (setq org-log-done 'note)                     ;time or note -- note to
                                                     ;    be prompted for a closing note.
-      (setq org-todo-keywords '((sequence "TODO" "IN-PROGRESS" "DONE")))
+      (setq org-todo-keywords
+            '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "HOLD(h@)")
+              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "|" "RESEARCH-DONE(u)" "RESEARCH-HOLD(w@)")
+              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "|" "CODE-DONE(f)" "CODE-HOLD(p@)")
+              ))
       (defface org-in-progress
         (org-compatible-face nil
           '((((class color) (min-colors 16) (background light))
@@ -862,6 +914,9 @@ found for the current project."
             '(("TODO" . org-todo)
               ("IN-PROGRESS" . org-in-progress)
               ("DONE" . org-done)
+              ("HOLD" . org-hold)
+              ("RESEARCH-HOLD" . org-hold)
+              ("CODE-HOLD" . org-hold)
               ))
 
       (setq org-export-html-style-include-default nil) ;Turn off hardcoded
@@ -870,70 +925,92 @@ found for the current project."
 
       ;;For TODO colors, see http://colorschemedesigner.com/#4W51Ew0--w0w0
       ;;
-      (setq org-export-html-style       
-"<style type=\"text/css\">
- <!--/*--><![CDATA[/*><!--*/
-  html { }
-  body { margin-left: 7%; }
-  /* h1 is doc title */
-  h1, h2, h3 { margin-left: -6%; }
-  h4 { margin-left: -3%; }
-  .title  { text-align: center; }
-  .todo   { color: magenta /*#FF0090*/ /*red*/; }
-  .done   { color: green; }
-  .tag    { background-color: #add8e6; font-weight:normal }
-  .target { }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  p.verse { margin-left: 3% }
-  pre {
-        border: 1pt solid #AEBDCC;
-        background-color: #F3F5F7;
-        padding: 5pt;
-        font-family: monospace;
-        font-size: 90%;
-        overflow:auto;
-  }
-  table { border-collapse: collapse; }
-  td, th { vertical-align: top; }
-  dt { font-weight: bold; }
-  div.figure { padding: 0.5em; }
-  div.figure p { text-align: center; }
-  textarea { overflow-x: auto; }
-  .linenr { font-size:smaller }
-  .code-highlighted {background-color:#ffff00;}
-  .org-info-js_info-navigation { border-style:none; }
-  #org-info-js_console-label { font-size:smaller; font-weight:bold;
-                               white-space:nowrap; }
-  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
-                                 font-weight:bold; }
-  /*]]>*/-->
-</style>"
-        )
-      (setq org-html-head "
-<style type=\"text/css\">
- <!--/*--><![CDATA[/*><!--*/
-  body { margin-left: 7%; }
-  /* h1 is doc title */
-  h1, h2, h3 { margin-left: -6%; }
-  h4 { margin-left: -3%; }
-  .title  { text-align: center; }
-  .todo   { color: magenta /*#FF0090*/ /*red*/; }
-  .done   { color: green; }
-  .tag    { background-color: #add8e6; font-weight:normal }
-  .target { }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  p.verse { margin-left: 3% }
-  pre.src, pre.example { background-color: #F3F5F7; }
-  pre.src-csharp:before  { content: 'C#'; }
-  pre.src-vbnet:before  { content: 'VB.Net'; }
-  pre.src-xml:before  { content: 'XML'; }
-  pre.src-css:before  { content: 'CSS'; }
-  pre.src-haskell:before  { content: 'Haskell'; }
-/*]]>*/-->
-</style>
-")
+;;;      (setq org-export-html-style       ;No longer used in org-8.2.1 (don't know when they really
+;;;                                        ;stopped using it).
+;;;"<style type=\"text/css\">
+;;; <!--/*--><![CDATA[/*><!--*/
+;;;  html { }
+;;;  body { margin-left: 7%; }
+;;;  /* h1 is doc title */
+;;;  h1, h2, h3 { margin-left: -6%; }
+;;;  h4 { margin-left: -3%; }
+;;;  .title  { text-align: center; }
+;;;  .todo   { color: magenta /*#FF0090*/ /*red*/; }
+;;;  .done   { color: green; }
+;;;  .tag    { background-color: #add8e6; font-weight:normal }
+;;;  .target { }
+;;;  .timestamp { color: #bebebe; }
+;;;  .timestamp-kwd { color: #5f9ea0; }
+;;;  p.verse { margin-left: 3% }
+;;;  /* pre {	*/
+;;;  /*       border: 1pt solid #AEBDCC;	*/
+;;;  /*       background-color: #F3F5F7;	*/
+;;;  /*       padding: 5pt;	*/
+;;;  /*       font-family: monospace;	*/
+;;;  /*       font-size: 90%;	*/
+;;;  /*       overflow:auto;	*/
+;;;  /* }	*/
+;;;  table { border-collapse: collapse; }
+;;;  td, th { vertical-align: top; }
+;;;  dt { font-weight: bold; }
+;;;  div.figure { padding: 0.5em; }
+;;;  div.figure p { text-align: center; }
+;;;  textarea { overflow-x: auto; }
+;;;  .linenr { font-size:smaller }
+;;;  .code-highlighted {background-color:#ffff00;}
+;;;  .org-info-js_info-navigation { border-style:none; }
+;;;  #org-info-js_console-label { font-size:smaller; font-weight:bold;
+;;;                               white-space:nowrap; }
+;;;  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+;;;                                 font-weight:bold; }
+;;;  /*]]>*/-->
+;;;</style>"
+;;;        )
+;;;       (setq org-html-head "
+;;; <link href=\"https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans\" rel=\"stylesheet\">
+;;; <!-- <link href=\"https://fonts.googleapis.com/css?family=Asap\" rel=\"stylesheet\"> -->
+;;; <!-- <link href=\"https://fonts.googleapis.com/css?family=Chivo|Source+Sans+Pro\" rel=\"stylesheet\"> -->
+;;; 
+;;; <style type=\"text/css\">
+;;;  <!--/*--><![CDATA[/*><!--*/
+;;;   body {
+;;;   font-family: 'IBM Plex Sans', sans-serif;
+;;;   /* font-family: 'Source Sans Pro', sans-serif; */
+;;;   /* font-family: 'Asap', sans-serif; */
+;;;   }
+;;;   pre, code {
+;;;   font-family: 'IBM Plex Mono', monospace;
+;;;   font-size: smaller;
+;;;   }
+;;;   pre {
+;;;   }
+;;;   body { margin-left: 7%; }
+;;;   /* h1 is doc title */
+;;;   h1, h2, h3 { margin-left: -6%; }
+;;;   h4 { margin-left: -3%; }
+;;;   h5, h6, h7, h8, h9, h10 { font-size: 1em; font-weight: bold; }
+;;;   .title  { text-align: center; }
+;;;   .todo   { color: magenta /*#FF0090*/ /*red*/; }
+;;;   .done   { color: green; }
+;;;   .tag    { background-color: #add8e6; font-weight:normal }
+;;;   .target { }
+;;;   .timestamp { color: #8681B2; font-style: italic; }
+;;;   .timestamp-kwd { color: #5f9ea0; }
+;;;   p.verse { margin-left: 3% }
+;;;   pre.src, pre.example { background-color: #F3F5F7; overflow: auto;}
+;;;   pre.src:before { top: 10px; } /* overrides -10px, to bring box into pre box, so 'overflow: auto;' won't clip it */
+;;;   pre.src-csharp:before  { content: 'C#'; }
+;;;   pre.src-css:before  { content: 'CSS'; }
+;;;   pre.src-haskell:before  { content: 'Haskell'; }
+;;;   pre.src-javascript:before  { content: 'JavaScript'; }
+;;;   pre.src-powershell:before  { content: 'PowerShell'; }
+;;;   pre.src-sql:before  { content: 'SQL'; }
+;;;   pre.src-typescript:before  { content: 'TypeScript'; }
+;;;   pre.src-vbnet:before  { content: 'VB.Net'; }
+;;;   pre.src-xml:before  { content: 'XML'; }
+;;; /*]]>*/-->
+;;; </style>
+;;; ")
       ))
 
 (defun escape-code (&optional underscores-only opener closer)
@@ -963,7 +1040,7 @@ found for the current project."
     )
   )
 
-;;------------------------------  end org-mode  ------------------------------
+;;-----------------------------------------------------  org-mode ends  -----------------------------------------------------
 
 ;;===============================  end modes  ================================
 
@@ -1178,7 +1255,11 @@ found for the current project."
     (
      ((class color) (background light))
      (:bold t :foreground "magenta"
-            :background "white"
+            :background unspecified     ;NOTE: merely commenting this out has an undesired effect on faces that inherit
+                                        ;from this face (e.g., font-lock-org-todo-face): they can't set their own
+                                        ;backgrounds!  If you want this face to inherit its background (either from
+                                        ;whatever it's on top of in the buffer or from a parent face), you need to leave
+                                        ;it as "unspecified" (unquoted symbol) instead of just commenting it out.
             )
      )
     (
@@ -1193,6 +1274,43 @@ found for the current project."
 
 (defvar font-lock-todo-face 'font-lock-todo-face
   "Face name for TODO items.")
+
+(if define-font-lock-org-todo-face
+    (progn
+      (if (facep 'font-lock-todo-face)
+          (message (format "font-lock-todo-face before defface: %S" (face-all-attributes 'font-lock-todo-face))))
+      (if (facep 'font-lock-org-todo-face)
+          (message (format "font-lock-org-todo-face before defface: %S" (face-all-attributes 'font-lock-org-todo-face))))
+      (defface font-lock-org-todo-face ;This seems to clobber TODO face in org-mode (items lose their foreground colors,
+                                       ;and return to the default (usually black)). 
+        '(
+          (
+           ((class color) (background light))
+           :inherit font-lock-todo-face
+           :background "yellow" 
+           )
+          (
+           ((class color) (background dark))
+           :inherit font-lock-todo-face
+           :background "red"
+           )
+          (
+           t
+           :background "magenta"
+           :foreground "white"
+           :weight bold
+           )
+          
+          )
+        "The face to be used to display ``TODO'' items in org-mode."
+        :group 'font-lock-highlighting-face)
+
+      (defvar font-lock-org-todo-face 'font-lock-org-todo-face
+        "Face name for TODO items in org-mode.")
+
+      (if (facep 'font-lock-org-todo-face)
+          (message (format "font-lock-org-todo-face after defface: %S" (face-all-attributes 'font-lock-org-todo-face))))
+      ))
 
 ;;;(defface font-lock-done-face
 ;;;  '(
@@ -1341,7 +1459,9 @@ language.")
 (font-lock-add-keywords 'sgml-mode group-sgml-font-lock-keywords)
 (font-lock-add-keywords 'sgml-mode group-html-tag-keywords)
 (font-lock-add-keywords 'xml-mode group-sgml-font-lock-keywords)
+(font-lock-add-keywords 'nxml-mode group-sgml-font-lock-keywords)
 (font-lock-add-keywords 'xml-mode group-html-tag-keywords)
+(font-lock-add-keywords 'nxml-mode group-html-tag-keywords)
 
                                         ;color Transitions in html-mode:
                                         ;  <%		to java
@@ -1402,13 +1522,37 @@ language.")
 (font-lock-add-keywords 'html-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'sgml-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'xml-mode group-html-other-lang-keywords)
+(font-lock-add-keywords 'nxml-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
 
-(font-lock-add-keywords 'emacs-lisp-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'haskell-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'lisp-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'sql-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'typescript-mode (list (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'lisp-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'emacs-lisp-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'sql-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'typescript-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'csharp-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'powershell-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'haskell-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(if define-font-lock-org-todo-face
+    (font-lock-add-keywords 'org-mode
+                            (list
+                             (cons "\\bTODO\\b:" ;Note REQUIRED colon after TODO.  Prevents bollixing up TODO keyword in
+                                                 ;headlines.
+                                   '(0 font-lock-org-todo-face t))))
+  )
 
 (defun fb ()
   "*Alias for `font-lock-fontify-buffer'"
@@ -1641,6 +1785,8 @@ language.")
 ;; (setq gnus-button-url 'shell-execute-url)		; GNUS
 ;; (setq vm-url-browser 'shell-execute-url)		; VM
 
+;; -------------------------  end shelex  -------------------------
+
 ;;------------------------------  frame sizing  ------------------------------
 
 (defun reset-frame-width (width)
@@ -1708,6 +1854,16 @@ version.  This is true for `Courier New'."
       )
     )
   )
+
+(defun canopy-copyright-statement (date)
+  "Insert the Canopy Copyright statement using the year of the given date."
+  (interactive "*")
+  (concat
+   "Copyright "
+   (format-time-string "%Y" date)
+   " A4 Health Systems, Inc. TM All rights reserved."
+   ))
+
                                         ;Coding system shortcuts
 
 (defun coding-system-argument (coding-system)
@@ -1733,14 +1889,17 @@ version.  This is true for `Courier New'."
   (coding-system-argument 'latin-1-unix)
   )
 
-(defun canopy-copyright-statement (date)
-  "Insert the Canopy Copyright statement using the year of the given date."
-  (interactive "*")
-  (concat
-   "Copyright "
-   (format-time-string "%Y" date)
-   " A4 Health Systems, Inc. TM All rights reserved."
-   ))
+(defun insert-timestamp ()
+  "Insert current date/time at point"
+  (interactive)
+  (insert (concat (format-time-string "%Y-%m-%d %H:%M:%S.%3N (%a) ") "-- "))
+  )
+
+(defun tm ()
+  "Alias for `insert-timestamp'"
+  (interactive)
+  (insert-timestamp)
+  )
 
 					;Some key remappings
 (global-set-key "\M-%" 'query-replace-regexp)
@@ -1861,7 +2020,6 @@ version.  This is true for `Courier New'."
 
 
 ;;; Local Variables:
-;;; fill-column: 78
 ;;; End:
 
 
