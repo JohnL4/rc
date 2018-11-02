@@ -964,8 +964,8 @@ something fanciful or something totally random, whatever makes you happy.")
 (with-demoted-errors "ERROR: %S"
   (require 'org-install)
   (require 'org)
-  (require 'ox-hugo)
-  (require 'ox-hugo-auto-export)
+  ;; (require 'ox-hugo)
+  ;; (require 'ox-hugo-auto-export)
   (require 'ox-reveal)                  ;Export to reveal.js presentation
   (require 'ox-twbs)                    ;Export to Twitter Bootstrap (i.e., just "Bootstrap")
   )
@@ -994,6 +994,11 @@ something fanciful or something totally random, whatever makes you happy.")
           (progn
             )
         )
+      (if (member 'ox-hugo features)
+          (progn
+            (setq org-hugo-default-section-directory "org-mode")
+            )
+        )
 
       ;;---------------------------------------------  end export plugins  ---------------------------------------------
       
@@ -1007,8 +1012,23 @@ something fanciful or something totally random, whatever makes you happy.")
                   (setq comment-start-skip "#\\++\\s-*")
                   (setq comment-column 32)
                   ))
+
+      ;; I didn't really find auto-generation-and-display useful, for two reasons:
+      ;; (1) It's really too slow.  An extra second or two waiting for even a trivial a save to finish, plus an extra
+      ;;     second or two (or quite a bit more, depending on how "smart" the browser is about issuing requests to the
+      ;;     actual server when the server's been returning 304s for the last ten minutes) is too long to wait, really.
+      ;; (2) I'm concerned about accidentally deploying HTML with an embedded reference to live.js.
+      ;; 
+      ;; (add-hook 'org-mode-hook
+      ;;           (lambda ()
+      ;;             (add-hook 'after-save-hook 'org-html-export-to-html nil t)
+      ;;             ))
+
       (setq org-log-done 'note)                     ;time or note -- note to
                                                     ;    be prompted for a closing note.
+
+      ;;---------------------------------------------------  faces  ----------------------------------------------------
+
       (setq org-todo-keywords
             '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "HOLD(h@)")
               (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "|" "RESEARCH-DONE(u)" "RESEARCH-HOLD(w@)")
@@ -1072,9 +1092,11 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;                         ))
 
 
-      (setq org-export-html-style-include-default nil) ;Turn off hardcoded
+      ;;-------------------------------------------------  end faces  --------------------------------------------------
+      
+      ;(setq org-export-html-style-include-default nil) ;Turn off hardcoded
                                         ;default in org-mode in favor of style
-                                        ;declared below.
+                                        ;declared below. (TODO: is this even still used?)
 
       ;;For TODO colors, see http://colorschemedesigner.com/#4W51Ew0--w0w0
       ;;
@@ -1827,8 +1849,7 @@ side of the display."
   (set-frame-position (selected-frame)
                       (- (cadr (cdr (cdr (car (car (display-monitor-attributes-list)))))) ; was: (x-display-pixel-width)
                          (* width (frame-char-width))
-                         45             ;scroll bar, window border fudge
-                                        ;  factor
+                         45             ;scroll bar, window border fudge factor (Windows 10, Lenovo T480, Dell 2709W).
                          )
                       0)
   )

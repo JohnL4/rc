@@ -31,9 +31,17 @@
 
 (require 'lusk-tree)
 
+(defun journal-home ()
+  "Cross-platform way to get the user's home path (I hope)"
+  (if (and (getenv "HOMEPATH") (< 0 (length (getenv "HOMEPATH"))))
+      (concat (getenv "HOMEDRIVE") (getenv "HOMEPATH")) ;Windows
+    (getenv "HOME")                                     ;Everybody else
+    )
+  )
+
                                         ;Drive U: is the backed-up, private
                                         ;drive.
-(defvar journal-dir "C:/Personal/Journals"
+(defvar journal-dir (concat (journal-home) "/Documents/Journals") ; "C:/Personal/Journals"
   "*The directory where journal files will be stored.")
 
 (defun journal-filename (time)

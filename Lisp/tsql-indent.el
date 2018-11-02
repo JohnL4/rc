@@ -165,7 +165,7 @@
                 (if (> begin-point end-point)
                     (setq cur-indent begin-indent)
                   (setq cur-indent (- end-indent 
-                                      default-tab-width)))))
+                                      tab-width)))))
 
 
             ;; Don't indent past the left margin
@@ -190,7 +190,7 @@
                                         ; current line
                   (progn
                     (setq cur-indent (+ (current-indentation) 
-                                        default-tab-width))
+                                        tab-width))
                     (setq not-indented nil))
 
                 ;; If we're looking at a begin statement and it's not a
@@ -216,7 +216,7 @@
                               (progn
                                 (forward-word -1)
                                 (let ((cur-tab-div (mod (current-column) 
-                                                        default-tab-width)))
+                                                        tab-width)))
                                   (if (not (eq cur-tab-div 0))
                                       ;; Insert a tab if the select
                                       ;; statement doesn't start on a
