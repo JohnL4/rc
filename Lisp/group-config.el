@@ -225,14 +225,10 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (require 'generic-util)
 (require 'edebug)			;LISP source-level debugging.
-(require 'fix-pathnames)                ;For use in converting MS-style
-                                        ;  pathnames to Unix-style, for use
-                                        ;  w/Cygnus utilities like diff(1).
-                                        ;  Requires local mod to
-                                        ;  ediff-diff.el::ediff-exec-process
-                                        ;  to transmogrify incoming list of
-                                        ;  pathname args.  (Make copy in
-                                        ;  site-lisp.)
+;;(require 'fix-pathnames)                ;For use in converting MS-style pathnames to Unix-style, for use w/Cygnus
+                                        ;  utilities like diff(1).  Requires local mod to
+                                        ;  ediff-diff.el::ediff-exec-process to transmogrify incoming list of pathname
+                                        ;  args.  (Make copy in site-lisp.)
 
 (defun group-jde-mode-hook ()
   ;; (message "jde-mode-hook defined in group-config.el section that requires jde.")
