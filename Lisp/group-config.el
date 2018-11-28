@@ -439,6 +439,7 @@ found for the current project                                                   
             (setq comment-start "'")
             (setq comment-padding nil)
             (set-face-foreground 'vbnet-funcall-face "blue")
+            (subword-mode 1)
             ))
 
 ;;---------------------------------  python  ---------------------------------
@@ -449,6 +450,7 @@ found for the current project                                                   
   (my-fill-mode)			;Auto Word-wrap
   (local-set-key "\M-o" 'one-line-section-break)
   (setq fill-column our-default-fill-column)
+  (subword-mode 1)
   )
 
 (if (member 'python-mode features)
@@ -846,6 +848,7 @@ found for the current project                                                   
                                      (face-foreground font-lock-string-face)
                                      )
               )
+            (subword-mode 1)
 	    )
 	  )
 
