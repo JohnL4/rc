@@ -19,7 +19,11 @@ case `uname -s` in
         export SHELL_TYPE=CYGWIN
         ;;
     Darwin)
-    	export SHELL_TYPE=Darwin
+        if [ "${TERM_PROGRAM:-(none)}" = "iTerm.app" ]; then
+            export SHELL_TYPE="Darwin-iTerm"
+        else
+    	    export SHELL_TYPE=Darwin
+        fi
 	;;
     *)
         export SHELL_TYPE=OTHER
@@ -53,7 +57,7 @@ fi
 #     echo -ne "\\e]4;4;#4083FF\\a" # "blue" -- make it lighter so it's more visible on black background.
 # fi
 
-export PATH="${PATH}:/usr/local/bin:/usr/local/sbin:~/Work/Tools/Bin:~/Bin"
+export PATH="${PATH}:~/.local/bin:/usr/local/bin:/usr/local/sbin:~/Work/Tools/Bin:~/Bin"
 export PERLLIB="/usr/local/lib/perl"
 export PRINTER='\\rprint1\NETprint37 (PS)'
 export TIMEFORMAT="real %lR	user %lU	sys %lS	cpu %P%%"
@@ -134,7 +138,7 @@ bhg()		{
 bigpush()	{ cmd /c bigPush; }
 bsh()		{ java -cp c:/usr/local/lib/bsh-2.0b4.jar bsh.Interpreter; }
 CB()		{ export CANOPY_BRANCH="$@"; }
-cd()		{ command cd "$@"; pwd; updtb; }
+cd()		{ builtin cd "$@"; pwd; updtb; }
 
                                 # cleanup:  see also 'scrub' and
                                 # 'scour', if they exist
@@ -157,7 +161,7 @@ dirlm()		{ ls -altF "$@"; }
 dirn()		{ ls -aFl "$@"; }
 dirr()		{ ls -aFRC "$@"; }
 diskdu()	{ du -a "$@" | sort -nr; }
-ec()		{ /emacs/emacs-24.2/bin/emacsclientw --no-wait -c "$@"; }
+ec()		{ emacsclient --no-wait "$@"; }
 eggtimer()	{ local interval=$1 # In minutes
 		  shift
 		  local msg
@@ -243,31 +247,37 @@ fgsrc()		{
                      \( \( -name help -o -name Images -o -name Log \) \
                         -prune \) -o \
                      \( \
-                           -iname '*.vb' \
+                           -iname '*.asp' \
+                        -o -iname '*.aspx' \
+                        -o -iname '*.awk' \
+                        -o -iname '*.bat' \
+                        -o -iname '*.c' \
+                        -o -iname '*.cls' \
                         -o -iname '*.config' \
+                        -o -iname '*.cpp' \
+                        -o -iname '*.css' \
+                        -o -iname '*.h' \
+                        -o -iname '*.hpp' \
+                        -o -iname '*.htm' \
+                        -o -iname '*.html' \
+                        -o -iname '*.java' \
+			-o -iname '*.js' \
+                        -o -iname '*.jsp' \
+                        -o -iname '*.jspf' \
+                        -o -iname '*.p[lm]' \
+                        -o -iname '*.py' \
+                        -o -iname '*.sh' \
+                        -o -iname '*.sql' \
+                        -o -iname '*.sql8' \
+			-o -iname '*.ts' \
+                        -o -iname '*.vb' \
                         -o -iname '*.vb[pw]' \
                         -o -iname '*.vbproj' \
                         -o -iname '*.vbproj.user' \
-                        -o -iname '*.asp' \
-                        -o -iname '*.aspx' \
-                        -o -iname '*.cls' \
-                        -o -iname '*.jsp' \
-                        -o -iname '*.jspf' \
-                        -o -iname '*.java' \
-			-o -iname '*.js' \
-                        -o -iname '*.htm' \
-			-o -iname '*.html' \
-                        -o -iname '*.awk' \
-                        -o -iname '*.bat' \
-                        -o -iname '*.css' \
-                        -o -iname '*.p[lm]' \
-                        -o -iname '*.sh' \
-                        -o -iname '*.xs[lp]' \
                         -o -iname '*.xml' \
-                        -o -iname '*.sql' \
-                        -o -iname '*.sql8' \
+                        -o -iname '*.xs[lp]' \
                      \) -print0 \
-                     | xargs --null -P 0 egrep "$@"
+                     | xargs -0 egrep "$@"
 		}
 gcw()		{ gnuclientw "$@"; }
 h()		{ history "$@"; }
@@ -309,9 +319,9 @@ jtags()		{
                      /Emacs/emacs-23.3/bin/etags --append --members -
                 }
 labelwin()	{
-                        # -o \( $TERM = xterm-256color \) 
-        	  if [ \( $TERM = xterm \) ]; then
-                      echo -ne "\\e]0;$@\\a" # \e]0 -- window and icon; \e]1 -- icon; \e]2 -- window
+                        # 
+        	  if [ $TERM = xterm -o $TERM = xterm-256color ]; then
+                      echo -ne "\\033]0;$@\\a" # \e]0 -- window and icon; \e]1 -- icon; \e]2 -- window
                   elif [ \( "$TERM_PROGRAM" = "Apple_Terminal" \) -o \( "$TERM_PROGRAM" = "iTerm.app" \)  ]; then
                       echo -ne "\\033]0;$@\\007"
                   else
@@ -339,12 +349,20 @@ lgsrc()		{
                       | grep -v ": No such file or directory$"
 		}
 logmon()	{ v:/j80lusk/canopy/tuning/log-monitor.pl "$@"; }
-lscf()		{ 
-		  if [ "$SHELL_TYPE" == "Darwin" ]; then
-		    ls -GCF "$@";
-		  else
-		    ls --color -CF "$@"; 
-		  fi
+lscf()		{
+                  case "$SHELL_TYPE" in
+                      Darwin*)
+                          ls -GCF "$@"
+                          ;;
+                      *)
+                          ls --color -CF "$@"
+                          ;;
+                  esac
+		  # if [ "$SHELL_TYPE" == "Darwin" ]; then
+		  #   ls -GCF "$@";
+		  # else
+		  #   ls --color -CF "$@"; 
+		  # fi
 		}
 mann()		{ labelwin man "$@"; man "$@"; updtb; }
 np()		{ notepad /P "$@"; }
@@ -400,9 +418,11 @@ sdiff160()	{
                 }
 
 updtb()		{
-                        # -o \( $TERM = xterm-256color \) 
-    		  if [ \( $TERM = xterm \) ]; then
-                      echo -ne "\\e]0;"`pwd`"\\a"
+                  if [ "$SHELL_TYPE" = "Darwin" ]; then
+                     # Mac OSX shells have their own titlebar magic; don't fight it
+                     :
+    		  elif [ $TERM = xterm -o $TERM = xterm-256color ]; then
+                      echo -ne "\\033]0;"`pwd`"\\a"
     		  elif [ $SHELL_TYPE = CYGWIN ]; then
     		      cmd /c title `pwd` >/dev/null 2>&1;
                   elif [ \( "$TERM_PROGRAM" = "Apple_Terminal" \) -o \( "$TERM_PROGRAM" = "iTerm.app" \) ]; then
