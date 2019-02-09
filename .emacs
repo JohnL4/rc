@@ -190,7 +190,7 @@ the JDE directory to be placed on `load-path'."
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (powershell python-mode htmlize org lua-mode flycheck magit seq tide mmm-mode haskell-mode)))
+    (company powershell python-mode htmlize org lua-mode flycheck magit seq tide mmm-mode haskell-mode)))
  '(py-shell-name "python3")
  '(tide-tsserver-process-environment (quote ("--experimentalDecorators"))))
 (message "loading ~/.emacs...done")
@@ -205,9 +205,13 @@ the JDE directory to be placed on `load-path'."
  '(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "DodgerBlue3"))))
  '(font-lock-string-face ((((class color) (background light)) (:foreground "firebrick")) (((class color) (background dark)) (:foreground "LightSalmon"))))
  '(gnus-summary-high-read ((((class color) (background light)) (:bold t :foreground "SlateGray"))))
+ '(gnus-summary-high-read-face ((((class color) (background light)) (:bold t :foreground "SlateGray"))))
  '(gnus-summary-low-read ((((class color) (background light)) (:italic t :foreground "SlateGray"))))
+ '(gnus-summary-low-read-face ((((class color) (background light)) (:italic t :foreground "SlateGray"))))
  '(gnus-summary-low-unread ((t (:italic t :foreground "MediumPurple4"))))
+ '(gnus-summary-low-unread-face ((t (:italic t :foreground "MediumPurple4"))))
  '(gnus-summary-normal-read ((((class color) (background light)) (:foreground "SlateGray"))))
+ '(gnus-summary-normal-read-face ((((class color) (background light)) (:foreground "SlateGray"))))
  '(haskell-literate-comment-face ((t (:inherit font-lock-doc-face :slant italic))))
  '(org-code ((t (:inherit shadow :foreground "RoyalBlue4"))))
  '(org-verbatim ((t (:inherit shadow :foreground "RoyalBlue4"))))

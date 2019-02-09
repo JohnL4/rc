@@ -39,7 +39,7 @@ export CYGWIN_NOTITLE=1
 # export HISTCONTROL=ignoredups
 # export HISTIGNORE="?:??:???"	# Don't add short cmd lines to history.
 # export JAVA_HOME=`echo $JAVA_HOME | sed -e's|\\\\|/|g'`
-export JAVA_HOME=`/usr/libexec/java_home`
+# export JAVA_HOME=`/usr/libexec/java_home`
 
 if [ $SHELL_TYPE = CYGWIN ]; then
     case "$HOSTNAME" in

@@ -165,19 +165,21 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;-----------------------------------------------------  company  ------------------------------------------------------
 
-(with-demoted-errors "Error loading company-mode: %S"
+(with-demoted-errors "Warning loading company-mode: %S"
   (require 'company)
   (add-hook 'after-init-hook 'global-company-mode)
   )
 
 ;;---------------------------------  magit  ----------------------------------
 
+(with-demoted-errors "Warning loading magit: %S"
 (require 'magit)
 (if (featurep 'magit)
     (progn
       (global-set-key (kbd "C-x g") 'magit-status)
       )
   )
+)
 
 ;;----------------------------------------------------  typescript  ----------------------------------------------------
 
@@ -259,8 +261,10 @@ load path isn't set up until the of .emacs), but setup for all modes should go i
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
+(with-demoted-errors "Warning setting company variables: %S"
 (add-to-list 'company-backends 'company-ghc)
 (custom-set-variables '(company-ghc-show-info t))
+)
 
 (defun fix-path-for-local-ghc-mod ()
   "Fix `exec-path' so that the correct version of ghc-mod will be
@@ -833,7 +837,7 @@ found for the current project."
 
 (setq org-list-allow-alphabetical t)     ;Must be set before loading org.
 
-(with-demoted-errors "ERROR: %S"
+(with-demoted-errors "WARNING: %S"
   (require 'org-install)
   (require 'org)
   (require 'ox-hugo)
