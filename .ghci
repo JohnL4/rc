@@ -14,8 +14,8 @@
 -- Turquoise-ish foreground; then video reversed (formerly used on Mac).
 -- :set prompt "\ESC[38;5;39;7mλ %s>\ESC[0m "
 
--- Plain lighter turquoise background (no reverse video):
--- :set prompt "\ESC[48;5;81mλ %s>\ESC[0m "
+-- Plain lighter turquoise background (no reverse video): (or try 117 instead of 81)
+:set prompt "\ESC[48;5;81mλ %s>\ESC[0m "
 
 -- :set prompt "======== %s> "
 
@@ -23,24 +23,24 @@
 -- :set +m
 
 -- Install System.Console.ANSI with 'cabal install ansi-terminal' (requires version 0.9+ of this package).
-import System.Console.ANSI
-
-data PromptType = NormalPrompt | ContinuationPrompt deriving (Eq, Show)
-
-:{
--- We COULD specify the type here, but Haskell can figure it out and probably get it "righter" anyway.
--- let promptFunc :: (Integral a) => PromptType -> [String] -> a -> IO String
-let promptFunc promptType modules _ = do
-        if promptType == NormalPrompt then do
-           setSGR [SetPaletteColor Background $ xterm6LevelRGB 2 4 5]   -- where color = xterm6LevelRGB ...?
-           setSGR [SetColor Foreground Dull Black]
-        else
-           setSGR [SetPaletteColor Foreground $ xterm6LevelRGB 2 4 5] -- Not very visible on Mac (white background), but oh well.
-        putStr $ (unwords $ filter ("System.Console.ANSI" /=) modules)
-               ++ (if promptType == NormalPrompt then ">" else "|")
-        setSGR [Reset]
-        return " "
-:}
+-- import System.Console.ANSI
+-- 
+-- data PromptType = NormalPrompt | ContinuationPrompt deriving (Eq, Show)
+-- 
+-- :{
+-- -- We COULD specify the type here, but Haskell can figure it out and probably get it "righter" anyway.
+-- -- let promptFunc :: (Integral a) => PromptType -> [String] -> a -> IO String
+-- let promptFunc promptType modules _ = do
+--         if promptType == NormalPrompt then do
+--            setSGR [SetPaletteColor Background $ xterm6LevelRGB 2 4 5]   -- where color = xterm6LevelRGB ...?
+--            setSGR [SetColor Foreground Dull Black]
+--         else
+--            setSGR [SetPaletteColor Foreground $ xterm6LevelRGB 2 4 5] -- Not very visible on Mac (white background), but oh well.
+--         putStr $ (unwords $ filter ("System.Console.ANSI" /=) modules)
+--                ++ (if promptType == NormalPrompt then ">" else "|")
+--         setSGR [Reset]
+--         return " "
+-- :}
 
 -- myPromptFunc :: [String] -> Int -> IO String
 -- myPromptFunc mods lineNum = do
@@ -55,5 +55,5 @@ let promptFunc promptType modules _ = do
 
 -- :set prompt-function \modules lineNum -> do; setSGR [SetPaletteColor Background $ xterm6LevelRGB 1 4 5]; setSGR [SetColor Foreground Dull Black]; putStr $ (unwords $ filter ("System.Console.ANSI" /=) modules) ++ ">"; setSGR [Reset]; return " "
 
-:set prompt-function (promptFunc NormalPrompt)
-:set prompt-cont-function (promptFunc ContinuationPrompt)
+-- :set prompt-function (promptFunc NormalPrompt)
+-- :set prompt-cont-function (promptFunc ContinuationPrompt)
