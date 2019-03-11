@@ -1,0 +1,59 @@
+-- -*- coding: utf-8; comment-start: "-- "; comment-column: 40 -*-
+
+-- NOTE: Can't follow :set commands with comments on same line.  Also, none of this works in PowerShell, hence the use
+-- of System.Console.ANSI. :(
+
+-- See https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+-- :set prompt "\ESC[7m%s\ESC[0m\nλ> "  -- Reverse video, two lines
+
+-- Reverse video
+-- :set prompt "\ESC[7mλ %s>\ESC[0m " 
+
+-- :set prompt "\ESC[34;7mλ %s>\ESC[0m " -- Blue foreground, then video reversed.
+
+-- Turquoise-ish foreground; then video reversed (formerly used on Mac).
+-- :set prompt "\ESC[38;5;39;7mλ %s>\ESC[0m "
+
+-- Plain lighter turquoise background (no reverse video):
+-- :set prompt "\ESC[48;5;81mλ %s>\ESC[0m "
+
+-- :set prompt "======== %s> "
+
+-- Allow multi-line function definitions -- Not necessary if you use :{ and :} judiciously.
+-- :set +m
+
+-- Install System.Console.ANSI with 'cabal install ansi-terminal' (requires version 0.9+ of this package).
+import System.Console.ANSI
+
+data PromptType = NormalPrompt | ContinuationPrompt deriving (Eq, Show)
+
+:{
+-- We COULD specify the type here, but Haskell can figure it out and probably get it "righter" anyway.
+-- let promptFunc :: (Integral a) => PromptType -> [String] -> a -> IO String
+let promptFunc promptType modules _ = do
+        if promptType == NormalPrompt then do
+           setSGR [SetPaletteColor Background $ xterm6LevelRGB 2 4 5]   -- where color = xterm6LevelRGB ...?
+           setSGR [SetColor Foreground Dull Black]
+        else
+           setSGR [SetPaletteColor Foreground $ xterm6LevelRGB 2 4 5] -- Not very visible on Mac (white background), but oh well.
+        putStr $ (unwords $ filter ("System.Console.ANSI" /=) modules)
+               ++ (if promptType == NormalPrompt then ">" else "|")
+        setSGR [Reset]
+        return " "
+:}
+
+-- myPromptFunc :: [String] -> Int -> IO String
+-- myPromptFunc mods lineNum = do
+--   putStr "======== PROMPT> "
+--   return "PROMPT"
+
+-- :set prompt-function \mods lineNum -> pure (show (mods, lineNum))
+-- :set prompt-function \mods lineNum -> do; putStr "======== PROMPT> "; return ""
+-- :set prompt-function \mods lineNum -> do; setSGR [SetColor Foreground Vivid Red]; setSGR [SetColor Background Vivid Blue]; putStr "======== PROMPT> "; setSGR [Reset]; return ""
+     
+-- :set prompt-function \mods lineNum -> do; setSGR [SetSwapForegroundBackground True]; putStr "PROMPT>"; setSGR [Reset]; return " "
+
+-- :set prompt-function \modules lineNum -> do; setSGR [SetPaletteColor Background $ xterm6LevelRGB 1 4 5]; setSGR [SetColor Foreground Dull Black]; putStr $ (unwords $ filter ("System.Console.ANSI" /=) modules) ++ ">"; setSGR [Reset]; return " "
+
+:set prompt-function (promptFunc NormalPrompt)
+:set prompt-cont-function (promptFunc ContinuationPrompt)
