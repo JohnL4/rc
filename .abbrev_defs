@@ -33,7 +33,7 @@
   '(
     ("catch" "catch" c-electric-continued-statement 0)
     ("else" "else" c-electric-continued-statement 2)
-    ("m" #("<strong style=\"color: red\">(Major)</strong>" 0 6 (lazy-lock t face font-lock-comment-face) 6 7 (lazy-lock t face font-lock-comment-face) 7 12 (lazy-lock t face font-lock-comment-face) 12 13 (lazy-lock t face font-lock-comment-face) 13 14 (lazy-lock t face font-lock-comment-face) 14 17 (lazy-lock t face font-lock-comment-face) 17 20 (lazy-lock t face font-lock-comment-face) 20 24 (lazy-lock t face font-lock-comment-face) 24 25 (lazy-lock t face font-lock-comment-face) 25 26 (lazy-lock t face font-lock-comment-face) 26 32 (lazy-lock t face font-lock-comment-face) 32 33 (face font-lock-comment-face lazy-lock t) 33 34 (face font-lock-comment-face lazy-lock t) 34 41 (face font-lock-comment-face lazy-lock t) 41 42 (face font-lock-comment-face lazy-lock t) 42 43 (face font-lock-comment-face lazy-lock t)) nil 2)
+    ("m" #("<strong style=\"color: red\">(Major)</strong>" 0 6 (face font-lock-comment-face lazy-lock t) 6 7 (face font-lock-comment-face lazy-lock t) 7 12 (face font-lock-comment-face lazy-lock t) 12 13 (face font-lock-comment-face lazy-lock t) 13 14 (face font-lock-comment-face lazy-lock t) 14 17 (face font-lock-comment-face lazy-lock t) 17 20 (face font-lock-comment-face lazy-lock t) 20 24 (face font-lock-comment-face lazy-lock t) 24 25 (face font-lock-comment-face lazy-lock t) 25 26 (face font-lock-comment-face lazy-lock t) 26 32 (face font-lock-comment-face lazy-lock t) 32 33 (lazy-lock t face font-lock-comment-face) 33 34 (lazy-lock t face font-lock-comment-face) 34 41 (lazy-lock t face font-lock-comment-face) 41 42 (lazy-lock t face font-lock-comment-face) 42 43 (lazy-lock t face font-lock-comment-face)) nil 2)
     ("while" "while" c-electric-continued-statement 3)
    ))
 
@@ -85,14 +85,30 @@
 
 (define-abbrev-table 'emacs-wiki-mode-abbrev-table
   '(
-    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (lazy-lock t face font-lock-function-name-face) 3 4 (lazy-lock t face font-lock-function-name-face) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (lazy-lock t face font-lock-string-face) 12 14 (lazy-lock t face font-lock-string-face) 14 15 (lazy-lock t face font-lock-string-face) 15 16 (lazy-lock t face font-lock-string-face)) nil 0)
+    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (face font-lock-function-name-face lazy-lock t) 3 4 (face font-lock-function-name-face lazy-lock t) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (face font-lock-string-face lazy-lock t) 12 14 (face font-lock-string-face lazy-lock t) 14 15 (face font-lock-string-face lazy-lock t) 15 16 (face font-lock-string-face lazy-lock t)) nil 0)
    ))
+
+(define-abbrev-table 'epa-info-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-key-list-mode-abbrev-table '())
+
+(define-abbrev-table 'epa-key-mode-abbrev-table '())
+
+(define-abbrev-table 'eww-bookmark-mode-abbrev-table '())
+
+(define-abbrev-table 'eww-buffers-mode-abbrev-table '())
+
+(define-abbrev-table 'eww-history-mode-abbrev-table '())
+
+(define-abbrev-table 'eww-mode-abbrev-table '())
 
 (define-abbrev-table 'fundamental-mode-abbrev-table
   '(
     ("dialogue" "dialog" nil 0)
     ("ok" "OK" nil 0)
    ))
+
+(define-abbrev-table 'git-commit-elisp-text-mode-abbrev-table '())
 
 (define-abbrev-table 'global-abbrev-table '())
 
@@ -190,6 +206,8 @@
     ("ok" "OK" nil 0)
    ))
 
+(define-abbrev-table 'js-jsx-mode-abbrev-table '())
+
 (define-abbrev-table 'js-mode-abbrev-table '())
 
 (define-abbrev-table 'lisp-mode-abbrev-table
@@ -207,8 +225,40 @@
 " nil 0)
     ("embarrased" "embarrassed" nil 0)
     ("safeword" "safe-word" nil 0)
-    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (lazy-lock t face font-lock-function-name-face) 3 4 (lazy-lock t face font-lock-function-name-face) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (lazy-lock t face font-lock-string-face) 12 14 (lazy-lock t face font-lock-string-face) 14 15 (lazy-lock t face font-lock-string-face) 15 16 (lazy-lock t face font-lock-string-face)) nil 0)
+    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (face font-lock-function-name-face lazy-lock t) 3 4 (face font-lock-function-name-face lazy-lock t) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (face font-lock-string-face lazy-lock t) 12 14 (face font-lock-string-face lazy-lock t) 14 15 (face font-lock-string-face lazy-lock t) 15 16 (face font-lock-string-face lazy-lock t)) nil 0)
    ))
+
+(define-abbrev-table 'magit-cherry-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-diff-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-select-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-merge-preview-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-process-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-reflog-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-refs-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-repolist-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-revision-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-section-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stash-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stashes-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-status-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-submodule-list-mode-abbrev-table '())
 
 (define-abbrev-table 'mail-abbrevs '())
 
@@ -219,7 +269,7 @@
 " nil 0)
     ("embarrased" "embarrassed" nil 0)
     ("safeword" "safe-word" nil 0)
-    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (lazy-lock t face font-lock-function-name-face) 3 4 (lazy-lock t face font-lock-function-name-face) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (lazy-lock t face font-lock-string-face) 12 14 (lazy-lock t face font-lock-string-face) 14 15 (lazy-lock t face font-lock-string-face) 15 16 (lazy-lock t face font-lock-string-face)) nil 0)
+    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (face font-lock-function-name-face lazy-lock t) 3 4 (face font-lock-function-name-face lazy-lock t) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (face font-lock-string-face lazy-lock t) 12 14 (face font-lock-string-face lazy-lock t) 14 15 (face font-lock-string-face lazy-lock t) 15 16 (face font-lock-string-face lazy-lock t)) nil 0)
    ))
 
 (define-abbrev-table 'messages-buffer-mode-abbrev-table '())
@@ -231,8 +281,10 @@
 " nil 0)
     ("embarrased" "embarrassed" nil 0)
     ("safeword" "safe-word" nil 0)
-    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (lazy-lock t face font-lock-function-name-face) 3 4 (lazy-lock t face font-lock-function-name-face) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (lazy-lock t face font-lock-string-face) 12 14 (lazy-lock t face font-lock-string-face) 14 15 (lazy-lock t face font-lock-string-face) 15 16 (lazy-lock t face font-lock-string-face)) nil 0)
+    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (face font-lock-function-name-face lazy-lock t) 3 4 (face font-lock-function-name-face lazy-lock t) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (face font-lock-string-face lazy-lock t) 12 14 (face font-lock-string-face lazy-lock t) 14 15 (face font-lock-string-face lazy-lock t) 15 16 (face font-lock-string-face lazy-lock t)) nil 0)
    ))
+
+(define-abbrev-table 'mhtml-mode-abbrev-table '())
 
 (define-abbrev-table 'mumamo-comment-mode-abbrev-table '())
 
@@ -261,12 +313,14 @@
 (define-abbrev-table 'org-mode-abbrev-table
   '(
     ("bbq" "#+BEGIN_QUOTE" nil 1)
-    ("bex" "#+BEGIN_EXAMPLE" nil 2)
+    ("bex" "#+BEGIN_EXAMPLE" nil 3)
+    ("bspn" "@@html:<span>@@" nil 0)
     ("bsrc" "#+BEGIN_SRC" nil 9)
     ("ebq" "#+END_QUOTE" nil 1)
-    ("eex" "#+END_EXAMPLE" nil 1)
+    ("eex" "#+END_EXAMPLE" nil 2)
     ("esrc" "#+END_SRC" nil 6)
     ("hdt" "HierarchicalDataTemplate" nil 1)
+    ("sspn" "@@html:</span>@@" nil 0)
    ))
 
 (define-abbrev-table 'outline-mode-abbrev-table
@@ -277,7 +331,7 @@
     ("deisgn" "design" nil 0)
     ("embarrased" "embarrassed" nil 0)
     ("safeword" "safe-word" nil 0)
-    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (lazy-lock t face font-lock-function-name-face) 3 4 (lazy-lock t face font-lock-function-name-face) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (lazy-lock t face font-lock-string-face) 12 14 (lazy-lock t face font-lock-string-face) 14 15 (lazy-lock t face font-lock-string-face) 15 16 (lazy-lock t face font-lock-string-face)) nil 0)
+    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (face font-lock-function-name-face lazy-lock t) 3 4 (face font-lock-function-name-face lazy-lock t) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (face font-lock-string-face lazy-lock t) 12 14 (face font-lock-string-face lazy-lock t) 14 15 (face font-lock-string-face lazy-lock t) 15 16 (face font-lock-string-face lazy-lock t)) nil 0)
    ))
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
@@ -301,6 +355,8 @@
 (define-abbrev-table 'prog-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-abbrev-table '())
+
+(define-abbrev-table 'scss-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
@@ -339,8 +395,10 @@
     ("deisgn" "design" nil 0)
     ("embarrased" "embarrassed" nil 0)
     ("safeword" "safe-word" nil 0)
-    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (lazy-lock t face font-lock-function-name-face) 3 4 (lazy-lock t face font-lock-function-name-face) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (lazy-lock t face font-lock-string-face) 12 14 (lazy-lock t face font-lock-string-face) 14 15 (lazy-lock t face font-lock-string-face) 15 16 (lazy-lock t face font-lock-string-face)) nil 3)
+    ("tbdd" #("<div class=\"tbd\"" 0 1 (lazy-lock t) 1 3 (face font-lock-function-name-face lazy-lock t) 3 4 (face font-lock-function-name-face lazy-lock t) 4 10 (lazy-lock t) 10 11 (lazy-lock t) 11 12 (face font-lock-string-face lazy-lock t) 12 14 (face font-lock-string-face lazy-lock t) 14 15 (face font-lock-string-face lazy-lock t) 15 16 (face font-lock-string-face lazy-lock t)) nil 3)
    ))
+
+(define-abbrev-table 'typescript-mode-abbrev-table '())
 
 (define-abbrev-table 'url-cookie-mode-abbrev-table '())
 
@@ -658,6 +716,12 @@
 
 (define-abbrev-table 'vc-dired-mode-abbrev-table '())
 
+(define-abbrev-table 'vc-git-log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'vc-git-region-history-mode-abbrev-table '())
+
 (define-abbrev-table 'vc-log-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-svn-log-view-mode-abbrev-table '())
@@ -779,7 +843,7 @@
 
 (define-abbrev-table 'xml-mode-abbrev-table
   '(
-    ("inves" #("<span class=\"todo\">investigate</span>" 0 1 (lazy-lock t) 1 4 (face font-lock-function-name-face lazy-lock t) 4 5 (face font-lock-function-name-face lazy-lock t) 5 6 (lazy-lock t) 6 11 (lazy-lock t) 11 12 (lazy-lock t) 12 18 (lazy-lock t) 18 30 (lazy-lock t) 30 31 (lazy-lock t) 31 36 (face font-lock-function-name-face lazy-lock t) 36 37 (lazy-lock t)) nil 3)
+    ("inves" #("<span class=\"todo\">investigate</span>" 0 1 (lazy-lock t) 1 4 (lazy-lock t face font-lock-function-name-face) 4 5 (lazy-lock t face font-lock-function-name-face) 5 6 (lazy-lock t) 6 11 (lazy-lock t) 11 12 (lazy-lock t) 12 18 (lazy-lock t) 18 30 (lazy-lock t) 30 31 (lazy-lock t) 31 36 (lazy-lock t face font-lock-function-name-face) 36 37 (lazy-lock t)) nil 3)
     ("iqpkg" #("canopy.utilities.interfaces.cerme" 0 33 (lazy-lock t)) nil 1)
    ))
 

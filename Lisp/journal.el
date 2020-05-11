@@ -5,22 +5,17 @@
 ;;; When ending an entry, you only need to specify the phase, not the rest of
 ;;; the classification tags.
 
+;;; `journal-append-new-entry' is where the journal file is first loaded, in case you want to set mode variables there.
+
 ;;; (require 'debug-log)
 
-                                        ;TODO:  store classification tree at
-                                        ;  top (or bottom, as local variables)
-                                        ;  of file, along with the date/time
-                                        ;  of the last good line of data
-                                        ;  contributing to that tree.  No
-                                        ;  changes above that line will be
-                                        ;  visible, unless the entire datafile
-                                        ;  is reparsed.
+                                        ;TODO:  store classification tree at top (or bottom, as local variables) of
+                                        ;  file, along with the date/time of the last good line of data contributing to
+                                        ;  that tree.  No changes above that line will be visible, unless the entire
+                                        ;  datafile is reparsed.
 
-                                        ;Classification tags are
-                                        ;  tree-structured, for better
-                                        ;  autocomplete.  Something the
-                                        ;  following.  See tree.el for more
-                                        ;  details. 
+                                        ;Classification tags are tree-structured, for better autocomplete.  Something
+                                        ;  like the following.  See tree.el for more details.
 '( (task-1 (subtask-1A subsubtask-1A1
                        subsubtask-1A2)
            subtask-1B
@@ -31,6 +26,7 @@
 
 (require 'lusk-tree)
 
+;; Function required by (defvar journal-dir ...) below.
 (defun journal-home ()
   "Cross-platform way to get the user's home path (I hope)"
   (if (and (getenv "HOMEPATH") (< 0 (length (getenv "HOMEPATH"))))
@@ -44,9 +40,22 @@
 (defvar journal-dir (concat (journal-home) "/Documents/Journals") ; "C:/Personal/Journals"
   "*The directory where journal files will be stored.")
 
-(defun journal-filename (time)
-  "*Return the name of the journal file, possibly based on time"
-  (concat journal-dir "/journal.txt")
+(defvar journal-phases '("in - interrupt"
+                         "ad - administrative"
+                         "mt - meeting"
+                         "rs - research"
+                         "ds - design"
+                         "if - infrastructure (code or otherwise technical)"
+                         "cd - code"
+                         "cp - compile" 
+                         "te - test"
+                         "db - debug"
+                         "dc - documentation"
+                         "cr - code review (usually of somebody else's code)"
+                         "pm - post mortem"
+                         "df - defect"
+                         )
+  "Non-exchaustive list of possible phases in an entry.  First word must be unique."
   )
 
 (defvar journal-header
@@ -76,9 +85,15 @@
    )
   "*Text to insert at top of every journal file")
 
+(defun journal-filename (time)
+  "*Return the name of the journal file, possibly based on time"
+  (concat journal-dir "/journal.txt")
+  )
+
 (defun journal-timestamp (time)
   "*Journal timestamp for `time', as in `current-time'."
-  (format-time-string "%Y-%m-%d (%a) %H:%M" time)
+  (format-time-string "%Y-%m-%d (%a) %H:%M:%S" time) ;Added seconds for logging ("did such-and-such") while testing
+                                                     ;software
   )
 
                                         ;journal-parse-timestamp is
@@ -188,7 +203,8 @@ BEGIN-OR-END is a string (expected to be \"b\" or \"e\"), default \"b\"."
         (setq buffer-is-new t))
     (find-file (journal-filename cur-time))
     (if buffer-is-new
-        (progn
+        (progn                          ;TODO: should probably make this buffer initialization stuff a separate
+                                        ;function.
           (local-set-key [f7] 'journal-scan-new-and-highlight-errors)
           (local-set-key [S-f7] 'journal-scan-all-and-highlight-errors)
           (local-set-key [f6] 'journal-clear-error-highlighting)
@@ -203,6 +219,7 @@ BEGIN-OR-END is a string (expected to be \"b\" or \"e\"), default \"b\"."
           (setq comment-indent-function 'journal-indent)
 
           (auto-fill-mode 1)
+          (subword-mode 1)              ;Move by case boundary in words.
           )
       )
     (goto-char (point-max))
@@ -222,7 +239,11 @@ BEGIN-OR-END is a string (expected to be \"b\" or \"e\"), default \"b\"."
     (journal-begin-new-entry cur-time)
     (insert (or begin-or-end "b"))
     (insert " ")
-    (insert (read-from-minibuffer "Phase: " "in"))
+    (insert (car (split-string (completing-read "Phase: "
+                                                journal-phases
+                                                nil ;Default predicate
+                                                nil ;Match not required
+                                                "in"))))
     (insert " ")
     (journal-insert-tags)
     )

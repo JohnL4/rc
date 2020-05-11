@@ -313,9 +313,9 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;------------------------------------------------------  magit  -------------------------------------------------------
 
-;;(with-demoted-errors "Error (ignored): %S"
-;;  (require 'magit)
-;;  )
+(with-demoted-errors "Error (ignored): %S"
+  (require 'magit)
+  )
 (if (featurep 'magit)
     (progn
       (global-set-key (kbd "C-x g") 'magit-status)
@@ -327,6 +327,19 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;=================================  modes  ==================================
 				
 (setq default-major-mode 'text-mode)
+
+;; Don't need a separate function for a one-liner.
+;;;(defun subword-mode-on ()
+;;;  "Turn on `subword-mode'"
+;;;  (subword-mode 1)
+;;;  )
+
+(add-hook 'graphviz-dot-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode t)
+            (setq graphviz-dot-preview-extension "svg")
+            )
+          )
 
 ;;----------------------------------------------------  typescript  ----------------------------------------------------
 
@@ -417,6 +430,7 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
 
   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+  (add-hook 'haskell-mode-hook (lambda () (subword-mode 1)))
   (eval-after-load "haskell-mode"
     '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
 )
@@ -435,6 +449,7 @@ something fanciful or something totally random, whatever makes you happy.")
       (local-set-key "\C-j" 'newline)
       (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
       (local-set-key "\M-o" 'section-break)
+      (subword-mode 1)                  ;Case-change == word boundary
       )
 (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
 )
@@ -466,6 +481,7 @@ something fanciful or something totally random, whatever makes you happy.")
             (local-set-key "\C-j" 'newline)
             (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
             (local-set-key "\M-o" 'one-line-section-break)
+            (subword-mode 1)
             ))
 
 ;;---------------------------------  VB.NET  ---------------------------------
@@ -480,6 +496,7 @@ something fanciful or something totally random, whatever makes you happy.")
             (setq comment-start "'")
             (setq comment-padding nil)
             (set-face-foreground 'vbnet-funcall-face "blue")
+            (subword-mode 1)
             ))
 
 ;;---------------------------------  python  ---------------------------------
@@ -490,6 +507,7 @@ something fanciful or something totally random, whatever makes you happy.")
   (my-fill-mode)			;Auto Word-wrap
   (local-set-key "\M-o" 'one-line-section-break)
   (setq fill-column our-default-fill-column)
+  (subword-mode 1)
   )
 
 (if (member 'python-mode features)
@@ -685,7 +703,9 @@ something fanciful or something totally random, whatever makes you happy.")
                                         ;cc-mode 5.30.9.
 (defun my-c-mode-common-hook ()
   (c-setup-filladapt)
-  (filladapt-mode 1))
+  (filladapt-mode 1)
+  (subword-mode 1)
+  )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (defun group-java-mode-hook ()
@@ -869,6 +889,7 @@ something fanciful or something totally random, whatever makes you happy.")
                                      (face-foreground font-lock-string-face)
                                      )
               )
+            (subword-mode 1)
 	    )
 	  )
 
@@ -887,27 +908,31 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;	 (modify-face ediff-even-diff-face-A "black" nil nil t nil nil)
 ;;;	 (modify-face ediff-even-diff-face-C "black" nil nil t nil nil)
 
-	 (set-face-foreground ediff-current-diff-face-A "black")
-	 ;; (set-face-background ediff-current-diff-face-A "PaleGreen")
-         (set-face-background ediff-current-diff-face-A "#befbbe")
-	 (set-face-foreground ediff-current-diff-face-C "black")
-	 (set-face-background ediff-current-diff-face-C "#ffd6d6")
-	     
-	     
-	 (set-face-foreground ediff-fine-diff-face-A "black")
-	 (set-face-background ediff-fine-diff-face-A "#8be48b")
-	 ;;(set-face-background ediff-fine-diff-face-A "LimeGreen")
-	     
+         ;; Change:  A (green)   --> B
+         ;;          B (yellow)  --> C
+         ;;          C (pink)    --> A
+
 	 (set-face-foreground ediff-current-diff-face-B "black")
-	 ;;(set-face-background ediff-current-diff-face-B "#ffff9e")
-	 (set-face-background ediff-current-diff-face-B "#ffffbb")
-	 ;;(set-face-background ediff-current-diff-face-B "yellow")
+	 ;; (set-face-background ediff-current-diff-face-B "PaleGreen")
+         (set-face-background ediff-current-diff-face-B "#befbbe")
+	 (set-face-foreground ediff-current-diff-face-A "black")
+	 (set-face-background ediff-current-diff-face-A "#ffd6d6")
+	     
 	     
 	 (set-face-foreground ediff-fine-diff-face-B "black")
-	 (set-face-background ediff-fine-diff-face-B "#e0e08a")
+	 (set-face-background ediff-fine-diff-face-B "#8be48b")
+	 ;;(set-face-background ediff-fine-diff-face-B "LimeGreen")
+	     
+	 (set-face-foreground ediff-current-diff-face-C "black")
+	 ;;(set-face-background ediff-current-diff-face-C "#ffff9e")
+	 (set-face-background ediff-current-diff-face-C "#ffffbb")
+	 ;;(set-face-background ediff-current-diff-face-C "yellow")
 	     
 	 (set-face-foreground ediff-fine-diff-face-C "black")
-	 (set-face-background ediff-fine-diff-face-C "#e8b5b5")
+	 (set-face-background ediff-fine-diff-face-C "#e0e08a")
+	     
+	 (set-face-foreground ediff-fine-diff-face-A "black")
+	 (set-face-background ediff-fine-diff-face-A "#e8b5b5")
 	     
          (set-face-foreground ediff-current-diff-face-Ancestor "black")
          (set-face-background ediff-current-diff-face-Ancestor "SkyBlue1")
@@ -955,15 +980,17 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;----------------------------------  org-mode  -----------------------------------
 
-(setq org-list-allow-alphabetical t)     ;Must be set before loading org.
+;; (setq org-list-allow-alphabetical t)     ;Must be set before loading org.
 
 (with-demoted-errors "ERROR: %S"
-  (require 'org-install)
+  ;; (require 'org-install)
   (require 'org)
   ;; (require 'ox-hugo)
   ;; (require 'ox-hugo-auto-export)
   (require 'ox-reveal)                  ;Export to reveal.js presentation
   (require 'ox-twbs)                    ;Export to Twitter Bootstrap (i.e., just "Bootstrap")
+
+  (require 'org-projects)
   )
 
 (if (member 'org features)
@@ -978,6 +1005,10 @@ something fanciful or something totally random, whatever makes you happy.")
       (setq org-agenda-files "~/org/org-agendas.txt")
 
       (setq org-export-headline-levels 12)
+
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((plantuml . t)))               ; this line activates dot
 
       ;;-----------------------------------------------  export plugins  -----------------------------------------------
 
@@ -998,6 +1029,10 @@ something fanciful or something totally random, whatever makes you happy.")
 
       ;;---------------------------------------------  end export plugins  ---------------------------------------------
       
+      (defun my-org-confirm-babel-evaluate (lang body)
+        (not (string= lang "plantuml")))  ; don't ask for Plantuml
+      (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
       (add-hook 'org-mode-hook 'turn-on-font-lock)  ; org-mode buffers only
       (add-hook 'org-mode-hook
                 (lambda ()
@@ -1007,6 +1042,7 @@ something fanciful or something totally random, whatever makes you happy.")
                   (setq comment-start "#+ ")
                   (setq comment-start-skip "#\\++\\s-*")
                   (setq comment-column 32)
+                  (subword-mode 1)
                   ))
 
       ;; I didn't really find auto-generation-and-display useful, for two reasons:
@@ -1023,13 +1059,14 @@ something fanciful or something totally random, whatever makes you happy.")
       (setq org-log-done 'note)                     ;time or note -- note to
                                                     ;    be prompted for a closing note.
 
-      ;;---------------------------------------------------  faces  ----------------------------------------------------
-
       (setq org-todo-keywords
             '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "HOLD(h@)")
               (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "|" "RESEARCH-DONE(u)" "RESEARCH-HOLD(w@)")
               (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "|" "CODE-DONE(f)" "CODE-HOLD(p@)")
               ))
+
+      ;;---------------------------------------------------  faces  ----------------------------------------------------
+
       (defface org-in-progress
         (org-compatible-face nil
           '(

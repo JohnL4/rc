@@ -184,15 +184,22 @@ the JDE directory to be placed on `load-path'."
                (quote jdex-insert-property))))
     jde-key-bindings))
  '(markdown-command "pandoc -f gfm -t html5")
+ '(org-babel-load-languages (quote ((emacs-lisp . t) (plantuml . t))))
+ '(org-list-allow-alphabetical t)
+ '(org-plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
  '(package-archives
    (quote
-    (("gnu" . "http://elpa.gnu.org/packages/")
-     ("melpa-stable" . "http://stable.melpa.org/packages/")
-     ("melpa" . "https://melpa.org/packages/"))))
+    (("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa-stable" . "https://stable.melpa.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("org" . "https://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (ox-hugo magit ox-twbs markdown-mode markdown-mode+ markdown-preview-mode tide csharp-mode lua-mode with-editor web-mode powershell ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
- '(safe-local-variable-values (quote ((org-footnote-section))))
+    (htmlize plantuml-mode magit csharp-mode ox-twbs markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode with-editor web-mode powershell ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
+ '(plantuml-default-exec-mode (quote jar))
+ '(plantuml-jar-args (quote ("-charset" "UTF-8" "-nometadata")))
+ '(plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
+ '(safe-local-variable-values (quote ((flyspell-mode . 1) (org-footnote-section))))
  '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow))))
 (message "loading .emacs...done")
 
@@ -215,6 +222,8 @@ the JDE directory to be placed on `load-path'."
  '(org-column ((t (:background "grey90" :strike-through nil :underline nil :slant normal :weight normal :height 98))))
  '(org-todo ((t (:foreground "magenta" :weight bold))))
  '(region ((((class color) (background light)) (:background "LightSteelBlue1")) (((class color) (background dark)) (:background "DimGray"))))
+ '(show-paren-match ((t (:background "cyan2"))))
+ '(show-paren-match-expression ((t (:background "DarkSlateGray1"))))
  '(speedbar-button-face ((((class color) (background light)) (:background "green4" :foreground "white" :weight bold))))
  '(speedbar-selected-face ((((class color) (background light)) (:background "yellow" :foreground "red" :underline t :slant italic))))
  '(speedbar-separator-face ((((class color) (background light)) (:background "sky blue" :foreground "black" :overline "gray"))))

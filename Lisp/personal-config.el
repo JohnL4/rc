@@ -406,7 +406,7 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 (add-hook 'diff-mode-hook
           (lambda ()
-            (set-face-attribute 'diff-refine-change nil
+            (set-face-attribute 'diff-refine-changed nil
                                 :background "yellow"
                                 )
             (set-face-attribute 'diff-added nil
@@ -546,7 +546,11 @@ values turn on auto-fill mode, non-positive values turn it off."
       ;(set-face-foreground 'org-level-7 "")
       ;(set-face-foreground 'org-level-8 "")
 
-      (setq org-directory "C:/Personal/Org")
+      (setq org-directory (concat (if (getenv "USERPROFILE")
+                                      (getenv "USERPROFILE") ;MS-Windows
+                                    "~")                     ;Everybody else
+                                  "/org"))
+      (setq org-agenda-files (concat org-directory "/org-agendas.txt"))
       (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
       (setq org-mobile-inbox-for-pull
             "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
@@ -556,6 +560,7 @@ values turn on auto-fill mode, non-positive values turn it off."
               "org-mobile-setup.org"
               ))
 
+      (setq org-tags-column -100)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (setq fill-column our-default-fill-column)
@@ -566,7 +571,23 @@ values turn on auto-fill mode, non-positive values turn it off."
                   (setq org-footnote-auto-adjust t)
                   ))
 
-      ))
+      (with-demoted-errors "Warning: Ignoring error: %S"
+        (require 'org-present)
+        (if (featurep 'org-present)
+            (progn
+              (add-hook 'org-present-mode-hook
+                        (lambda ()
+                          (org-present-big)
+                          (org-display-inline-images)
+                          (org-present-hide-cursor)
+                          (org-present-read-only)))
+              (add-hook 'org-present-mode-quit-hook
+                        (lambda ()
+                          (org-present-small)
+                          (org-remove-inline-images)
+                          (org-present-show-cursor)
+                          (org-present-read-write)))))
+        )))
 
 ;;--------------------------------  end org  ---------------------------------
 
