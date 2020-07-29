@@ -1,0 +1,22 @@
+#!/bin/bash -f
+
+help() {
+   cat <<EOF
+Usage: mvn-gen <archetypeId>
+
+Generates a new maven project using quickstart with groupId com.how_hard_can_it_be.
+
+EOF
+}
+
+if [ $# -lt 1 ]; then
+   help
+   exit 1
+fi
+
+artifactId=$1
+
+mvn archetype:generate \
+    -DarchetypeGroupId=org.apache.maven.archetypes \
+    -DgroupId=com.how_hard_can_it_be \
+    -DartifactId=$artifactId

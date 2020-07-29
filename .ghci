@@ -15,7 +15,8 @@
 -- :set prompt "\ESC[38;5;39;7mλ %s>\ESC[0m "
 
 -- Plain lighter turquoise background (no reverse video): (or try 117 instead of 81)
-:set prompt "\ESC[48;5;81mλ %s>\ESC[0m "
+-- :set prompt "\ESC[48;5;81mλ %s>\ESC[0m "
+:set prompt "\ESC[48;5;81mλ>\ESC[0m "
 
 -- :set prompt "======== %s> "
 

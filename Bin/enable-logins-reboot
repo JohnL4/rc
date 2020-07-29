@@ -1,0 +1,4 @@
+#!/bin/bash
+
+~john/Bin/enable-kids
+shutdown -r +2

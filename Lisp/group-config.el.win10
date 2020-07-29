@@ -1,6 +1,6 @@
 ;;; Emacs initialization/customization for the development group.
 ;;;
-;;; $Header: v:/J80Lusk/CVSROOT/EmacsLisp/group-config.el,v 1.74 2004/05/05 12:04:36 j80lusk Exp $
+;;; $Header: v:/J80Lusk/CVSROOT/usr/local/emacsLisp/group-config.el,v 1.74 2004/05/05 12:04:36 j80lusk Exp $
 ;;;
 ;;; TO CHANGE COLORS:
 ;;; Simplest thing to do is set variable `preferred-background-mode' in your
@@ -13,14 +13,12 @@
 ;;; colors separately (unfortunately, but hey I can only do so much color
 ;;; hacking while I'm supposed to be working).
 
-(message "Begin group-config.el...")
-
 ;;--------------------------  reconfigurable items  --------------------------
 
 (defvar author-short-name (user-login-name)
   "*The name you wish to use when identifying yourself as the author of a
-document (or piece of code)                                              . This could be your last name, your initials,
-something fanciful or something totally random, whatever makes you happy . ")
+document (or piece of code).  This could be your last name, your initials,
+something fanciful or something totally random, whatever makes you happy.")
 
 (defvar our-default-fill-column 120
   "*The default value for fill-column in new modes, for the group.")
@@ -28,19 +26,12 @@ something fanciful or something totally random, whatever makes you happy . ")
 ;; (setq define-font-lock-org-todo-face nil)
 (setq define-font-lock-org-todo-face t)
 
-(defvar user-fill-mode-preference 1
-  "*User's preference for fill mode:  positive if user wants fill mode turned
-on (in general), non-positive if user does not want fill mode.")
-
 ;;---------------------------------  paths  ----------------------------------
 
-(message "paths")
 (setq load-path
       (fix-filesystem-paths
        (append
         (list
-            "/usr/local/share/emacs/site-lisp/org"
-            "/usr/share/emacs/site-lisp/org"
 ;;;         (concat group-emacs-directory
 ;;;                 "/usr/local/emacs/Add-ons/jde-"
 ;;;                 group-jde-version
@@ -51,18 +42,19 @@ on (in general), non-positive if user does not want fill mode.")
 ;;;                 "/lisp"
 ;;;                 )
 
-;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/common"
-;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/cogre"
-;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/contrib"
-;;;	 "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/ede"
-;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/eieio"
-;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/semantic"
-;;;         "c:/usr/local/emacs/Add-ons/cedet-1.0pre4/speedbar"
-;;;
-;;;         "c:/usr/local/emacs/Add-ons/elib-1.0"
-;;;         "c:/usr/local/emacs/Add-ons/GnuServe"
-;;;         "c:/usr/local/emacs/Add-ons/psgml-1.3.2"
-;;;         "c:/usr/local/emacs/Add-ons/nxml-mode-20031018"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/common"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/cogre"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/contrib"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/ede"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/eieio"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/semantic"
+;;;         "C:/usr/local/emacs/Add-ons/cedet-1.0beta3b/speedbar"
+
+         "c:/usr/local/emacs/Add-ons/elib-1.0"
+         "C:/usr/local/emacs/Add-ons/gnuserv"
+         "c:/usr/local/emacs/Add-ons/psgml-1.2.4"
+         ;;"c:/usr/local/emacs/Add-ons/nxml-mode-20031018"
+         "c:/usr/local/share/emacs/site-lisp/org"
          )
         load-path)
        )
@@ -72,58 +64,178 @@ on (in general), non-positive if user does not want fill mode.")
     (setq Info-default-directory-list nil)
   )
 
-(setq exec-path (append exec-path '("/usr/local/bin")))
-
-;;;(setq Info-default-directory-list
-;;;      (append '(
-;;;                "c:/usr/local/emacs/elisp-manual-21-2.8"
-;;;                "c:/usr/local/emacs/Add-ons/elib-1.0" ;Required by JDE 2.3.3.
-;;;                "c:/usr/local/emacs/Add-ons/psgml-1.3.2"
-;;;                "c:/usr/local/info"
-;;;                )
-;;;	      Info-default-directory-list))
+(setq Info-default-directory-list
+      (append '(
+                ;;"C:/usr/local/emacs/elisp-manual-21-2.8"
+                ;;"C:/usr/local/emacs/Add-ons/elib-1.0" ;Required by JDE 2.3.3.
+                ;;"C:/usr/local/emacs/Add-ons/psgml-1.2.4"
+                "C:/usr/local/share/info"
+                ;;"C:/usr/local/info"
+                )
+	      Info-default-directory-list))
 
 ;;--------------------------------  packages  --------------------------------
 
-(condition-case error-description
+(require 'package)
+;; (add-to-list 'package-archives
+;;              '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
+(package-initialize)
+
+;;---------------------------------  fonts  ----------------------------------
+
+                                        ;See function (set-default-font-w32), defined below.
+					;Or use (insert (prin1-to-string (w32-select-font))) in *scratch* to get an
+					;  actual font name string.
+					;Or maybe: (set-default-font (w32-select-font))
+
+					;  Shift-click mouse-1 will also work.
+
+(if (eq 'w32 window-system)
     (progn
-      (require 'package)
-      (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-			  (not (gnutls-available-p))))
-	     (proto (if no-ssl "http" "https")))
-	;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-	(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-	;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable . melpa.org/packages/")) t)
-	(when (< emacs-major-version 24)
-	  ;; For important compatibility libraries like cl-lib
-	  (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
-;;; (add-to-list 'package-archives
-;;;              '("marmalade"                                                         . "http://marmalade-repo.org/packages/"))
-      (package-initialize)
+      (setq w32-enable-italics t)       ;This must be done before font
+					;  settings!  There is a requirement
+					;  for italics: the italic version of
+					;  a font must be exactly the same
+					;  pixel height as the non-italic
+					;  version.  Of the monospaced fonts,
+					;  "Courier New" seems to the only one
+					;  for which this is true.
+
+      (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
+      
+                                        ;Could also try "Lucida Console-9" or "Courier New-9" or
+                                        ;  "Lucida Sans Typewriter-9"
+
+      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-11-82-96-96-c-*-iso10646-1")
+      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-*-iso10646-1")
+					;8- and 9-point courier:
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-96-96-c-*-iso8859-1")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-96-96-c-*-iso8859-1") ;Previous default, before Consolas.
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
+      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
       )
-  (error 
-   (message "Error initializing ``package'': %s" (error-message-string error-description))
-   )
   )
+
+(if (eq 'x window-system)
+    (progn
+      (setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
+      )
+  )
+
+(if (not (null window-system))
+    (progn
+      (set-default-font my-default-font)
+
+      ;; (make-face-italic 'italic)
+      ;; (make-face-italic 'bold-italic)
+      ;; (make-face-bold 'bold-italic)
+;;;      (make-face-bold 'mode-line)
+
+					;We seem to tickle a nasty emacs bug
+					;  when we put this item in the
+					;  default-frame-alist above, so we
+					;  add it separately here, AFTER
+					;  initial-frame-alist.
+
+      (setq default-frame-alist
+            (append (list (cons 'font my-default-font)) default-frame-alist))
+
+					;List colors available with
+					;  "ESC x list-colors-display".
+      (set-face-inverse-video-p 'mode-line nil)
+      (set-face-background 'mode-line
+                           (if (eq 'dark preferred-background-mode)
+                               "gainsboro"
+                             "saddlebrown"
+                             ))
+      ;; (set-face-background 'mode-line "gainsboro")
+
+                                        ;Mode-Line foreground is same as
+                                        ;  default frame background (see
+                                        ;  below). 
+      (set-face-foreground 'mode-line
+                           (if (eq 'dark preferred-background-mode)
+                               ;; "DarkSlateGray"
+                               "#254745"
+                             "FloralWhite"
+                             ))
+      ;; (set-face-foreground 'mode-line "DarkSlateGray")
+      ;; (set-face-foreground 'mode-line "Linen")	
+
+      (set-face-background 'mode-line-inactive
+                           "#DAAF91")   ;Version of SaddleBrown
+
+                                        ; The "fringe" is the strips to the
+                                        ;   left and right of the text area
+                                        ;   that shows continuation lines.
+      (set-face-background 'fringe
+                           (if (eq 'dark preferred-background-mode)
+                               "DarkSlateGray"
+                             ;; "#254745"
+                             "FloralWhite"
+                             ;; "#E6E1B9"
+                             ;; "#f7f3e9"  ;slightly darker shade of FloralWhite
+                             ;; "#f0ebe2" ;slightly darker shade of FloralWhite
+                             ))
+      (set-face-foreground 'fringe
+                           (if (eq 'dark preferred-background-mode)
+                               ;; "DarkSlateGray"
+                               "gainsboro"
+                             "gray50"
+                             ))
+      )
+  )
+
+;;---------------------------------  cygwin  ---------------------------------
+;;;;
+;;;; cygwin support
+;;;;
+;; Sets your shell to use cygwin's bash, if Emacs finds it's running
+;; under Windows and c:\cygwin exists. Assumes that C:\cygwin\bin is
+;; not already in your Windows Path (it generally should not be).
+;;
+(let* ((cygwin-root "c:")               ;was "c:/cygwin"
+       (cygwin-bin (concat cygwin-root "/bin")))
+  (when (and (eq 'windows-nt system-type)
+  	     (file-readable-p cygwin-root))
+    
+    (setq exec-path (cons cygwin-bin exec-path))
+    (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
+    
+    ;; By default use the Windows HOME.
+    ;; Otherwise, uncomment below to set a HOME
+    ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
+    
+    ;; NT-emacs assumes a Windows shell. Change to baash.
+    (setq shell-file-name "bash")
+    (setenv "SHELL" shell-file-name) 
+    (setq explicit-shell-file-name shell-file-name) 
+    
+    ;; This removes unsightly ^M characters that would otherwise
+    ;; appear in the output of java applications.
+    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+
+;;------------------------------  cygwin ends  -------------------------------
 
 ;;--------------------------------  requires  --------------------------------
 
-(message "requires")
 (require 'generic-util)
-(message "edebug")
-;;; (require 'edebug)			;LISP source-level debugging       . 
-;;; (require 'fix-pathnames)                ;For use in converting MS-style
+(require 'edebug)			;LISP source-level debugging.
+(require 'fix-pathnames)                ;For use in converting MS-style
                                         ;  pathnames to Unix-style, for use
-                                        ;  w/Cygnus utilities like diff(1) . 
+                                        ;  w/Cygnus utilities like diff(1).
                                         ;  Requires local mod to
-                                        ;  ediff-diff                      . el::ediff-exec-process
+                                        ;  ediff-diff.el::ediff-exec-process
                                         ;  to transmogrify incoming list of
-                                        ;  pathname args                   . (Make copy in
+                                        ;  pathname args.  (Make copy in
                                         ;  site-lisp.)
 
-(message "group-jde-mode-hook")
 (defun group-jde-mode-hook ()
-  ;; (message "jde-mode-hook defined in group-config . el section that requires jde.")
+  ;; (message "jde-mode-hook defined in group-config.el section that requires jde.")
   (setq fill-column our-default-fill-column)
   (abbrev-mode 0)
   (setq adaptive-fill-mode nil)
@@ -131,286 +243,220 @@ on (in general), non-positive if user does not want fill mode.")
   (modify-syntax-entry 95 "_")
   )
 
+;;;(condition-case signaled-conditions
+;;;    (progn
+;;;      ;; (setq semantic-load-turn-fewer-useful-features-on t)
+;;;
+;;;      (setq chart-face-color-list
+;;;            '("tomato"                  ;red
+;;;              "dodger blue"             ;blue
+;;;              "gold"                    ;yellow
+;;;              "turquoise"               ;cyan
+;;;              "orchid"                  ;purple
+;;;              "medium sea green"        ;green
+;;;              ))
+;;;      ;; (setq jde-check-version-flag nil)
+;;;      (require 'cedet)
+;;;      (require 'semantic-sb)
+;;;      (require 'jde)			;Java Development Environment
+;;;      (if (not (featurep 'jde))
+;;;          (message "Warning:  `jde' not loaded.")
+;;;        (let*
+;;;            (
+;;;             (jde-extra-filename "jde-extra")
+;;;             (jde-extra-location (locate-library jde-extra-filename))
+;;;             )
+;;;;;           (if (and (string= "2.1.5" jde-version)
+;;;;;                    jde-extra-location)
+;;;          (progn
+;;;              (load-library jde-extra-filename) ;Customizations for Remote
+;;;                                        ;Connect group.
+;;;              (message (concat jde-extra-filename " loaded"))
+;;;              )
+;;;;;             (message (concat "Warning:  " jde-extra-filename " not loaded."))
+;;;;;             )					
+;;;          )
+;;;        (setq jdex-package "")
+;;;        (add-hook 'jde-mode-hook 'group-jde-mode-hook)
+;;;        )
+;;;      )
+;;;  (error (message (format "Error occurred loading jde, error was:\n\t%S"
+;;;                          signaled-conditions))
+;;;         (if (and (eq 'file-error (car signaled-conditions))
+;;;                  (string= "Cannot open load file" (cadr
+;;;                                                    signaled-conditions)))
+;;;             (message (format "load-path: %S" load-path))
+;;;           )
+;;;         )
+;;;  )
 
 (require 'calendar)
-
 (setq calendar-daylight-savings-starts '(calendar-nth-named-day 1 0 4 year))
 (setq calendar-daylight-savings-ends '(calendar-nth-named-day -1 0 10 year))
 
 ;;; (set-time-zone-rule "EDT4")             ;Gruesome hack to make journal entries
-                                        ;work properly                  . (current-time-zone)
-                                        ;still returns incorrect values . 
+                                        ;work properly.  (current-time-zone)
+                                        ;still returns incorrect values.
 
 (set-time-zone-rule nil)                ;During standard time (not summer
                                         ;(daylight)), this works (properly) by
                                         ;querying the system for the requisite
-                                        ;info                            . Under Win32, does not respect
+                                        ;info.  Under Win32, does not respect
                                         ;"TZ" env. var, so you'll have to
-                                        ;hardcode it here if you want it . 
+                                        ;hardcode it here if you want it.
 
-;;;(message "Attempting to load gnuserv...")
-;;;(require 'gnuserv nil t)		;Enables external requests to
-;;;					;  edit files.
-;;;(if (featurep 'gnuserv)
-;;;	(gnuserv-start)
-;;;	(message "No gnuserv")
-;;;)
-(message "skipping server-start")
-;;; (server-start)              ;Runs built-in server in absence of gnuserv.
-;;;(message "Attempting to load gnuserv . .. done.")
+;;; (require 'gnuserv)			;Enables external requests to
+					;  edit files.
+;;; (gnuserv-start)
+(server-start)
 
-(message "comment-indent")
 (require 'comment-indent)
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-(message "defun my-fill-mode")
-(defun my-fill-mode (&optional turn-on-fill-mode)
-  "Common function to be called to turn auto-fill mode on or off from other
-mode hooks                                                     . Has default behavior which is user configurable via
-`user-fill-mode-preference'                                    . If TURN-ON-FILL-MODE is specified, positive
-values turn on auto-fill mode, non-positive values turn it off . "
-  (interactive)
-  
-  (if (null turn-on-fill-mode)
-      (setq turn-on-fill-mode user-fill-mode-preference))
-  (if (and (numberp turn-on-fill-mode)
-           (> turn-on-fill-mode 0))
-      (progn
-        (auto-fill-mode 1)
-        ;; (hscroll-mode 0)
-        (setq truncate-lines nil)
-        (if (interactive-p)
-            (message "auto-fill mode turned ON, hscroll mode OFF"))
-        )
-    (auto-fill-mode 0)
-    ;; (hscroll-mode 1)
-    (setq truncate-lines t)
-    (if (interactive-p)
-        (message "auto-fill mode turned OFF, hscroll mode ON"))
-    )
-  )
+;;------------------------------------------------------  magit  -------------------------------------------------------
 
-;;------------------------------  end requires  ------------------------------
-
-(message "modes")
-
-;;=================================  modes  ==================================
-;;(And other package configs)
-
-(setq default-major-mode 'text-mode)
-
-;;----------------------------------------------------  projectile  ----------------------------------------------------
-
-(with-demoted-errors "Warning loading projectile: %S"
-  (require 'projectile)
-  (if (featurep 'projectile)
-      (progn
-        (projectile-mode +1)
-        (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-        )))
-
-;;-----------------------------------------------------  company  ------------------------------------------------------
-
-(with-demoted-errors "Warning loading company-mode: %S"
-  (require 'company)
-  (if (featurep 'company)
-      (add-hook 'after-init-hook 'global-company-mode)
-    )
-  )
-
-;;---------------------------------  magit  ----------------------------------
-
-(require 'magit)
+;;(with-demoted-errors "Error (ignored): %S"
+;;  (require 'magit)
+;;  )
 (if (featurep 'magit)
     (progn
       (global-set-key (kbd "C-x g") 'magit-status)
       )
   )
 
+;;------------------------------  end requires  ------------------------------
+
+;;=================================  modes  ==================================
+				
+(setq default-major-mode 'text-mode)
+
 ;;----------------------------------------------------  typescript  ----------------------------------------------------
 
 (add-hook 'typescript-mode-hook
           (lambda ()
-            (tide-setup)
-            (flycheck-mode +1)
-            (eldoc-mode +1)
-	    (if (featurep 'company)
-		(progn
-		  (company-mode)
-		  (setq company-tooltip-align-annotations t) ;Align tooltip annotations on right side of tooltip . 
-		  ))
-            (setq fill-column 120)
+;;;            (message "typescript-mode-hook running...")
+;;;            (message (format "\ttypescript-mode-hook: buffer-narrowed-p: %s" (buffer-narrowed-p)))
+;;;            (message (format "\ttypescript-mode-hook: Major mode: %s" major-mode))
+;;;            (message (format "\ttypescript-mode-hook: org-src-mode: %s" org-src-mode))
+;;;            (if (not (symbolp 'buffer-file-name))
+;;;                (message "\ttypescript-mode-hook: buffer-file-name not a symbol")
+;;;              (if (not (functionp 'buffer-file-name))
+;;;                  (message "\ttypescript-mode-hook: buffer-file-name not a function")
+;;;                (if (null (buffer-file-name))
+;;;                    (message "\ttypescript-mode-hook: buffer-file-name is null")
+;;;                  (message (format "\ttypescript-mode-hook: file-name-extension: %s" (downcase (file-name-extension (buffer-file-name)))))
+;;;                )))
+;;;            (message "\ttypescript-mode-hook: checking...")
+            (if (or (buffer-narrowed-p)
+                    (equal 'org-mode major-mode)
+                    org-src-mode
+                    (null (buffer-file-name))
+                    (not (string= "ts" (downcase (file-name-extension (buffer-file-name)))))
+                    )
+                nil; (message "\ttypescript-mode-hook: Skipping tide setup.")
+;;;              (message "\ttypescript-mode-hook: Continuining with tide-setup...")
+              (tide-setup)
+              (flycheck-mode +1)
+              (eldoc-mode +1)
+              (company-mode +1)
+              (local-set-key (kbd "<f2> r") 'tide-rename-symbol)
+              (local-set-key (kbd "S-<f12>") 'tide-references)
+              )
+            (setq fill-column our-default-fill-column)
             (local-set-key "\C-j" 'newline)
-            (local-set-key "\r" 'newline-and-indent) ;Auto-indent                                                . 
+            (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
             (local-set-key "\M-o" 'one-line-section-break)
-            (local-set-key (kbd "<f2> r") 'tide-rename-symbol)
-            (local-set-key (kbd "S-<f12>") 'tide-references)
+;;;            (message "\ttypescript-mode-hook: Typescript mode set up for current buffer")
             ))
 
-;; Note that the following don't work for me when set inside the mode hook.  Don't know why . 
+;; Note that the following don't work for me when set inside the mode hook.  Don't know why.
 (setq typescript-indent-level 3)
 (setq tide-format-options '(:placeOpenBraceOnNewLineForFunctions t :placeOpenBraceOnNewLineForControlBlocks t))
 
-;;--------------------------------  mmm-mode  --------------------------------
+(setq company-tooltip-align-annotations t)
 
-;; From https://wiki . haskell.org/Literate_programming
-(with-demoted-errors "Warning loading mmm-mode: %S"
-  (require 'mmm-mode)
-  (if (featurep 'mmm-mode)
-      (progn
-        (mmm-add-classes
-         '((literate-haskell-bird
-            :submode text-mode
-            :front "^[^>]"
-            :include-front true
-            :back "^>\\|$"
-            )
-           (literate-haskell-latex
-            :submode literate-haskell-mode
-            :front "^\\\\begin{code}"
-            :front-offset (end-of-line 1)
-            :back "^\\\\end{code}"
-            :include-back nil
-            :back-offset (beginning-of-line 0)
-            )))
-        (setq mmm-submode-decoration-level 1)
-        )
-    ))
+;;-------------------------------------------------------  mmm  --------------------------------------------------------
+
+(require 'mmm-mode)
+(when (featurep 'mmm-mode)
+  (setq mmm-global-mode 'maybe)
+  (add-hook 'haskell-mode-hook 'my-mmm-mode)
+  (mmm-add-classes
+   '((literate-haskell-bird
+      :submode indented-text-mode
+      :front "^[^>]"
+      :include-front true
+      :back "^>"
+      ;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
+      )
+     (literate-haskell-latex
+      :submode literate-haskell-mode
+      :front "^\\\\begin{code}"
+      :front-offset (end-of-line 1)
+      :back "^\\\\end{code}"
+      :include-back nil
+      :back-offset (beginning-of-line -1)
+      )))
+  ;;(setq mmm-submode-decoration-level 1)
+  (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
+  )
 
 (defun my-mmm-mode ()
   ;; go into mmm minor mode when class is given
   (make-local-variable 'mmm-global-mode)
   (setq mmm-global-mode 'true))
 
-;; (defun setup-mmm-mode ()
-;;   "Set up mmm-mode.  Called lazily for a mode that requires
-;; it (because the load path isn't set up until the end of .emacs),
-;; but setup for all modes should go in here."
-;;   (interactive)
-;;   (message "setup-mmm-mode")
-;;   (when (not (featurep 'mmm-mode))
-;;     (with-demoted-errors "Warning loading mmm-mode: %S"
-;;       (require 'mmm-mode)
-;;       (when (featurep 'mmm-mode)
-;;         (setq mmm-global-mode 'maybe)
-;;         (mmm-add-classes
-;;          '((literate-haskell-bird
-;;             :submode text-mode
-;;             :front "^[^>]"
-;;             :include-front true
-;;             :back "^>\\|$"
-;;             )
-;;            (literate-haskell-latex
-;;             :submode literate-haskell-mode
-;;             :front "^\\begin{code}"
-;;             ;; :front-offset (end-of-line 1)
-;;             :back "^\\end{code}"
-;;             ;; :include-back nil
-;;             ;; :back-offset (beginning-of-line -1)
-;;             ;; :back-offset (beginning-of-line 1)
-;;             )))
-;;         ;; (setq mmm-save-local-variables (cons '(auto-fill-function buffer) mmm-save-local-variables))
-;;         )))
-;;   )
-;; 
-;; (setup-mmm-mode)
 
 ;;--------------------------------  haskell  ---------------------------------
 
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-(add-hook 'haskell-mode-hook 'my-mmm-mode) ;my-mmm-mode defined above
-;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+(ignore-errors
+;; (require 'haskell-mode)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+
+                                        ;Use only one indentation mode.
+;;(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-;;(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
-;;(add-hook 'literate-haskell-mode-hook (lambda () (setup-mmm-mode))) ; Might need to add this back, somehow
-;;(add-hook 'literate-haskell-mode-hook (lambda () (filladapt-mode 1)))
-;;(add-hook 'literate-haskell-mode-hook (lambda () (mmm-mode 1)))
-
-(add-hook 'haskell-mode-hook
-          (lambda ()
-            (setq fill-column 120)
-            ;; (fix-path-for-local-ghc-mod)
-            ;; (ghc-init)
-            (setq haskell-compile-cabal-build-command "stack build --test")
-            (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
-            )
-          )
-
-(eval-after-load "haskell-mode"
-  '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
-  )
-
-(eval-after-load "haskell-cabal"
-  '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
-
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-
-(if (featurep 'company)
-    (progn
-      (add-to-list 'company-backends 'company-ghc)
-      (custom-set-variables '(company-ghc-show-info t))
-      ))
-
-(defun fix-path-for-local-ghc-mod ()
-  "Fix `exec-path' so that the correct version of ghc-mod will be
-found for the current project                                                                  . "
-  (interactive)
-  (if 't ()                             ;no-op until I figure this out                         . 
-    (progn
-      (call-process "stack path --local-install-root") ;Or some such; then task on "/bin" and add it to exec-path.  First
-                                        ;remove existing dirs from exec-path (that match this) . Blah, this requires
-                                        ;creating a temporary buffer to capture the output, reading the output, etc.
-                                        ;Maybe later.
-      )))
+  (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+  (eval-after-load "haskell-mode"
+    '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
+)
 
 ;;---------------------------------  csharp  ---------------------------------
 
-(condition-case err
-  (progn
-    (require 'csharp-mode)
-    (setq auto-mode-alist
-          (append '(("\\ . cs$" . csharp-mode)) auto-mode-alist))
+(ignore-errors
+(require 'csharp-mode)
+(setq auto-mode-alist
+      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
-;;;(defun my-csharp-mode-fn ()
-;;;      "function that runs when csharp-mode is initialized for a buffer."
-;;; . ..insert your code here...
-;;;      ...most commonly, your custom key bindings ...
-;;;   )
-;;;   (add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
-
-    (if (member 'csharp-mode features)
-        (progn
-          (add-hook 'csharp-mode-hook (lambda ()
-                                        (c-set-style "c#")
-                                        )
-                    )
-          )
+(defun my-csharp-mode-fn ()
+      "function that runs when csharp-mode is initialized for a buffer."
+      (setq fill-column our-default-fill-column)
+      ;; (c-set-style "bsd")               ;Indentation; could also use M-x c-guess to guess indentation
+      (local-set-key "\C-j" 'newline)
+      (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
+      (local-set-key "\M-o" 'section-break)
       )
-    )
-  (error (message (format "Error: %s" (cdr err))))
-  )
+(add-hook  'csharp-mode-hook 'my-csharp-mode-fn t)
+)
 
 ;;----------------------------------  calc  ----------------------------------
 
 (require 'calc-mode)
-
 (if (member 'calc-mode features)
     (progn
-      ;;(setq calc-gnuplot-name "wgnuplot . exe")
+      ;;(setq calc-gnuplot-name "wgnuplot.exe")
       )
   )
 
 ;;-------------------------------  PowerShell  -------------------------------
 
-;;; (autoload 'powershell-mode "powershell-mode" "Microsoft PowerShell mode . " t)
-;;; (setq auto-mode-alist (append '(("\\                                    . ps1$" . powershell-mode))
-;;;                               auto-mode-alist))
-
+(autoload 'powershell-mode "powershell-mode" "Microsoft PowerShell mode." t)
+(setq auto-mode-alist (append '(("\\.ps1$" . powershell-mode))
+                              auto-mode-alist))
 (add-hook 'powershell-mode-hook
           (lambda ()
             (setq fill-column our-default-fill-column)
@@ -422,15 +468,14 @@ found for the current project                                                   
             (setq comment-start "# ")
             (setq comment-start-skip "##*\\s-*")
             (local-set-key "\C-j" 'newline)
-            (local-set-key "\r" 'newline-and-indent) ;Auto-indent . 
+            (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
             (local-set-key "\M-o" 'one-line-section-break)
-            (modify-syntax-entry ?- "_")
             ))
 
-;;---------------------------------  VB . NET  ---------------------------------
+;;---------------------------------  VB.NET  ---------------------------------
 
 (autoload 'vbnet-mode "vbnet-mode" "Visual Basic mode." t)
-(setq auto-mode-alist (append '(("\\ . \\(frm\\|bas\\|cls\\|vb\\)$" .
+(setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|vb\\)$" .
                                  vbnet-mode)) auto-mode-alist))
 (add-hook 'vbnet-mode-hook
           (lambda ()
@@ -454,7 +499,7 @@ found for the current project                                                   
 (if (member 'python-mode features)
     (progn
       (setq auto-mode-alist
-            (append (list '("\\ . py$" . python-mode))
+            (append (list '("\\.py$" . python-mode))
                     auto-mode-alist))
       (add-hook 'python-mode-hook 'group-python-mode-hook)
       )
@@ -462,97 +507,99 @@ found for the current project                                                   
 
 ;;---------------------------------  psgml  ----------------------------------
 
-;; (autoload 'sgml-mode "psgml" "Major mode to edit SGML files . " t)
-;; (autoload 'xml-mode "psgml" "Major mode to edit XML files   . " t)
-;; (setq sgml-catalog-files '("c:/usr/local/lib/sgml/catalog"))
+;;(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t)
+;;(autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+(setq sgml-catalog-files '("c:/usr/local/lib/sgml/catalog"))
 
 ;;----------------------------------  sgml  ----------------------------------
 
-;; (require 'psgml)
-;; 
-;; (setq sgml-markup-faces
-;;       (mapcar (lambda (x)
-;;                 (if (or (equal 'start-tag (car x))
-;;                         (equal 'end-tag (car x)))
-;;                     nil
-;;                   x))
-;;               sgml-markup-faces)
-;;       )
-;; 
-(add-hook 'sgml-mode-hook
-          (lambda ()
-            (progn
-              (setq fill-column 120)
-              (setq comment-start "<!-- ")
-              (setq comment-start-skip "<!-- *")
-              (setq comment-end " -->")
-              (setq comment-multi-line nil)
-              (setq comment-column 32)
-              )
-            )
-          )
-;; (defun group-psgml-mode-hook ()
-;;   (message "Running group-psgml-mode-hook")
-;;   (font-lock-mode 1)
-;;   (setq sgml-set-face t)
-;; ;;;   (if (and (boundp 'uses-javaserver-faces)
-;; ;;;            uses-javaserver-faces
-;; ;;;            )
-;; ;;;       (progn
-;;         (setq comment-start "<%-- ")
-;;         (setq comment-start-skip "<%-- *")
-;;         (setq comment-end " --%>")
-;; ;;;         )
-;; ;;;     (setq comment-start "<!-- ")
-;; ;;;     (setq comment-start-skip "<!-- *")
-;; ;;;     (setq comment-end " -->")
-;; ;;;     )
-;;   (setq comment-multi-line nil)
-;;   (setq comment-column 32)
-;;   (setq indent-line-function 'indent-relative-maybe)
-;;   )
-;; 
-;; (add-hook 'sgml-mode-hook 'group-psgml-mode-hook)
+(ignore-errors
+  (require 'sgml)
+  (require 'psgml)
+
+  (setq sgml-markup-faces
+        (mapcar (lambda (x)
+                  (if (or (equal 'start-tag (car x))
+                          (equal 'end-tag (car x)))
+                      nil
+                    x))
+                sgml-markup-faces)
+        )
+
+  (defun group-psgml-mode-hook ()
+    (message "Running group-psgml-mode-hook")
+    (font-lock-mode 1)
+    (setq sgml-set-face t)
+;;;   (if (and (boundp 'uses-javaserver-faces)
+;;;            uses-javaserver-faces
+;;;            )
+;;;       (progn
+    (setq comment-start "<%-- ")
+    (setq comment-start-skip "<%-- *")
+    (setq comment-end " --%>")
+;;;         )
+;;;     (setq comment-start "<!-- ")
+;;;     (setq comment-start-skip "<!-- *")
+;;;     (setq comment-end " -->")
+;;;     )
+    (setq comment-multi-line nil)
+    (setq comment-column 32)
+    (setq indent-line-function 'indent-relative-maybe)
+    )
+
+  (add-hook 'sgml-mode-hook 'group-psgml-mode-hook)
+  )
 
 ;;----------------------------------  html  ----------------------------------
 
-(setq html-mode-hook
-      '(lambda ()
-         (setq fill-column 120)
-;;;          (auto-fill-mode 1)
-;;;          (show-paren-mode 1)
-;;;          (abbrev-mode 1)
-;;;          (local-set-key "\C-j" 'newline)
-;;;          (local-set-key "\C-m" 'newline-and-indent)
-;;;          (local-set-key "\M-o" 'comment)
-;;;          (local-set-key [C-tab] 'indent-relative)
-;;;          (local-set-key [C-return] 'newline-and-indent-relative)
-         (setq comment-start "<!-- ")
-         (setq comment-start-skip "<!-- *")
-         (setq comment-end " -->")
-         (setq comment-multi-line nil)
-         (setq comment-column 32)
-         )
-      )
+;;; (setq html-mode-hook
+;;;       '(lambda ()
+;;; ;;;          (auto-fill-mode 1)
+;;; ;;;          (show-paren-mode 1)
+;;; ;;;          (abbrev-mode 1)
+;;; ;;;          (local-set-key "\C-j" 'newline)
+;;; ;;;          (local-set-key "\C-m" 'newline-and-indent)
+;;; ;;;          (local-set-key "\M-o" 'comment)
+;;; ;;;          (local-set-key [C-tab] 'indent-relative)
+;;; ;;;          (local-set-key [C-return] 'newline-and-indent-relative)
+;;;          (setq comment-start "<!-- ")
+;;;          (setq comment-start-skip "<!-- *")
+;;;          (setq comment-end " -->")
+;;;          (setq comment-multi-line nil)
+;;;          (setq comment-column 32)
+;;;          )
+;;;       )
+
+
+;;----------------------------------  nxml  ----------------------------------
+
+(setq auto-mode-alist
+      (append (list '("\\.xml$" . nxml-mode))
+              auto-mode-alist))
+
+(add-hook 'nxml-mode-hook
+          (lambda ()
+            (setq comment-start "<!-- ")
+            (setq comment-end " -->")
+            (setq comment-start-skip "\\(<!-- \\s-+\\)")
+            (set-face-foreground 'nxml-attribute-local-name
+                                 (face-foreground 'font-lock-string-face))
+            (set-face-foreground 'nxml-attribute-value
+                                 (cdr (assoc 'foreground-color (frame-parameters))))
+            ))
 
 ;;-------------------------------  multi-mode  -------------------------------
 
-(message "multi-mode")
-
-(ignore-errors
-  (require 'css-mode)
-)
-
 (autoload 'multi-mode
   "multi-mode"
-  "Allowing multiple major modes in a buffer . "
+  "Allowing multiple major modes in a buffer."
   t)
 
 (defun multi-jde-mode ()
   (interactive)
   (jde-mode)
   (c-toggle-auto-state -1)              ;But this still doesn't keep
-                                        ; electric-paren from reindenting . 
+                                        ; electric-paren from reindenting.
   )
 
 (defun jsp-mode () (interactive)
@@ -568,11 +615,11 @@ found for the current project                                                   
       (cond ((and (null html-locn) (null xhtml-locn))
              (setq ml-mode 'sgml-mode))
             ((null html-locn)
-             (setq ml-mode 'xml-mode))
+             (setq ml-mode 'nxml-mode))
             ((null xhtml-locn)
              (setq ml-mode 'sgml-mode))
             ((< xhtml-locn html-locn)
-             (setq ml-mode 'xml-mode))
+             (setq ml-mode 'nxml-mode))
             (t
              (setq ml-mode 'sgml-mode))
             )
@@ -581,30 +628,24 @@ found for the current project                                                   
                 ml-mode
                 `("<%!" jde-mode)
                 `("%>" ,ml-mode)
-                `("<style" css-mode)
-                `("<STYLE" css-mode)
-                `("</style" ,ml-mode)
-                `("</STYLE" ,ml-mode)
-                `("<script" js-mode)
-                `("<SCRIPT" js-mode)
+                `("<script" c++-mode)
+                `("<SCRIPT" c++-mode)
                 `("</script" ,ml-mode)
                 `("</SCRIPT" ,ml-mode)
-;;                `("</\\(script\\|style\\)" ,ml-mode)
-;;                `("</\\(SCRIPT\\|STYLE\\)" ,ml-mode)
                 )
     )
   )
 
 (setq auto-mode-alist
       (append (list '("\\.jsp$" . jsp-mode)
-                    '("\\ . jspf$" . jsp-mode)
-                    '("\\ . jsptemplate$" . jsp-mode)
-                    '("\\ . html?$" . jsp-mode)
-                    '("\\ . sql8$" . sql-mode)
-                    '("\\ . prc$" . sql-mode)
-                    '("\\ . tab$" . sql-mode)
-                    '("\\ . xsl$" . xml-mode)
-                    '("\\ . xsp$" . xml-mode)
+                    '("\\.jspf$" . jsp-mode)
+                    '("\\.jsptemplate$" . jsp-mode)
+                    '("\\.html?$" . jsp-mode)
+                    '("\\.sql8$" . sql-mode)
+                    '("\\.prc$" . sql-mode)
+                    '("\\.tab$" . sql-mode)
+                    '("\\.xsl$" . nxml-mode)
+                    '("\\.xsp$" . nxml-mode)
                     )
               auto-mode-alist))
 
@@ -640,16 +681,15 @@ found for the current project                                                   
 (c-add-style "java-bsd"
              '("bsd"
                ;; (c-comment-continuation-stars . "* ")
-               ;; (c-block-comment-prefix       . "*")
+               ;; (c-block-comment-prefix . "*")
                ))
 
-;; (require 'filladapt)
+(require 'filladapt)
                                         ;Suggested by cc-mode home page, for
                                         ;cc-mode 5.30.9.
 (defun my-c-mode-common-hook ()
-;;;  (c-setup-filladapt)
-;;;  (filladapt-mode 1)
-  )
+  (c-setup-filladapt)
+  (filladapt-mode 1))
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 (defun group-java-mode-hook ()
@@ -667,11 +707,11 @@ found for the current project                                                   
 ;;;  (setq comment-padding nil)
   (setq tempo-interactive t)
   (local-set-key "\C-j" 'newline)
-  (local-set-key "\r" 'newline-and-indent) ;Auto-indent . 
+  (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'section-break)
   (local-set-key "\M-]" 'complete-tag)
   
-					;Change behavior of electric braces . 
+					;Change behavior of electric braces.
 
   (c-toggle-auto-state 1)
   (setq c-hanging-braces-alist
@@ -697,10 +737,10 @@ found for the current project                                                   
   (make-variable-buffer-local 'comment-padding)
   (setq comment-padding nil)
   (local-set-key "\C-j" 'newline)
-  (local-set-key "\r" 'newline-and-indent) ;Auto-indent . 
+  (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'section-break)
 
-					;Change behavior of electric braces . 
+					;Change behavior of electric braces.
 
   (c-toggle-auto-state 1)
   (setq c-hanging-braces-alist
@@ -727,10 +767,10 @@ found for the current project                                                   
   (make-variable-buffer-local 'comment-padding)
   (setq comment-padding nil)
   (local-set-key "\C-j" 'newline)
-  (local-set-key "\r" 'newline-and-indent) ;Auto-indent . 
+  (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'section-break)
 
-					;Change behavior of electric braces . 
+					;Change behavior of electric braces.
 
   (c-toggle-auto-state 1)
   (abbrev-mode 0)
@@ -746,9 +786,9 @@ found for the current project                                                   
 ;;----------------------------------  perl  ----------------------------------
 
 (defun group-perl-mode-hook ()
-                                        ;NOTE: c-indent stuff doesn't work . 
+                                        ;NOTE: c-indent stuff doesn't work.
                                         ;  Use perl-indent variables if you
-                                        ;  want to change anything         . 
+                                        ;  want to change anything.
 
   (make-variable-buffer-local 'comment-multi-line)
   (setq comment-multi-line nil)
@@ -756,7 +796,7 @@ found for the current project                                                   
   (my-fill-mode)			;Auto Word-wrap
   
   (local-set-key "\C-j" 'newline)
-  (local-set-key "\r" 'newline-and-indent) ;Auto-indent . 
+  (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
   (local-set-key "\M-o" 'section-break)
   (local-set-key "\M-]" 'complete-tag)
   )
@@ -765,20 +805,7 @@ found for the current project                                                   
 
 ;;-------------------------------  javascript  -------------------------------
 
-(add-hook 'js-mode-hook
-          (lambda ()
-            (progn
-              (setq fill-column 120)
-              (local-set-key "\C-j" 'newline)
-              (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
-              (local-set-key "\M-o" 'one-line-section-break)
-              )
-            )
-          )
-                                     
-;;; (message "javascript")
-;;; (require 'generic-x)
-;;; (require 'js)
+(require 'generic-x)
 ;;; (add-to-list 'generic-extras-enable-list 'javascript-generic-mode)
 
 ;;; (autoload 'javascript-mode
@@ -786,15 +813,15 @@ found for the current project                                                   
 ;;; ;;;   "javascript-cust"
 ;;;   "JavaScript mode"
 ;;;   t nil)
-
+;;; 
 ;;; (setq auto-mode-alist
-;;;       (append '(("\\ . js$" . javascript-mode))
+;;;       (append '(("\\.js$" . javascript-mode))
 ;;;               auto-mode-alist))
 
-;;; (setq auto-mode-alist
-;;;       (append (list '("\\ . js$" . c++-mode)
-;;;                     )
-;;;               auto-mode-alist))
+(setq auto-mode-alist
+      (append (list '("\\.js$" . c++-mode)
+                    )
+              auto-mode-alist))
 
 ;;----------------------------------  text  ----------------------------------
 
@@ -803,8 +830,8 @@ found for the current project                                                   
   (visual-line-mode)
   (column-number-mode 1)
   (local-set-key "\C-j" 'newline)
-  (local-set-key "\C-m" 'newline-and-indent) ;Auto-indent . 
-  (local-set-key "\M-o" 'one-line-section-break)
+  (local-set-key "\C-m" 'newline-and-indent) ;Auto-indent.
+  ;;(local-set-key "\M-o" 'one-line-section-break)
   (make-variable-buffer-local 'comment-start)
   (make-variable-buffer-local 'comment-end)
   (make-variable-buffer-local 'comment-start-skip)
@@ -851,7 +878,6 @@ found for the current project                                                   
 
 ;;---------------------------------  ediff  ----------------------------------
 
-(message "ediff")
 (setq ediff-load-hook
       (function
        (lambda () 
@@ -866,26 +892,30 @@ found for the current project                                                   
 ;;;	 (modify-face ediff-even-diff-face-C "black" nil nil t nil nil)
 
 	 (set-face-foreground ediff-current-diff-face-A "black")
-	 (set-face-background ediff-current-diff-face-A "#ffd6d6") ;#ffd6d6 -- pink-ish
-
-	 (set-face-foreground ediff-current-diff-face-B "black")
-         (set-face-background ediff-current-diff-face-B "#befbbe") ;#befbbe -- green-ish
-
+	 ;; (set-face-background ediff-current-diff-face-A "PaleGreen")
+         (set-face-background ediff-current-diff-face-A "#befbbe")
 	 (set-face-foreground ediff-current-diff-face-C "black")
-	 (set-face-background ediff-current-diff-face-C "#ffffbb") ;#ffffbb -- yellow-ish
+	 (set-face-background ediff-current-diff-face-C "#ffd6d6")
+	     
+	     
+	 (set-face-foreground ediff-fine-diff-face-A "black")
+	 (set-face-background ediff-fine-diff-face-A "#8be48b")
+	 ;;(set-face-background ediff-fine-diff-face-A "LimeGreen")
+	     
+	 (set-face-foreground ediff-current-diff-face-B "black")
+	 ;;(set-face-background ediff-current-diff-face-B "#ffff9e")
+	 (set-face-background ediff-current-diff-face-B "#ffffbb")
+	 ;;(set-face-background ediff-current-diff-face-B "yellow")
+	     
+	 (set-face-foreground ediff-fine-diff-face-B "black")
+	 (set-face-background ediff-fine-diff-face-B "#e0e08a")
+	     
+	 (set-face-foreground ediff-fine-diff-face-C "black")
+	 (set-face-background ediff-fine-diff-face-C "#e8b5b5")
 	     
          (set-face-foreground ediff-current-diff-face-Ancestor "black")
          (set-face-background ediff-current-diff-face-Ancestor "SkyBlue1")
 
-	 (set-face-foreground ediff-fine-diff-face-A "black")
-	 (set-face-background ediff-fine-diff-face-A "#e8b5b5") ;#e8b5b5 -- pink-ish (darker)
-	     
-	 (set-face-foreground ediff-fine-diff-face-B "black")
-	 (set-face-background ediff-fine-diff-face-B "#8be48b") ;#8be48b -- green-ish (darker)
-	     
-	 (set-face-foreground ediff-fine-diff-face-C "black")
-	 (set-face-background ediff-fine-diff-face-C "#e0e08a") ;#e0e08a - yellow-ish (darker)
-	     
 ;;;	 (setq ediff-combination-pattern
 ;;;	       '("<<<<<<<<"
 ;;;		 "========"
@@ -894,42 +924,44 @@ found for the current project                                                   
 ;;;	       )
 	     
 	 ;; (setq ediff-narrow-control-frame-leftward-shift 65)
-	 ;; 
-         (setq ediff-narrow-control-frame-leftward-shift 0)
-	 (setq ediff-wide-control-frame-rightward-shift 0)
-	 (setq ediff-control-frame-upward-shift -900)
-	     
-	 ;; 
-	 (setq ediff-diff-options "-dw")
+	 ;; (setq ediff-narrow-control-frame-leftward-shift 134)
 
-	 ;;(
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
-	 ;; 
+         ;; Comment out because the home two-monitor setup (on the Allscripts work laptop) doesn't work well.
+;;;         (setq ediff-narrow-control-frame-leftward-shift 0)
+;;;	 (setq ediff-wide-control-frame-rightward-shift 0)
+;;;	 (setq ediff-control-frame-upward-shift -1100)
+	     
+         (setenv "CYGWIN" "nodosfilewarning")
+	 ;; (setq ediff-diff-program "c:/cygwin64/bin/diff")
+	 ;; (setq ediff-diff3-program "c:/cygwin64/bin/diff3")
+         (if (boundp 'ediff-diff-options)
+             (if (string-match "-dw\\b" ediff-diff-options)
+                 nil
+               (setq ediff-diff-options (concat ediff-diff-options " -dw")))
+           (setq ediff-diff-options "-dw")
+           )
+
+	 ;;(setq ediff-control-frame-parameters
+	 ;;   '(
+	 ;;    (name . "Ediff")
+	 ;;    (minibuffer)
+	 ;;    (vertical-scroll-bars)
+	 ;;    (scrollbar-width . 0)
+	 ;;    (menu-bar-lines . 0)
+	 ;;    (auto-lower)
+	 ;;    (auto-raise)
+	 ;;    (top . 0)
+	 ;;    (left . 0))
+	 ;;   )
 	 )
        )
       )
 
-;;--------------------------------  org-mode  --------------------------------
-
-;; (condition-case err
-;;   (progn
-;; (require 'org-install)
-;; (require 'org))
-;; (error (message (format "Error: %s" (cdr err))))
-;; )
+;;----------------------------------  org-mode  -----------------------------------
 
 (setq org-list-allow-alphabetical t)     ;Must be set before loading org.
 
-(with-demoted-errors "WARNING: %S"
+(with-demoted-errors "ERROR: %S"
   (require 'org-install)
   (require 'org)
   (require 'ox-hugo)
@@ -942,20 +974,20 @@ found for the current project                                                   
     (progn
       ;; The following lines are always needed.  Choose your own keys.
       (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+      ;; (add-to-list 'auto-mode-alist '("\\.org\\.txt$" . org-mode))
       (global-set-key "\C-cl" 'org-store-link)
-      (global-set-key "\C-cc" 'org-capture)
       (global-set-key "\C-ca" 'org-agenda)
       (global-set-key "\C-cb" 'org-iswitchb)
 
       (setq org-agenda-files "~/org/org-agendas.txt")
-      (setq org-export-headline-levels 12) ;I think this is for pandoc (https://pandoc.org)
-      (setq org-tags-column -120)          ;Flush right
+
+      (setq org-export-headline-levels 12)
 
       ;;-----------------------------------------------  export plugins  -----------------------------------------------
 
       (if (member 'ox-reveal features)
           (progn
-            ;; (setq org-reveal-root "file:///c:/usr/local/Reveal")
+            (setq org-reveal-root "file:///c:/usr/local/Reveal")
             )
         )
       (if (member 'ox-twbs features)
@@ -963,20 +995,7 @@ found for the current project                                                   
             )
         )
 
-      ;;---------------------------------------------------  babel  ----------------------------------------------------
-
-      (setq org-plantuml-jar-path (expand-file-name "/usr/local/lib/plantuml.jar"))
-      (setq plantuml-jar-path org-plantuml-jar-path)
-      (setq plantuml-default-exec-mode 'jar) ;As opposed to 'server, the default.  See
-                                 ;https://medium.com/@shibucite/emacs-and-plantuml-for-uml-diagrams-academic-tools-6c34bc07fd2
-      (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-      (setq org-babel-load-languages (cons '(plantuml . t) org-babel-load-languages))
-      (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
-      (defun my-org-confirm-babel-evaluate (lang body)
-            (not (string= lang "plantuml")))  ;don't ask for plantuml
-      (setq org-confirm-babel-evaluate #'my-org-confirm-babel-evaluate)
-
-      ;;---------------------------------------------------  hooks  ----------------------------------------------------
+      ;;---------------------------------------------  end export plugins  ---------------------------------------------
       
       (add-hook 'org-mode-hook 'turn-on-font-lock)  ; org-mode buffers only
       (add-hook 'org-mode-hook
@@ -984,40 +1003,46 @@ found for the current project                                                   
                   (auto-fill-mode 1)
                   (transient-mark-mode 1)
                   (abbrev-mode 1)
-                  (setq comment-start "# ")
-                  (setq comment-start-skip "#\\s-*")
+                  (setq comment-start "#+ ")
+                  (setq comment-start-skip "#\\++\\s-*")
                   (setq comment-column 32)
                   ))
-      ;; The problem with the postamble hook below is that we wind up setting the same postamble for all files, when we
-      ;; really should only be setting a postamble for certain files.  Ideally, org-html-postamble-format would be a
-      ;; function, but it's not.
-      ;;(add-hook 'org-mode-hook 'set-org-html-postamble-format-from-file) ;defun below
-
-      ;;----------------------------------------------  keywords, faces  -----------------------------------------------
-      
-      (setq org-log-done 'note)                     ;time or note -- note to be prompted for at closing note.
-
+      (setq org-log-done 'note)                     ;time or note -- note to
+                                                    ;    be prompted for a closing note.
       (setq org-todo-keywords
-            '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "|" "DONE(d)" )
-              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "RESEARCH-HOLD(w@)" "|" "RESEARCH-DONE(u)" )
-              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "CODE-HOLD(p@)" "|" "CODE-DONE(f)" )
+            '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "HOLD(h@)")
+              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "|" "RESEARCH-DONE(u)" "RESEARCH-HOLD(w@)")
+              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "|" "CODE-DONE(f)" "CODE-HOLD(p@)")
               ))
       (defface org-in-progress
         (org-compatible-face nil
-          '((((class color) (min-colors 16) (background light))
-             ;;(:foreground "DarkOrange3" :bold t :background "White"))
-             (:foreground "magenta2" :bold t :background "White"))
-            (((class color) (min-colors 16) (background dark))
-             ;;(:foreground "DarkOrange2" :bold t :background "Black"))
-             (:foreground "magenta2" :bold t :background "Black"))
-            (((class color) (min-colors 8)  (background light))
-             (:foreground "magenta"  :bold t :background "White"))
-            (((class color) (min-colors 8)  (background dark))
-             (:foreground "magenta"  :bold t :background "Black"))
+          '(
+            ;;(((class color) (min-colors 16) (background light)) (:foreground "DarkOrange3" :bold t))
+            ;;(((class color) (min-colors 16) (background light)) (:foreground "DarkOrchid3" :bold t))
+            ;;(((class color) (min-colors 16) (background dark))  (:foreground "DarkOrange2" :bold t))
+            (((class color) (min-colors 16) (background light)) (:foreground "magenta" :bold t))
+            (((class color) (min-colors 16) (background dark))  (:foreground "DarkOrchid1" :bold t))
+            (((class color) (min-colors 8)  (background light)) (:foreground "magenta"  :bold t))
+            (((class color) (min-colors 8)  (background dark))  (:foreground "magenta"  :bold t))
             (t (:inverse-video t :bold t))))
         "Face for IN-PROGRESS keywords."
         :group 'org-faces)
+      (defface org-hold
+        (org-compatible-face nil
+          '(
+            (((class color) (min-colors 16) (background light)) (:foreground "RosyBrown4" :bold t))
+            (((class color) (min-colors 16) (background dark))  (:foreground "IndianRed" :bold t))
+            (((class color) (min-colors 8)  (background light)) (:foreground "DarkRed"  :bold t))
+            (((class color) (min-colors 8)  (background dark))  (:foreground "Red"  :bold t))
+            (t (:inverse-video t :bold t))))
+        "Face for HOLD keywords."
+        :group 'org-faces
+        )
       (set-face-foreground 'org-table "Blue4")
+      (set-face-foreground 'org-verbatim "Blue4")
+      (if (boundp 'my-default-font)
+          (set-face-font 'org-column my-default-font)
+      )
 ;;;      (defface org-table
 ;;;        (org-compatible-face nil
 ;;;          '((((class color) (min-colors 16) (background light)) (:foreground "Blue4" :bold nil))
@@ -1036,10 +1061,20 @@ found for the current project                                                   
               ("CODE-HOLD" . org-hold)
               ))
 
-      ;;-----------------------------------------------  org html style  -----------------------------------------------
-      
-      ;;(setq org-export-html-style-include-default nil) ;Turn off hardcoded default in org-mode in favor of style
-                                                       ;declared below.
+      ;; The following seems to muck up org-mode's headline fontification:
+      ;; The words get fontified, but then, after them, the rest of the
+      ;; headline's fontification is apparently completely missing (although
+      ;; the "fontified" property on that text is t).
+;;;      (font-lock-add-keywords 'org-mode
+;;;                        (list
+;;;                         (cons "\\bTODO\\b:?" '(0 'org-todo keep))
+;;;                         (cons "\\bDONE\\b:?" '(0 'org-done keep))
+;;;                         ))
+
+
+      (setq org-export-html-style-include-default nil) ;Turn off hardcoded
+                                        ;default in org-mode in favor of style
+                                        ;declared below.
 
       ;;For TODO colors, see http://colorschemedesigner.com/#4W51Ew0--w0w0
       ;;
@@ -1131,34 +1166,6 @@ found for the current project                                                   
 ;;; ")
       ))
 
-(defun set-org-html-postamble-format-from-file ()
-  "Sets `org-html-postamble-format` from file `org-html-postamble-format.html', beginning search in current
-directory and proceeding to parent directories until it's found or root is reached."
-  (interactive)
-  (let* ((postamble-filename "org-html-postamble-format.html")
-         (found-dir)
-         )
-    (if (buffer-file-name)
-        (progn
-          (setq found-dir (locate-dominating-file (buffer-file-name) postamble-filename))
-          (if found-dir
-              (setq org-html-postamble-format (get-string-from-file (concat found-dir postamble-filename)))
-            (message (format "Unable to find %S starting at %S" postamble-filename (buffer-file-name)))
-            ))
-      ;;else...
-      (message (format "Current buffer (%S) has no associated file." (buffer-name)))
-      )
-    )
-  )
-
-;; Courtesy of http://ergoemacs.org/emacs/elisp_read_file_content.html
-(defun get-string-from-file (file-path)
-  "Return `file-path' content as a string."
-  (interactive)
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (buffer-string)))
-
 (defun escape-code (&optional underscores-only opener closer)
   "Surrounds code tokens (alphanumerics and underscores) with extra strings
   that delimit them as code.  If `underscores-only' is true, only replace
@@ -1189,166 +1196,6 @@ directory and proceeding to parent directories until it's found or root is reach
 ;;-----------------------------------------------------  org-mode ends  -----------------------------------------------------
 
 ;;===============================  end modes  ================================
-
-;;---------------------------------  cygwin  ---------------------------------
-;;;;
-;;;; cygwin support
-;;;;
-;; Sets your shell to use cygwin's bash, if Emacs finds it's running
-;; under Windows and c:\cygwin exists. Assumes that C:\cygwin\bin is
-;; not already in your Windows Path (it generally should not be).
-;;
-(let* ((cygwin-root "c:")               ;was "c:/cygwin"
-       (cygwin-bin (concat cygwin-root "/bin")))
-  (when (and (eq 'windows-nt system-type)
-  	     (file-readable-p cygwin-root))
-    
-    (setq exec-path (cons cygwin-bin exec-path))
-    (setenv "CYGWIN" "nodosfilewarning")
-    (setenv "PATH" (concat cygwin-bin ";" (getenv "PATH")))
-    
-    ;; By default use the Windows HOME.
-    ;; Otherwise, uncomment below to set a HOME
-    ;;      (setenv "HOME" (concat cygwin-root "/home/eric"))
-    
-    ;; NT-emacs assumes a Windows shell. Change to bash.
-    (setq shell-file-name "bash")
-    (setenv "SHELL" shell-file-name) 
-    (setq explicit-shell-file-name shell-file-name) 
-    
-    ;; This removes unsightly ^M characters that would otherwise
-    ;; appear in the output of java applications.
-    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
-
-;;------------------------------  cygwin ends  -------------------------------
-
-;;---------------------------------  fonts  ----------------------------------
-
-					;Use (insert (prin1-to-string
-					;  (w32-select-font))) in *scratch* to
-					;  get an actual font name string.
-
-					;  Shift-click mouse-1 will also work.
-
-(message (format "window-system: %s" window-system))
-
-(if (eq 'w32 window-system)
-    (progn
-      (setq w32-enable-italics t)       ;This must be done before font
-					;  settings!  There is a requirement
-					;  for italics: the italic version of
-					;  a font must be exactly the same
-					;  pixel height as the non-italic
-					;  version.  Of the monospaced fonts,
-					;  "Courier New" seems to the only one
-					;  for which this is true.
-
-      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-11-82-96-96-c-*-iso10646-1")
-      ;; (setq my-default-font "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-*-iso10646-1")
-					;8- and 9-point courier:
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-96-96-c-*-iso8859-1")
-      (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-96-96-c-*-iso8859-1")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-11-82-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-12-90-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-13-78-*-*-c-*-*-ansi-")
-      ;; (setq my-default-font "-*-Courier New-normal-r-*-*-15-90-*-*-c-*-*-ansi-")
-      (setq my-default-font "Consolas-9")
-      )
-  )
-
-(if (eq 'x window-system)
-    (progn
-      ;;(setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
-      (setq my-default-font "Courier 10 Pitch-9") ;name-size (Linux Mint 17 (Ubuntu))
-      )
-  )
-
-;; MacOS/OSX
-(if (and (eq 'ns window-system)
-	 (eq 'darwin system-type))
-    ;; Mac OSX
-    (progn
-      ;; (setq my-default-font "Monaco")
-      (setq my-default-font "Inconsolata-14")
-      )
-  )
-
-(if (not (fboundp 'set-default-font))
-    (defun set-default-font (font-name)
-      "Replacement for old set-default-font, which seems to have disappeared."
-      (interactive)
-      (add-to-list 'default-frame-alist
-                   '(font . font-name))
-      )
-  )
-
-(if (boundp 'my-default-font)		; (not (null window-system))
-    (progn
-      (message "Setting default font")
-      (set-default-font my-default-font)
-
-      ;; (make-face-italic 'italic)
-      ;; (make-face-italic 'bold-italic)
-      ;; (make-face-bold 'bold-italic)
-;;;      (make-face-bold 'mode-line)
-      )
-  )
-
-(if (not (null window-system))
-    (progn
-
-					;We seem to tickle a nasty emacs bug
-					;  when we put this item in the
-					;  default-frame-alist above, so we
-					;  add it separately here, AFTER
-					;  initial-frame-alist.
-
-      (setq default-frame-alist
-            (append (list (cons 'font my-default-font)) default-frame-alist))
-
-					;List colors available with
-					;  "ESC x list-colors-display".
-
-      (set-face-background 'mode-line
-                           (if (eq 'dark preferred-background-mode)
-                               "gainsboro"
-                             "saddlebrown"
-                             ))
-      ;; (set-face-background 'mode-line "gainsboro")
-
-                                        ;mode-line foreground is same as
-                                        ;  default frame background (see
-                                        ;  below). 
-      (set-face-foreground 'mode-line
-                           (if (eq 'dark preferred-background-mode)
-                               ;; "DarkSlateGray"
-                               "#254745"
-                             "FloralWhite"
-                             ))
-      ;; (set-face-foreground 'mode-line "DarkSlateGray")
-      ;; (set-face-foreground 'mode-line "Linen")	
-
-                                        ; The "fringe" is the strips to the
-                                        ;   left and right of the text area
-                                        ;   that shows continuation lines.
-      (set-face-background 'fringe
-                           (if (eq 'dark preferred-background-mode)
-                               ;; "DarkSlateGray"
-                               "#254745"
-                             ;; "FloralWhite"
-                             "#f7f3e9"  ;slightly darker shade of FloralWhite
-                             ;; "#f0ebe2" ;slightly darker shade of FloralWhite
-                             ))
-      (set-face-foreground 'fringe
-                           (if (eq 'dark preferred-background-mode)
-                               ;; "DarkSlateGray"
-                               "gainsboro"
-                             "gray50"
-                             ))
-      )
-  )
 
 ;;-------------------------------  font-lock  --------------------------------
 
@@ -1581,12 +1428,9 @@ language.")
   "*Extra keywords for font-lock mode."
   )
 
-(require 'jde-java-font-lock nil t)     ;Slurp in face definitions so we can
-                                        ;modify some of 'em.
-(if (featurep 'jde-java-font-lock)
-	(set-face-foreground 'jde-java-font-lock-number-face "OrangeRed")
-	(message "No jde-java-font-lock")
-)
+;;;(require 'jde-java-font-lock)           ;Slurp in face definitions so we can
+;;;                                        ;modify some of 'em.
+;;;(set-face-foreground 'jde-java-font-lock-number-face "OrangeRed")
 
 (require 'non-greedy-search)
 
@@ -1672,14 +1516,14 @@ language.")
 (font-lock-add-keywords 'cc-mode group-extra-keyword-list)
 (font-lock-add-keywords 'c++-mode group-extra-keyword-list)
 (font-lock-add-keywords 'java-mode group-extra-keyword-list)
-(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
+;;;(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
 
 (font-lock-add-keywords 'java-mode group-java-other-lang-keywords)
 (font-lock-add-keywords 'html-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'sgml-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'xml-mode group-html-other-lang-keywords)
 (font-lock-add-keywords 'nxml-mode group-html-other-lang-keywords)
-(font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
+;;;(font-lock-add-keywords 'jde-mode group-java-other-lang-keywords t) ;append
 
 (font-lock-add-keywords 'lisp-mode
                         (list
@@ -1750,13 +1594,9 @@ language.")
                      )
 		     )
 
-(condition-case err
 (setq default-frame-alist
       (append 
-       (x-parse-geometry                ;Slightly in from top left.
-        "80x48" 
-        ;; "80x48+64+-1" 
-        )
+       (x-parse-geometry "80x48+64+-1") ;Slightly in from top left.
 
 					;List colors available with
 					;  "ESC x list-colors-display".
@@ -1790,22 +1630,14 @@ language.")
        ;; (list (cons 'font my-default-font))
        default-frame-alist)
       )
-(error (message (format "Error: %s" (cdr err))))
-)
 
-(condition-case err
 (setq initial-frame-alist
-      (append (x-parse-geometry         ;Top right.
-               "80x48"              
-               ;;"80x48--4+-1"
-               )                        
+      (append (x-parse-geometry "80x48--4+-1") ;Top right.
               nil                       ;In case the geometry above gets
                                         ;  commented out.
 	      initial-frame-alist
 	      )
       )
-(error (message (format "Error: %s" (cdr err))))
-)
 
 					;We seem to tickle a nasty emacs bug
 					;  when we put this item in the
@@ -1877,12 +1709,26 @@ language.")
 ;; 
 (if (not (member 'align features))
     (message "Warning:  feature `align' not loaded.")
-  (setq align-c++-modes (cons 'jde-mode align-c++-modes))
-
-                                        ; These func-call align rules require
-                                        ; that the `exc-c-func-params'
-                                        ; exclusion rule NOT be in play.  I
-                                        ; had to comment it out of align.el.
+;;   (setq align-c++-modes (cons 'jde-mode align-c++-modes))
+;; 
+;;                                         ; These func-call align rules require
+;;                                         ; that the `exc-c-func-params'
+;;                                         ; exclusion rule NOT be in play.  I
+;;                                         ; had to comment it out of align.el.
+;;   (setq align-exclude-rules-list
+;;         (append
+;;          (list
+;;           '(sql
+;;             (regexp . "\\(^\\s-*\\)")
+;;             (modes . '(sql-mode))
+;;             )
+;;           '(sql-comment
+;;             (regexp . "\\(\\s-*--.*\\)")
+;;             (modes . '(sql-mode))
+;;             )
+;;           )
+;;          align-exclude-rules-list))
+;;   
   (setq align-rules-list
         (append
          (list
@@ -1893,11 +1739,45 @@ language.")
             (tab-stop . t)
             (modes . '(sql-mode))
             )
+;;           `(wiki-table
+;;             (regexp . "|?  *[^| ]*\\(  *\\)|")
+;;             (valid . (lambda ()
+;;                        (save-excursion
+;;                          (beginning-of-line)
+;;                          (looking-at "^|.*|$")
+;;                          )))
+;;             (repeat . t)
+;;             (modes . '(text-mode))
+;;             )
+;;           `(func-call-first-parm
+;;             (regexp . "\\(\\(\\sw\\|\\s_\\)+\\)\\s-*(\\(\\s-*\\)\\(\\(\\sw\\|\\s_\\)+\\).*)")
+;;             (group  . 3)
+;;             ;; (repeat . t)
+;;             (modes  . align-c++-modes)
+;; ;;;                (valid  . (lambda ()
+;; ;;;                            (message (debug-align
+;; ;;;                                      "align rule `func-call-first-parm' matched"
+;; ;;;                                      '(0 1 3 4)))
+;; ;;;                            t
+;; ;;;                            ))
+;;             )
+;; ;;;          `(func-call-other-parms
+;; ;;;            (regexp . "\\(\\sw\\|\\s_\\)+\\s-*(.*,\\(\\s-*\\).*)")
+;; ;;;            (group  . 2)
+;; ;;;            (repeat . t)
+;; ;;;            (modes  . align-c++-modes)
+;; ;;;                (valid  . (lambda ()
+;; ;;;                            (message (debug-align
+;; ;;;                                      "align rule `func-call-other-parms' matched"
+;; ;;;                                      '(0 1 2)))
+;; ;;;                            t
+;; ;;;                            ))
+;; ;;;            )
           )
          align-rules-list)
         )
   
-  (setq align-to-tab-stop nil)
+;;   (setq align-to-tab-stop nil)
   )
 
 ;;-------------------------------  end align  --------------------------------
@@ -1920,12 +1800,7 @@ language.")
 ;;; (load-library "vc-hooks")
 ;;; (load-library "vc")
 
-;;-----------------------  miscellaneous shell config  -----------------------
-
-(if (member "/usr/local/bin" (split-string (getenv "PATH") ":"))
-    nil
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-  )
+;;-------------------------  end Visual SourceSafe  --------------------------
 
 ;; ;; ---------------------------  shelex  ---------------------------
 ;; ;; (for browse-url, among others)
@@ -1950,9 +1825,9 @@ language.")
 side of the display."
   (set-frame-width (selected-frame) width)
   (set-frame-position (selected-frame)
-                      (- (x-display-pixel-width)
+                      (- (cadr (cdr (cdr (car (car (display-monitor-attributes-list)))))) ; was: (x-display-pixel-width)
                          (* width (frame-char-width))
-                         40             ;scroll bar, window border fudge
+                         45             ;scroll bar, window border fudge
                                         ;  factor
                          )
                       0)
@@ -1975,6 +1850,28 @@ accidentally repositioned it, or whatever."
 
 ;;----------------------------  end frame sizing  ----------------------------
 
+;;----------------------------------  wiki  ----------------------------------
+
+(defun wiki-comment ()
+  "Insert an empty comment into a wiki page at point."
+  (interactive)
+  (if (not (bolp))
+      (forward-line))
+  (beginning-of-line)
+  (open-line 3)
+  (insert-string "<blockquote><em>")
+  (forward-line 2)
+  (insert-string "</em></blockquote>")
+  (forward-line -1)                     ;backwards :)
+  )
+
+(defun wc ()
+  (interactive)
+  (wiki-comment)
+  )
+
+;;--------------------------------  end wiki  --------------------------------
+
 ;; ----------------------------  misc  ----------------------------
 
 (setq auto-mode-alist
@@ -1986,30 +1883,15 @@ accidentally repositioned it, or whatever."
 
 (autoload 'hl7 "hl7" "Functions for working with HL7 messages" t)
 
-(autoload 'hls "lusk-highlight" "Highlight a regexp" t)
-(autoload 'hlc "lusk-highlight" "Clear highlighting set with `hls'" t)
+(autoload 'hls "highlight" "Highlight a regexp" t)
+(autoload 'hlc "highlight" "Clear highlighting set with `hls'" t)
 (global-set-key [f3] 'hls)
 (global-set-key [S-f3] 'hlc)
 
 (setq archive-zip-use-pkzip nil)
 ;;; (mouse-avoidance-mode 'banish)
 
-(defun set-default-font-w32 ()
-  "*Allow the user to set the default font interactively, by picking from a
-Win32 font menu.  NOTE:  There is a requirement for italics: the italic
-version of a font must be exactly the same pixel height as the non-italic
-version.  This is true for `Courier New'."
-  (interactive)
-  (let ((font (w32-select-font))
-        )
-    (if font
-        (progn
-          (message (format "Setting font to %s" (prin1-to-string font)))
-          (set-default-font font)
-          )
-      )
-    )
-  )
+                                        ;Coding system shortcuts
 
 (defun canopy-copyright-statement (date)
   "Insert the Canopy Copyright statement using the year of the given date."
@@ -2019,8 +1901,6 @@ version.  This is true for `Courier New'."
    (format-time-string "%Y" date)
    " A4 Health Systems, Inc. TM All rights reserved."
    ))
-
-                                        ;Coding system shortcuts
 
 (defun coding-system-argument (coding-system)
   "Execute an I/O command using the latin-1-dos coding system."
@@ -2039,12 +1919,6 @@ version.  This is true for `Courier New'."
   (coding-system-argument 'raw-text-dos)
   )
 
-(defun unix ()
-  "Alias for `coding-system-argument'"
-  (interactive)
-  (coding-system-argument 'latin-1-unix)
-  )
-
 (defun insert-timestamp ()
   "Insert current date/time at point"
   (interactive)
@@ -2055,6 +1929,34 @@ version.  This is true for `Courier New'."
   "Alias for `insert-timestamp'"
   (interactive)
   (insert-timestamp)
+  )
+
+(defun set-default-font-w32 ()
+  "*Allow the user to set the default font interactively, by picking from a
+Win32 font menu.  NOTE:  There is a requirement for italics: the italic
+version of a font must be exactly the same pixel height as the non-italic
+version.  This is true for `Courier New'."
+  (interactive)
+  (let ((font (w32-select-font))
+        )
+    (if font
+        (progn
+          (let ((current-font (if (boundp 'default-frame-alist)
+                                (cdr (assq 'font default-frame-alist))
+                              (if (boundp 'my-default-font) my-default-font
+                                nil))))
+               (message (format "Changing frame default font from %s to %s"
+                                (prin1-to-string current-font) (prin1-to-string font)))
+               (set-default-font font)
+               ))
+      )
+    )
+  )
+
+(defun unix ()
+  "Alias for `coding-system-argument'"
+  (interactive)
+  (coding-system-argument 'latin-1-unix)
   )
 
 					;Some key remappings
@@ -2177,5 +2079,3 @@ version.  This is true for `Courier New'."
 
 ;;; Local Variables:
 ;;; End:
-
-

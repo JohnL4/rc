@@ -57,7 +57,9 @@ fi
 #     echo -ne "\\e]4;4;#4083FF\\a" # "blue" -- make it lighter so it's more visible on black background.
 # fi
 
-export PATH="${PATH}:~/.local/bin:/usr/local/bin:/usr/local/sbin:~/Work/Tools/Bin:~/Bin"
+# AWS CLI (among others?) wants ~/Library/Python/3.7/bin
+
+export PATH="${PATH}:~/Library/Python/3.7/bin:~/.local/bin:/usr/local/bin:/usr/local/sbin:~/Work/Tools/Bin:~/Bin"
 export PERLLIB="/usr/local/lib/perl"
 export PRINTER='\\rprint1\NETprint37 (PS)'
 export TIMEFORMAT="real %lR	user %lU	sys %lS	cpu %P%%"
@@ -319,13 +321,13 @@ jtags()		{
                      /Emacs/emacs-23.3/bin/etags --append --members -
                 }
 labelwin()	{
-                        # 
-        	  if [ $TERM = xterm -o $TERM = xterm-256color ]; then
-                      echo -ne "\\033]0;$@\\a" # \e]0 -- window and icon; \e]1 -- icon; \e]2 -- window
-                  elif [ \( "$TERM_PROGRAM" = "Apple_Terminal" \) -o \( "$TERM_PROGRAM" = "iTerm.app" \)  ]; then
-                      echo -ne "\\033]0;$@\\007"
+                  if [ \( "${TERM_PROGRAM:-}" = "Apple_Terminal" \) -o \( "${TERM_PROGRAM:-}" = "iTerm.app" \)  ]; then
+                     # echo -ne "\\033]0;$@\\007"
+                     : # Changed my mind, don't do nuthin
+        	  elif [ $TERM = xterm -o $TERM = xterm-256color ]; then
+                     echo -ne "\\033]0;$@\\a" # \e]0 -- window and icon; \e]1 -- icon; \e]2 -- window
                   else
-        	      cmd /c title "$@";
+        	     cmd /c title "$@";
     		  fi
                 }
 lesserr()	{ less +/':[0-9]*:'; }

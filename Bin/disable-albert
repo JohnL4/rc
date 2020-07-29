@@ -1,0 +1,3 @@
+#!/bin/bash
+
+chpass -s /usr/bin/false albert

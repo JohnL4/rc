@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo chpass -s /usr/bin/false albert
+sudo chpass -s /usr/bin/false savannah

@@ -4,14 +4,19 @@
 
 ;; (setq debug-on-error t)
 
+(message "loading .emacs...")
+(setq message-log-max 1000)
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
-
-(message "loading .emacs...")
-(setq message-log-max 1000)
+(condition-case error-description
+ (package-initialize)
+ (error
+  (message (format "Error calling ``package-initialize'': %s" (error-message-string error-description)))
+  )
+ )
 
 (defvar group-emacs-directory "/usr/local"
   "The directory in which the emacs + JDE package was installed.  The
@@ -48,8 +53,21 @@ the JDE directory to be placed on `load-path'."
   (message "cons'd \"~/.local/bin\" onto exec-path")
   )
 
-;; (setq preferred-background-mode 'dark)  ;light or dark color scheme.
-(setq preferred-background-mode 'light)
+(message "process-environment follows:")
+(pp process-environment)
+;; (message (format "process-environment is %S" (prin1 process-environment)))
+(if (or (eq "dumb" (getenv "TERM"))
+        (getenv "SSH_CONNECTION")       ;Non-nil means we must be SSH-ing in, so a "dumb" tube with black background.
+        )
+    (progn
+      (message "terminal is dumb or ssh in use")
+      (setq preferred-background-mode 'dark)  ;light or dark color scheme.
+      (setq frame-background-mode 'dark)
+      (mapc 'frame-set-background-mode (frame-list))
+      )
+  (message "terminal is not dumb")
+  (setq preferred-background-mode 'light))
+
 
 (load-library "group-config")
 
@@ -190,8 +208,9 @@ the JDE directory to be placed on `load-path'."
      ("melpa" . "https://melpa.org/packages/"))))
  '(package-selected-packages
    (quote
-    (powershell python-mode htmlize org lua-mode flycheck magit seq tide mmm-mode haskell-mode)))
+    (plantuml-mode projectile magit yaml-mode powershell python-mode htmlize org lua-mode flycheck seq tide mmm-mode haskell-mode)))
  '(py-shell-name "python3")
+ '(safe-local-variable-values (quote ((flyspell-mode . 1))))
  '(tide-tsserver-process-environment (quote ("--experimentalDecorators"))))
 (message "loading ~/.emacs...done")
 
@@ -202,16 +221,23 @@ the JDE directory to be placed on `load-path'."
  ;; If there is more than one, they won't work right.
  '(dired-marked ((t (:inherit warning :foreground "orange red"))))
  '(font-lock-comment-face ((((class color) (background light)) (:italic t :foreground "SteelBlue4")) (((class color) (background dark)) (:italic t :foreground "gray"))))
- '(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "DodgerBlue3"))))
+ '(font-lock-doc-face ((t (:inherit font-lock-string-face :foreground "#105FAB" :slant italic))))
  '(font-lock-string-face ((((class color) (background light)) (:foreground "firebrick")) (((class color) (background dark)) (:foreground "LightSalmon"))))
  '(gnus-summary-high-read ((((class color) (background light)) (:bold t :foreground "SlateGray"))))
+ '(gnus-summary-high-read-face ((((class color) (background light)) (:bold t :foreground "SlateGray"))) t)
  '(gnus-summary-low-read ((((class color) (background light)) (:italic t :foreground "SlateGray"))))
+ '(gnus-summary-low-read-face ((((class color) (background light)) (:italic t :foreground "SlateGray"))) t)
  '(gnus-summary-low-unread ((t (:italic t :foreground "MediumPurple4"))))
+ '(gnus-summary-low-unread-face ((t (:italic t :foreground "MediumPurple4"))) t)
  '(gnus-summary-normal-read ((((class color) (background light)) (:foreground "SlateGray"))))
- '(haskell-literate-comment-face ((t (:inherit font-lock-doc-face :slant italic))))
+ '(gnus-summary-normal-read-face ((((class color) (background light)) (:foreground "SlateGray"))) t)
+ '(haskell-literate-comment-face ((t (:inherit font-lock-doc-face :foreground "gray30" :slant italic))))
+ '(mmm-default-submode-face ((t (:background "gray90"))))
  '(org-code ((t (:inherit shadow :foreground "RoyalBlue4"))))
+ '(org-link ((t (:inherit link :foreground "DodgerBlue3"))))
  '(org-verbatim ((t (:inherit shadow :foreground "RoyalBlue4"))))
  '(region ((((class color) (background light)) (:background "LightSteelBlue1")) (((class color) (background dark)) (:background "DimGray"))))
+ '(sh-heredoc ((t (:inherit font-lock-string-face))))
  '(shadow ((t (:foreground "grey30"))))
  '(speedbar-button-face ((((class color) (background light)) (:background "green4" :foreground "white" :weight bold))))
  '(speedbar-selected-face ((((class color) (background light)) (:background "yellow" :foreground "red" :underline t :slant italic))))

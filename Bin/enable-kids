@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo chpass -s /bin/bash albert
+sudo chpass -s /bin/bash savannah
+

@@ -230,35 +230,6 @@
 
 ;; (transient-mark-mode 1)
 
-(defvar user-fill-mode-preference 1
-  "*User's preference for fill mode:  positive if user wants fill mode turned
-on (in general), non-positive if user does not want fill mode.")
-
-(defun my-fill-mode (&optional turn-on-fill-mode)
-  "Common function to be called to turn auto-fill mode on or off from other
-mode hooks.  Has default behavior which is user configurable via
-`user-fill-mode-preference'.  If TURN-ON-FILL-MODE is specified, positive
-values turn on auto-fill mode, non-positive values turn it off."
-  (interactive)
-  
-  (if (null turn-on-fill-mode)
-      (setq turn-on-fill-mode user-fill-mode-preference))
-  (if (and (numberp turn-on-fill-mode)
-           (> turn-on-fill-mode 0))
-      (progn
-        (auto-fill-mode 1)
-        ;; (hscroll-mode 0)
-        (setq truncate-lines nil)
-        (if (interactive-p)
-            (message "auto-fill mode turned ON, hscroll mode OFF"))
-        )
-    (auto-fill-mode 0)
-    ;; (hscroll-mode 1)
-    (setq truncate-lines t)
-    (if (interactive-p)
-        (message "auto-fill mode turned OFF, hscroll mode ON"))
-    )
-  )
 
 ;; (setq default-major-mode 'text-mode)
 
@@ -495,8 +466,14 @@ values turn on auto-fill mode, non-positive values turn it off."
     (progn
       (set-face-foreground 'org-date "SteelBlue3")
       (set-face-foreground 'org-link "DodgerBlue")
-      (set-face-foreground 'org-todo "magenta")
-      (set-face-background 'org-todo "white")
+      (if (eq 'dark frame-background-mode)
+          (progn
+            (set-face-foreground 'org-todo "color-201") ;#ff00ff
+            (set-face-foreground 'org-in-progress "color-213") 
+            )
+        (set-face-foreground 'org-todo "magenta")
+        (set-face-background 'org-todo "white")
+        )
 
       (set-face-attribute 'org-level-1 nil
                           ;;:foreground "Blue1"
@@ -517,6 +494,20 @@ values turn on auto-fill mode, non-positive values turn it off."
       ;(set-face-foreground 'org-level-7 "")
       ;(set-face-foreground 'org-level-8 "")
 
+      (message (format "frame-background-mode is: %S" frame-background-mode))
+      (if (eq 'dark frame-background-mode)
+          (progn
+            (set-face-foreground 'org-level-2 "color-203") ;Brighter red but not blinding
+            (set-face-foreground 'org-level-3 "color-135") ;Brighter reddish-purple
+            (set-face-foreground 'org-level-4 "color-40")  ;Brighter green, but not blinding
+            (set-face-foreground 'org-level-5 "color-172") ;Brigther brown (a little more orange)
+
+            (set-face-foreground 'org-level-7 "color-184") ;Brigther brown (a little more orange)
+            )
+        )
+
+
+
 ;;;      (setq org-directory "C:/Personal/Org")
 ;;;      (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
 ;;;      (setq org-mobile-inbox-for-pull
@@ -529,7 +520,7 @@ values turn on auto-fill mode, non-positive values turn it off."
 
       (add-hook 'org-mode-hook
                 (lambda ()
-                  (setq fill-column 100)
+                  ;; (setq fill-column 100)
                   (setq comment-column 48)
                   (setq comment-start "-- ")
                   (setq comment-start-skip "---+\\(\\s-*\\)")
@@ -537,9 +528,22 @@ values turn on auto-fill mode, non-positive values turn it off."
                   (setq org-footnote-auto-adjust t)
                   ))
 
+      (setq org-capture-templates
+            '(
+              ("j" "Journal entry" entry (file+olp+datetree "journal.org")
+               "* %? %^g"    ; template here -- nil means default will be used
+               ;; :unnarrowed t
+               ;; :empty-lines 1
+               )
+              ("t" "TODO entry" entry (file+olp+datetree "journal.org")
+               "* TODO %? %^g" ; template here -- nil means default will be used
+               ;; :unnarrowed t
+               ;; :empty-lines 1
+               )
+              ))
       ))
 
-;;--------------------------------  end org  ---------------------------------
+;;--------------------------------  End org  ---------------------------------
 
 ;;===============================  end modes  ================================
 
