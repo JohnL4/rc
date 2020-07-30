@@ -1,3 +1,5 @@
 print "----  .bcrc ----\n"
+pi=4*a(1)                       # arctangent -- when sin == cos, tangent == 1 and arctangent == pi/4 radians.
+print "pi = ", pi, "\n"
 scale=4
 print "----  .bcrc done  ----\n"

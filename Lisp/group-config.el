@@ -381,7 +381,7 @@ something fanciful or something totally random, whatever makes you happy.")
             ))
 
 ;; Note that the following don't work for me when set inside the mode hook.  Don't know why.
-(setq typescript-indent-level 3)
+(setq typescript-indent-level 4)
 (setq tide-format-options '(:placeOpenBraceOnNewLineForFunctions t :placeOpenBraceOnNewLineForControlBlocks t))
 
 (setq company-tooltip-align-annotations t)
@@ -501,7 +501,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  python  ---------------------------------
 
-(require 'python-mode)
+;;(require 'python-mode) ;Apparently, it's automatic by the time of emacs 26.3.
 
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
@@ -515,9 +515,10 @@ something fanciful or something totally random, whatever makes you happy.")
       (setq auto-mode-alist
             (append (list '("\\.py$" . python-mode))
                     auto-mode-alist))
-      (add-hook 'python-mode-hook 'group-python-mode-hook)
       )
   )
+
+(add-hook 'python-mode-hook 'group-python-mode-hook)
 
 ;;---------------------------------  psgml  ----------------------------------
 
@@ -834,10 +835,15 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;       (append '(("\\.js$" . javascript-mode))
 ;;;               auto-mode-alist))
 
-(setq auto-mode-alist
-      (append (list '("\\.js$" . c++-mode)
-                    )
-              auto-mode-alist))
+;;; (setq auto-mode-alist
+;;;       (append (list '("\\.js$" . c++-mode)
+;;;                     )
+;;;               auto-mode-alist))
+
+(add-hook 'js-mode-hook (lambda ()
+                          (subword-mode 1)
+                          (company-mode 1)
+                          ))
 
 ;;----------------------------------  text  ----------------------------------
 
@@ -978,6 +984,20 @@ something fanciful or something totally random, whatever makes you happy.")
        )
       )
 
+;;--------------------------------------------------  plantuml-mode  ---------------------------------------------------
+
+(with-demoted-errors "Error (ignored): %S"
+  (if (featurep 'plantuml-mode)
+      (progn
+        (add-hook 'plantuml-mode-hook
+                  (lambda ()
+                    (setq tab-width 4)
+                    (setq indent-tabs-mode nil)
+                    ))
+        )
+    )
+  )
+
 ;;----------------------------------  org-mode  -----------------------------------
 
 ;; (setq org-list-allow-alphabetical t)     ;Must be set before loading org.
@@ -999,6 +1019,7 @@ something fanciful or something totally random, whatever makes you happy.")
       (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
       ;; (add-to-list 'auto-mode-alist '("\\.org\\.txt$" . org-mode))
       (global-set-key "\C-cl" 'org-store-link)
+      (global-set-key "\C-cc" 'org-capture)
       (global-set-key "\C-ca" 'org-agenda)
       (global-set-key "\C-cb" 'org-iswitchb)
 
@@ -1060,10 +1081,13 @@ something fanciful or something totally random, whatever makes you happy.")
                                                     ;    be prompted for a closing note.
 
       (setq org-todo-keywords
-            '((sequence "TODO(t)" "IN-PROGRESS(i)" "|" "DONE(d)" "HOLD(h@)")
-              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "|" "RESEARCH-DONE(u)" "RESEARCH-HOLD(w@)")
-              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "|" "CODE-DONE(f)" "CODE-HOLD(p@)")
+            '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "|" "DONE(d)")
+              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "RESEARCH-HOLD(w@)" "|" "RESEARCH-DONE(u)")
+              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "CODE-HOLD(p@)" "|" "CODE-DONE(f)")
               ))
+
+     (setq org-clock-persist t)
+     (org-clock-persistence-insinuate)
 
       ;;---------------------------------------------------  faces  ----------------------------------------------------
 
@@ -1083,7 +1107,7 @@ something fanciful or something totally random, whatever makes you happy.")
       (defface org-hold
         (org-compatible-face nil
           '(
-            (((class color) (min-colors 16) (background light)) (:foreground "RosyBrown4" :bold t))
+            (((class color) (min-colors 16) (background light)) (:foreground "Maroon" :bold t))
             (((class color) (min-colors 16) (background dark))  (:foreground "IndianRed" :bold t))
             (((class color) (min-colors 8)  (background light)) (:foreground "DarkRed"  :bold t))
             (((class color) (min-colors 8)  (background dark))  (:foreground "Red"  :bold t))
@@ -1592,6 +1616,9 @@ language.")
 (font-lock-add-keywords 'typescript-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'javascript-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'csharp-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
@@ -1599,6 +1626,9 @@ language.")
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'haskell-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'python-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (if define-font-lock-org-todo-face
