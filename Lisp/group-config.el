@@ -77,8 +77,8 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;--------------------------------  packages  --------------------------------
 
 (require 'package)
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+;; (add-to-list 'package-archives
+;;              '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
 (package-initialize)
 
 ;;---------------------------------  fonts  ----------------------------------
@@ -376,7 +376,7 @@ something fanciful or something totally random, whatever makes you happy.")
             (setq fill-column our-default-fill-column)
             (local-set-key "\C-j" 'newline)
             (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
-            (local-set-key "\M-o" 'one-line-section-break)
+            (local-set-key "\M-o" 'one-line-section-break)
 ;;;            (message "\ttypescript-mode-hook: Typescript mode set up for current buffer")
             ))
 
@@ -1023,7 +1023,7 @@ something fanciful or something totally random, whatever makes you happy.")
       (global-set-key "\C-ca" 'org-agenda)
       (global-set-key "\C-cb" 'org-iswitchb)
 
-      ;; (setq org-agenda-files "~/org/org-agendas.txt")
+      (setq org-agenda-files "~/org/org-agendas.txt")
 
       (setq org-export-headline-levels 12)
 
@@ -1077,7 +1077,8 @@ something fanciful or something totally random, whatever makes you happy.")
       ;;             (add-hook 'after-save-hook 'org-html-export-to-html nil t)
       ;;             ))
 
-      (setq org-log-done 'note)                     ;time or note -- note to be prompted for a closing note.
+      (setq org-log-done 'note)                     ;time or note -- note to
+                                                    ;    be prompted for a closing note.
 
       (setq org-todo-keywords
             '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "|" "DONE(d)")
@@ -1085,8 +1086,8 @@ something fanciful or something totally random, whatever makes you happy.")
               (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "CODE-HOLD(p@)" "|" "CODE-DONE(f)")
               ))
 
-      (setq org-clock-persist t)
-      (org-clock-persistence-insinuate)
+     (setq org-clock-persist t)
+     (org-clock-persistence-insinuate)
 
       ;;---------------------------------------------------  faces  ----------------------------------------------------
 
@@ -1595,6 +1596,8 @@ language.")
 (font-lock-add-keywords 'c++-mode group-extra-keyword-list)
 (font-lock-add-keywords 'java-mode group-extra-keyword-list)
 ;;;(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
+(font-lock-add-keywords 'js-mode group-extra-keyword-list)
+(font-lock-add-keywords 'typescript-mode group-extra-keyword-list)
 
 (font-lock-add-keywords 'java-mode group-java-other-lang-keywords)
 (font-lock-add-keywords 'html-mode group-html-other-lang-keywords)
@@ -1610,12 +1613,6 @@ language.")
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'sql-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'typescript-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'javascript-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'csharp-mode
