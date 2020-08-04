@@ -575,6 +575,17 @@ values turn on auto-fill mode, non-positive values turn it off."
                                         ;(set-face-foreground 'org-level-7 "")
                                         ;(set-face-foreground 'org-level-8 "")
 
+      (setq org-agenda-clock-consistency-checks
+            '(:max-duration "10:00" :min-duration 0 :max-gap "0:20"
+                            :gap-ok-around ("4:00" ; 4 a.m.
+                                            "12:30" ;lunch
+                                            )
+                            :default-face ((:background "DarkRed") (:foreground "Yellow"))
+                            :overlap-face ((:background "Red") (:foreground "Yellow"))
+                            :gap-face ((:background "Orange") (:foreground "Black"))
+                            ))
+                            
+            )
       (setq org-agenda-files
             (let* (
                    (user-profile (replace-regexp-in-string "\\\\" "\\\\\\\\" (getenv "USERPROFILE"))

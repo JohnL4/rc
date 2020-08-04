@@ -1596,6 +1596,8 @@ language.")
 (font-lock-add-keywords 'c++-mode group-extra-keyword-list)
 (font-lock-add-keywords 'java-mode group-extra-keyword-list)
 ;;;(font-lock-add-keywords 'jde-mode group-extra-keyword-list t) ;append
+(font-lock-add-keywords 'js-mode group-extra-keyword-list)
+(font-lock-add-keywords 'typescript-mode group-extra-keyword-list)
 
 (font-lock-add-keywords 'java-mode group-java-other-lang-keywords)
 (font-lock-add-keywords 'html-mode group-html-other-lang-keywords)
@@ -1611,12 +1613,6 @@ language.")
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'sql-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'typescript-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'javascript-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'csharp-mode
