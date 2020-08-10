@@ -195,7 +195,7 @@ the JDE directory to be placed on `load-path'."
      ("org" . "https://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (htmlize plantuml-mode magit csharp-mode ox-twbs markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode with-editor web-mode powershell ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
+    (rainbow-mode htmlize plantuml-mode magit csharp-mode ox-twbs markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode with-editor web-mode powershell ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
  '(plantuml-default-exec-mode (quote jar))
  '(plantuml-jar-args (quote ("-charset" "UTF-8" "-nometadata")))
  '(plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")

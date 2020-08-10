@@ -520,6 +520,33 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;----------------------------------  org  -----------------------------------
 
+;; Stupid little helper function for org-capture, but could be used anywhere, really.
+(defun host-specific-string (fmt)
+  "Returns the given `fmt' string with current hostname (first dotted component only if it includes a fully-qualified
+  domain name) interpolated into it where ``%s'' occurs"
+  (format fmt (or (if (getenv "HOSTNAME")
+                      (car (split-string (getenv "HOSTNAME") "\\.")))
+                  (getenv "COMPUTERNAME")))
+  )
+
+(if (functionp 'home-dir)
+    (message "WARNING: redefining function `home-dir' in personal-config.el"))
+(defun home-dir ()
+  "Returns user's home directory as a string"
+  (if (getenv "USERPROFILE")
+      (getenv "USERPROFILE") ;MS-Windows
+    "~")                     ;Everybody else
+  )
+
+;; http://ergoemacs.org/emacs/elisp_read_file_content.html
+(defun read-lines (file-path)
+  "Return a list of lines from the given text file"
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (split-string (buffer-string) "\n" t)
+    )
+  )
+
 (if (member 'org features)
     (progn
       (set-face-foreground 'org-date "SteelBlue3")
@@ -542,15 +569,58 @@ values turn on auto-fill mode, non-positive values turn it off."
       (set-face-foreground 'org-level-3 "DarkViolet")
       (set-face-foreground 'org-level-4 "ForestGreen")
       (set-face-foreground 'org-level-5 "DarkGoldenrod4")
-      ;(set-face-foreground 'org-level-6 "")
-      ;(set-face-foreground 'org-level-7 "")
-      ;(set-face-foreground 'org-level-8 "")
+                                        ;(set-face-foreground 'org-level-6 "")
+                                        ;(set-face-foreground 'org-level-7 "")
+                                        ;(set-face-foreground 'org-level-8 "")
 
-      (setq org-directory (concat (if (getenv "USERPROFILE")
-                                      (getenv "USERPROFILE") ;MS-Windows
-                                    "~")                     ;Everybody else
-                                  "/org"))
-      (setq org-agenda-files (concat org-directory "/org-agendas.txt"))
+      (setq org-ascii-text-width 100)
+
+      (setq org-agenda-clock-consistency-checks
+            '(:max-duration "10:00" :min-duration 0 :max-gap "0:20"
+                            :gap-ok-around ("4:00" ; 4 a.m.
+                                            "12:30" ;lunch
+                                            )
+                            :default-face ((:background "DarkRed") (:foreground "Yellow"))
+                            :overlap-face ((:background "Red") (:foreground "Yellow"))
+                            :gap-face ((:background "Orange") (:foreground "Black"))
+                            ))
+
+      (setq org-agenda-files
+            (let* (
+                   (user-profile (replace-regexp-in-string "\\\\" "\\\\\\\\" (getenv "USERPROFILE"))
+                                 )
+                   )
+              (mapcar (lambda (s)
+                        (replace-regexp-in-string "%USERPROFILE%"
+                                                  user-profile
+                                                  s))
+                      (read-lines (concat (home-dir) "/OneDrive - Pulse8 Inc/org/org-agendas.txt"))
+                      )
+              )
+            )
+                                        ;Doing something a bit hacky here: the first time you create a new host-specific
+                                        ;subdirectory in ~/org, it will get missed by org-agenda-files.  You'll have to
+                                        ;restart emacs (probably) to pick it up.  This should be as rare as setting up a
+                                        ;new machine on which you org-capture notes and whatnot.  This seemed better
+                                        ;than writing a new capture-template function to find the right file and
+                                        ;position point at the right location.
+      (setq org-directory (host-specific-string (concat (home-dir) "/OneDrive - Pulse8 Inc/org/Host-%s")))
+      ;; (setq org-agenda-files (concat org-directory "/org-agendas.txt")) ;Old value
+      (setq org-agenda-files
+            (append org-agenda-files
+                    (let* (
+                           (home-org (format "%s/org" (home-dir)))
+                           )
+                      (cons home-org
+                            (file-expand-wildcards (concat
+                                                    (home-dir)
+                                                    "/OneDrive - Pulse8 Inc/org/Host-*")
+                                                   t) ;Final boolean is full pathnames.
+                            )
+                      )
+                    ))
+      (message (format "org-agenda-files: %S" (org-agenda-files)))
+      
       (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
       (setq org-mobile-inbox-for-pull
             "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
@@ -560,7 +630,7 @@ values turn on auto-fill mode, non-positive values turn it off."
               "org-mobile-setup.org"
               ))
 
-      (setq org-tags-column -100)
+      (setq org-tags-column -120)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (setq fill-column our-default-fill-column)
@@ -587,7 +657,22 @@ values turn on auto-fill mode, non-positive values turn it off."
                           (org-remove-inline-images)
                           (org-present-show-cursor)
                           (org-present-read-write)))))
-        )))
+        )
+
+      (setq org-capture-templates
+            '(
+              ("j" "Journal entry" entry (file+olp+datetree "journal.org")
+               "* %?"    ; template here -- nil means default will be used
+               ;; :unnarrowed t
+               :empty-lines 1
+               )
+              ("t" "TODO entry" entry (file+olp+datetree "journal.org")
+               "* TODO %?"           ; template here -- nil means default will be used (previously had "%^g" at the end)
+               ;; :unnarrowed t
+               :empty-lines 1
+               )
+              ))
+      ))
 
 ;;--------------------------------  end org  ---------------------------------
 
