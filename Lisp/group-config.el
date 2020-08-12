@@ -1169,7 +1169,7 @@ directory and proceeding to parent directories until it's found or root is reach
   (if (called-interactively-p 'any)
       (setq underscores-only (y-or-n-p "Target underscores only? ")))
   (if (null opener)
-      (setq opener (read-from-minibuffer "Opener: " "~")))
+      (setq opener (read-from-minibuffer "Opener: " "=")))
   (if (null closer)
       (setq closer (read-from-minibuffer "Closer: " opener)))
   (let
