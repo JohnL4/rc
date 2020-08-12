@@ -444,7 +444,7 @@ found for the current project                                                   
 
 ;;---------------------------------  python  ---------------------------------
 
-(require 'python-mode)
+;;(require 'python-mode) ;Apparently, it's automatic by the time of emacs 26.3.
 
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
@@ -1696,6 +1696,9 @@ language.")
 (font-lock-add-keywords 'typescript-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'javascript-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'csharp-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
@@ -1703,6 +1706,9 @@ language.")
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'haskell-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'python-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (if define-font-lock-org-todo-face
