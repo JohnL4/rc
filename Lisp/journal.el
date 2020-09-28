@@ -51,9 +51,11 @@
                          "te - test"
                          "db - debug"
                          "dc - documentation"
+                         "dv - development (might encompass ds, if, cd, cp, te, db, dc)"
                          "cr - code review (usually of somebody else's code)"
                          "pm - post mortem"
                          "df - defect"
+                         "op - operations (e.g., deploy, configure, etc.)"
                          )
   "Non-exchaustive list of possible phases in an entry.  First word must be unique."
   )
