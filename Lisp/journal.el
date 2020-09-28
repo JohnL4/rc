@@ -146,7 +146,7 @@ subexpressions to ease parsing.")
 ;;-----------------------  end configuration  ------------------------
 
 (defvar journal-entries nil
-  "List of journal entries in physical order.")
+  "List of journal entries in physical order, as returned by `journal-parse-entry'.")
 
 (defvar journal-classification-tags nil
   "List of lists of classification tags, for use in completion (tag 1, tag 2,
@@ -233,19 +233,44 @@ BEGIN-OR-END is a string (expected to be \"b\" or \"e\"), default \"b\"."
                                         ;parsing doesn't parse a
                                         ;half-constructed entry.
     (journal-scan-new)
-        
+    
     (if (not (bolp))
         (insert ?\n))
     (journal-begin-new-entry cur-time)
     (insert (or begin-or-end "b"))
     (insert " ")
-    (insert (car (split-string (completing-read "Phase: "
-                                                journal-phases
-                                                nil ;Default predicate
-                                                nil ;Match not required
-                                                "in"))))
-    (insert " ")
-    (journal-insert-tags)
+    (if (equal "e" begin-or-end)
+        (insert (or (journal-most-recent-open-phase (reverse journal-entries) nil)
+                    "in -- (no unmatched beginnings found)"))
+      (insert (car (split-string
+                    (completing-read "Phase: "
+                                     journal-phases
+                                     nil ;Default predicate
+                                     nil ;Match not required
+                                     "in"
+                                     ))))
+      ;; Only insert classification tags for 'begin entries, although this is easy enough to change later if desired.
+      (insert " ")
+      (journal-insert-tags)
+      )
+    )
+  )
+
+(defun journal-most-recent-open-phase (reversed-journal-entries unmatched-ends)
+  "Return the most recent phase which is not closed. `reversed-journal-entries' is as the global variable
+  `journal-entries`, a list of entries returned by `journal-parse-entry' in REVERSED physical order in the file.
+  `unmatched-ends' is a list of unmatched 'end' entries, in physical order in which they occur in the file."
+  ;; Let's try some flat-out recursion here.  Hopefully not too horrible (does emacs-lisp do tail recursion)?
+  (if (null reversed-journal-entries)
+      nil
+    (if (eq 'begin (cdr (assoc 'event-type (car reversed-journal-entries))))
+        (if (null unmatched-ends)
+            ;; Found an unmatched 'begin
+            (cdr (assoc 'phase (car reversed-journal-entries)))
+          ;; Else this begin is (presumably) matched by the top of the unmatched ends, so pop 'em both and continue.
+          (journal-most-recent-open-phase (cdr reversed-journal-entries) (cdr unmatched-ends)))
+      ;; Else, this is an end (presumably), so push it onto unmatched-ends and continue
+      (journal-most-recent-open-phase (cdr reversed-journal-entries) (cons (car reversed-journal-entries) unmatched-ends)))
     )
   )
 
