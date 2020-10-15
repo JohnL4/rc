@@ -22,7 +22,7 @@
 
 
 (defvar highlight-styles
-  '("yellow" "orange" "cyan" "red" "purple" "green" "blue" "gray" "maroon" "black" "brown"
+  '("yellow" "orange" "cyan" "red" "purple" "green" "blue" "dodger" "gray" "maroon" "black" "brown"
                                         ; pastels
     "pyellow" "porange" "pcyan" "pink" "pgreen" "pblue"
     )
@@ -42,6 +42,61 @@ if you change the faces, you might want to change their names appropriately.")
     )
   "*Highlight style yellow")
 
+(defface highlight-green-face
+  '(
+    (((background light)) (:background "green" :bold t))
+    (((background dark)) (:background "green4" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style green")
+
+(defface highlight-cyan-face
+  '(
+    (((background light)) (:background "cyan" :bold t))
+    (((background dark)) (:background "cyan4" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style cyan")
+
+(defface highlight-dodger-face
+  '(
+    (((background light)) (:background "#0096ff" :foreground "white" :bold t))
+    (((background dark)) (:background "#0096ff" :foreground "white" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style Dodger blue")
+
+(defface highlight-blue-face
+  '(
+    (((background light)) (:background "blue" :foreground "white" :bold t))
+    (((background dark)) (:background "blue3" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style blue")
+
+(defface highlight-purple-face
+  '(
+    (((background light)) (:background "purple" :foreground "white" :bold t))
+    (((background dark)) (:background "purple3" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style purple")
+
+(defface highlight-maroon-face
+  '(
+    (((background light)) (:background "maroon1" :bold t))
+    (((background dark)) (:background "maroon1" :bold t))
+    )
+  "*Highlight style maroon")
+
+(defface highlight-red-face
+  '(
+    (((background light)) (:background "red" :foreground "white" :bold t))
+    (((background dark)) (:background "red3" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style red")
+
 (defface highlight-orange-face
   '(;;(DISPLAY ATTS) 			;if DISPLAY criteria are met, face is
                                         ;  given ATTS 
@@ -55,12 +110,21 @@ if you change the faces, you might want to change their names appropriately.")
     )
   "*Highlight style orange")
 
-(defface highlight-maroon-face
+(defface highlight-brown-face
   '(
-    (((background light)) (:background "maroon1" :bold t))
-    (((background dark)) (:background "maroon1" :bold t))
+    (((background light)) (:background "SaddleBrown" :foreground "white"))
+    (((background dark)) (:background "SaddleBrown"))
+    (t (:inverse-video t :bold t))
     )
-  "*Highlight style maroon")
+  "*Highlight style brown")
+
+(defface highlight-black-face
+  '(
+    (((background light)) (:background "black" :foreground "white" :bold t))
+    (((background dark)) (:background "gray30" :bold t))
+    (t (:inverse-video t :bold t))
+    )
+  "*Highlight style black")
 
 (defface highlight-gray-face
   '(;;(DISPLAY ATTS) 			;if DISPLAY criteria are met, face is
@@ -75,61 +139,7 @@ if you change the faces, you might want to change their names appropriately.")
     )
   "*Highlight style gray")
 
-(defface highlight-cyan-face
-  '(
-    (((background light)) (:background "cyan" :bold t))
-    (((background dark)) (:background "cyan4" :bold t))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style cyan")
-
-(defface highlight-red-face
-  '(
-    (((background light)) (:background "red" :foreground "white" :bold t))
-    (((background dark)) (:background "red3" :bold t))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style red")
-
-(defface highlight-purple-face
-  '(
-    (((background light)) (:background "purple" :foreground "white" :bold t))
-    (((background dark)) (:background "purple3" :bold t))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style purple")
-
-(defface highlight-blue-face
-  '(
-    (((background light)) (:background "blue" :foreground "white" :bold t))
-    (((background dark)) (:background "blue3" :bold t))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style blue")
-
-(defface highlight-black-face
-  '(
-    (((background light)) (:background "black" :foreground "white" :bold t))
-    (((background dark)) (:background "gray30" :bold t))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style blue")
-
-(defface highlight-brown-face
-  '(
-    (((background light)) (:background "SaddleBrown" :foreground "white"))
-    (((background dark)) (:background "SaddleBrown"))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style blue")
-
-(defface highlight-green-face
-  '(
-    (((background light)) (:background "green" :bold t))
-    (((background dark)) (:background "green4" :bold t))
-    (t (:inverse-video t :bold t))
-    )
-  "*Highlight style green")
+;;-----------------------------------------------------  pastels  ------------------------------------------------------
 
 (defface highlight-porange-face
   '(
