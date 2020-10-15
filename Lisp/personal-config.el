@@ -576,7 +576,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                                         ;(set-face-foreground 'org-level-8 "")
 
       (setq org-agenda-clock-consistency-checks
-            '(:max-duration "10:00" :min-duration 0 :max-gap "0:20"
+            '(:max-duration "10:00" :min-duration 0 :max-gap "0:10"
                             :gap-ok-around ("4:00" ; 4 a.m.
                                             "12:30" ;lunch
                                             )
@@ -585,12 +585,13 @@ values turn on auto-fill mode, non-positive values turn it off."
                             :gap-face ((:background "Orange") (:foreground "Black"))
                             ))
                             
-            )
+      (message (format "before setting org-agenda-files: %S" org-agenda-files))
       (setq org-agenda-files
             (let* (
                    (user-profile (replace-regexp-in-string "\\\\" "\\\\\\\\" (getenv "USERPROFILE"))
                                  )
                    )
+              (message (format "user-profile: %s" user-profile))
               (mapcar (lambda (s)
                         (replace-regexp-in-string "%USERPROFILE%"
                                                   user-profile
@@ -599,6 +600,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                       )
               )
             )
+      (message (format "initial org-agenda-files: %S" org-agenda-files))
 
                                         ;Doing something a bit hacky here: the first time you create a new host-specific
                                         ;subdirectory in ~/org, it will get missed by org-agenda-files.  You'll have to
@@ -607,6 +609,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                                         ;than writing a new capture-template function to find the right file and
                                         ;position point at the right location.
       (setq org-directory (host-specific-string (concat (home-dir) "/OneDrive - Pulse8 Inc/org/Host-%s")))
+      (message (format "org-directory: %s" org-directory))
       ;; (setq org-agenda-files (concat org-directory "/org-agendas.txt")) ;Old value
       (setq org-agenda-files
             (append org-agenda-files
@@ -621,7 +624,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                             )
                       )
                     ))
-      (message (format "org-agenda-files: %S" (org-agenda-files)))
+      (message (format "finally, org-agenda-files: %S" (org-agenda-files)))
       (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
       (setq org-mobile-inbox-for-pull
             "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
