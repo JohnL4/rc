@@ -45,12 +45,14 @@
 ;;;   (message "personal-config: Warning: w3-auto not loaded.")
 ;;;   )
 
-(require 'bookmark+)
-(if (featurep 'bookmark+)
-    (progn
-      ;;(setq bmkp-light-style-autonamed 'lfringe)
-      ;;(setq bmkp-light-style-non-autonamed 'lfringe)
-      ))
+(with-demoted-errors "Warning: Ignoring error: %S"
+  (require 'bookmark+)
+  (if (featurep 'bookmark+)
+      (progn
+        ;;(setq bmkp-light-style-autonamed 'lfringe)
+        ;;(setq bmkp-light-style-non-autonamed 'lfringe)
+        ))
+  )
 
 ;;------------------------------  text cursor  -------------------------------
 
@@ -576,7 +578,7 @@ values turn on auto-fill mode, non-positive values turn it off."
       (setq org-ascii-text-width 100)
 
       (setq org-agenda-clock-consistency-checks
-            '(:max-duration "10:00" :min-duration 0 :max-gap "0:20"
+            '(:max-duration "10:00" :min-duration 0 :max-gap "0:10"
                             :gap-ok-around ("4:00" ; 4 a.m.
                                             "12:30" ;lunch
                                             )
@@ -667,7 +669,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                :empty-lines 1
                )
               ("t" "TODO entry" entry (file+olp+datetree "journal.org")
-               "* TODO %?"           ; template here -- nil means default will be used (previously had "%^g" at the end)
+               "* TODO %? %^g"       ; template here -- nil means default will be used (previously had "%^g" at the end)
                ;; :unnarrowed t
                :empty-lines 1
                )

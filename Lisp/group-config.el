@@ -77,8 +77,8 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;--------------------------------  packages  --------------------------------
 
 (require 'package)
-;; (add-to-list 'package-archives
-;;              '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
 ;;---------------------------------  fonts  ----------------------------------
