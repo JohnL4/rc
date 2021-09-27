@@ -237,6 +237,18 @@
 
 ;;-----------------------------  end vc  -----------------------------
 
+;;------------------------------------------------------  magit  -------------------------------------------------------
+
+(with-demoted-errors "Error (ignored): %S"
+  (require 'magit)
+  )
+(if (featurep 'magit)
+    (progn
+      (global-set-key (kbd "C-x g") 'magit-status)
+      (setq magit-git-executable "git")
+      )
+  )
+
 ;;-------------------------------  W3  -------------------------------
 
 ;;; (condition-case () (require 'w3-auto "w3-auto") (error nil))
@@ -520,7 +532,7 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;; ------------------------  end message  -------------------------
 
-;;----------------------------------  org  -----------------------------------
+;;-----------------------------------------------------  org-mode  -----------------------------------------------------
 
 ;; Stupid little helper function for org-capture, but could be used anywhere, really.
 (defun host-specific-string (fmt)
@@ -582,9 +594,15 @@ values turn on auto-fill mode, non-positive values turn it off."
                                             )
                             :default-face ((:background "DarkRed") (:foreground "Yellow"))
                             :overlap-face ((:background "Red") (:foreground "Yellow"))
-                            :gap-face ((:background "Orange") (:foreground "Black"))
+                            :gap-face ((:background "LightGoldenrod") ;; (:background "gold")
+                                       (:foreground "Black"))
                             ))
                             
+      ;;------------------------------------  org-agenda-files  ------------------------------------
+
+      ;; Note that the entries in org-agenda-files are NOT searched recursively, so you have to add each subdirectory
+      ;; explicitly.  It's really like a "hardcoded" list of major projects.
+      
       (message (format "before setting org-agenda-files: %S" org-agenda-files))
       (setq org-agenda-files
             (let* (
@@ -596,6 +614,9 @@ values turn on auto-fill mode, non-positive values turn it off."
                         (replace-regexp-in-string "%USERPROFILE%"
                                                   user-profile
                                                   s))
+                      ;; org-agenda files on One Drive so they'll appear the same both in the buble and on my laptop.
+                      ;; Note that k6 notes (and possibly other projects) may be under source control not on One Drive,
+                      ;; so a nightly job to copy them to their working directories might be necessary/helpful.
                       (read-lines (concat (home-dir) "/OneDrive - Pulse8 Inc/org/org-agendas.txt"))
                       )
               )
@@ -625,6 +646,9 @@ values turn on auto-fill mode, non-positive values turn it off."
                       )
                     ))
       (message (format "finally, org-agenda-files: %S" (org-agenda-files)))
+
+      ;;----------------------------------  end org-agenda-files  ----------------------------------
+
       (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
       (setq org-mobile-inbox-for-pull
             "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
@@ -634,7 +658,7 @@ values turn on auto-fill mode, non-positive values turn it off."
               "org-mobile-setup.org"
               ))
 
-      (setq org-tags-column -120)
+      (setq org-tags-column -117)
       (setq org-ascii-text-width 120)
       (add-hook 'org-mode-hook
                 (lambda ()
@@ -662,6 +686,11 @@ values turn on auto-fill mode, non-positive values turn it off."
                           (org-remove-inline-images)
                           (org-present-show-cursor)
                           (org-present-read-write)))))
+        (require 'org-re-reveal)
+        (if (featurep 'org-re-reveal)
+            (progn
+              )
+          )
         )
 
       (setq org-capture-templates
@@ -672,14 +701,17 @@ values turn on auto-fill mode, non-positive values turn it off."
                :empty-lines 1
                )
               ("t" "TODO entry" entry (file+olp+datetree "journal.org")
-               "* TODO %?"           ; template here -- nil means default will be used (previously had "%^g" at the end)
+               ;; High priority, scheduled today
+               "* TODO [#A] %?\n     SCHEDULED: %t" ; template here -- nil means default will be used (previously had
+                                                    ; "%^g" at the end; 
+                                        ; %^G means prompt with completion over ALL tags in ALL agenda files)
                ;; :unnarrowed t
                :empty-lines 1
                )
               ))
       ))
 
-;;--------------------------------  end org  ---------------------------------
+;;---------------------------------------------------  end org-mode  ---------------------------------------------------
 
 ;;---------------------------------  nxhtml  ---------------------------------
 
@@ -714,6 +746,9 @@ values turn on auto-fill mode, non-positive values turn it off."
   )
 
 ;;-------------------------------  end tramp  --------------------------------
+
+(require 'adaptive-wrap)
+(setq adaptive-wrap-extra-indent 2)
 
 ;;===============================  end modes  ================================
 

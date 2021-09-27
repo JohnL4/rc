@@ -81,11 +81,12 @@ on the current line for the section title (which may be nil)."
   nil					;Be sure to return nil
   )
 
-(defun one-line-section-break (&optional title-text)
+(defun one-line-section-break (&optional right-margin title-text)
   "Insert a titled section break as a comment, using comment-start,
-comment-end and fill-column.  If TITLE-TEXT is nil, destructively use the text
+comment-end and integer RIGHT-MARGIN.  RIGHT-MARGIN is taken from the numeric
+  prefix, or fill-column if no prefix is given.  If TITLE-TEXT is nil, destructively use the text
 on the current line for the section title (which may be nil)."
-  (interactive)
+  (interactive "p")
   (let* (
 	 dashes				;String of dashes to place before and
 					;  after title text.
@@ -95,8 +96,19 @@ on the current line for the section title (which may be nil)."
 	  (if (string-match "lisp" (symbol-name (symbol-value 'major-mode)))
 	      (concat comment-start ";")
 	    comment-start))
+         minimum-right-margin
 	 )
     (setq title-text (trim-whitespace title-text))
+    (if (eq 1 right-margin) (setq right-margin fill-column)) ;1 ==> no numeric prefix
+
+    (setq minimum-right-margin
+          (+ 12                         ;12 is 4 dashes on each side, plus 2 space characters on each side.  I think 4
+                                        ;dashes is a reasonable minimum.
+             (length comment-start)
+             (length comment-end)
+             (length title-text)))
+    (if (< right-margin minimum-right-margin)
+        (setq right-margin minimum-right-margin))
     (beginning-of-line)
 
                                         ;Cursor must be properly positioned
@@ -112,7 +124,7 @@ on the current line for the section title (which may be nil)."
     (open-line 1)
     (indent-according-to-mode)
     (setq dashes
-	  (make-string (/ (- fill-column
+	  (make-string (/ (- right-margin
 			     (current-column) ;Must be indented properly at
 					      ;  this point.
 			     (length title-text)
@@ -134,7 +146,7 @@ on the current line for the section title (which may be nil)."
 		    dashes
 		    comment-end))
 
-    (if (not (= (current-column) fill-column))
+    (if (not (= (current-column) right-margin))
         (progn
         (save-excursion
           (if (not (string= "" comment-end))

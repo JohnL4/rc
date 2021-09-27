@@ -224,6 +224,7 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;--------------------------------  requires  --------------------------------
 
 (require 'generic-util)
+(require 'tabs-to-table)
 (require 'edebug)			;LISP source-level debugging.
 ;;(require 'fix-pathnames)                ;For use in converting MS-style pathnames to Unix-style, for use w/Cygnus
                                         ;  utilities like diff(1).  Requires local mod to
@@ -311,17 +312,6 @@ something fanciful or something totally random, whatever makes you happy.")
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;;------------------------------------------------------  magit  -------------------------------------------------------
-
-(with-demoted-errors "Error (ignored): %S"
-  (require 'magit)
-  )
-(if (featurep 'magit)
-    (progn
-      (global-set-key (kbd "C-x g") 'magit-status)
-      )
-  )
-
 ;;------------------------------  end requires  ------------------------------
 
 ;;=================================  modes  ==================================
@@ -369,11 +359,11 @@ something fanciful or something totally random, whatever makes you happy.")
               (tide-setup)
               (flycheck-mode +1)
               (eldoc-mode +1)
-              (company-mode +1)
-              (subword-mode 1)
               (local-set-key (kbd "<f2> r") 'tide-rename-symbol)
               (local-set-key (kbd "S-<f12>") 'tide-references)
               )
+            (company-mode +1)
+            (subword-mode 1)
             (setq fill-column our-default-fill-column)
             (local-set-key "\C-j" 'newline)
             (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
@@ -568,24 +558,23 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;----------------------------------  html  ----------------------------------
 
-;;; (setq html-mode-hook
-;;;       '(lambda ()
-;;; ;;;          (auto-fill-mode 1)
-;;; ;;;          (show-paren-mode 1)
-;;; ;;;          (abbrev-mode 1)
-;;; ;;;          (local-set-key "\C-j" 'newline)
-;;; ;;;          (local-set-key "\C-m" 'newline-and-indent)
-;;; ;;;          (local-set-key "\M-o" 'comment)
-;;; ;;;          (local-set-key [C-tab] 'indent-relative)
-;;; ;;;          (local-set-key [C-return] 'newline-and-indent-relative)
-;;;          (setq comment-start "<!-- ")
-;;;          (setq comment-start-skip "<!-- *")
-;;;          (setq comment-end " -->")
-;;;          (setq comment-multi-line nil)
-;;;          (setq comment-column 32)
-;;;          )
-;;;       )
-
+(setq html-mode-hook
+      '(lambda ()
+         (auto-fill-mode 1)
+         (show-paren-mode 1)
+         (abbrev-mode 1)
+         (local-set-key "\C-j" 'newline)
+         (local-set-key "\C-m" 'newline-and-indent)
+         (local-set-key "\M-o" 'comment)
+         (local-set-key [C-tab] 'indent-relative)
+         (local-set-key [C-return] 'newline-and-indent-relative)
+         (setq comment-start "<!-- ")
+         (setq comment-start-skip "<!-- *")
+         (setq comment-end " -->")
+         (setq comment-multi-line nil)
+         (setq comment-column 32)
+         )
+      )
 
 ;;----------------------------------  nxml  ----------------------------------
 
@@ -1010,6 +999,8 @@ something fanciful or something totally random, whatever makes you happy.")
   (require 'org)
   ;; (require 'ox-hugo)
   ;; (require 'ox-hugo-auto-export)
+  (require 'ox-md)
+  (require 'ox-org)                     ;Export /subsets/ of org files to .org.
   (require 'ox-reveal)                  ;Export to reveal.js presentation
   (require 'ox-twbs)                    ;Export to Twitter Bootstrap (i.e., just "Bootstrap")
 
@@ -1084,9 +1075,10 @@ something fanciful or something totally random, whatever makes you happy.")
                                                     ;    be prompted for a closing note.
 
       (setq org-todo-keywords
-            '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "|" "DONE(d)")
-              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "RESEARCH-HOLD(w@)" "|" "RESEARCH-DONE(u)")
-              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "CODE-HOLD(p@)" "|" "CODE-DONE(f)")
+            ;; Spelling note: "canceled" with one or two Ls are both correct, but one L is more American and two, more British.
+            '((sequence "TODO(t)" "IN-PROGRESS(i)" "HOLD(h@)" "|" "DONE(d)" "CANCELED(k)")
+              (sequence "RESEARCH-TODO(r)" "RESEARCH-IN-PROGRESS(s)" "RESEARCH-HOLD(w@)" "|" "RESEARCH-DONE(u)" "RESEARCH-CANCELED(z)")
+              (sequence "CODE-TODO(c)" "CODE-IN-PROGRESS(e)" "CODE-HOLD(p@)" "|" "CODE-DONE(f)" "CODE-CANCELED(q)")
               ))
 
      (setq org-clock-persist t)
@@ -1118,6 +1110,13 @@ something fanciful or something totally random, whatever makes you happy.")
         "Face for HOLD keywords."
         :group 'org-faces
         )
+      (defface org-canceled
+        (org-compatible-face nil
+          '(
+            ;; (((class color) (min-colors 8) (background light)) (:foreground "Black" :bold nil))
+            (t (:inverse-video nil :bold nil))))
+        "Face for CANCELED keywords"
+        :group 'org-faces)
       (set-face-foreground 'org-table "Blue4")
       (set-face-foreground 'org-verbatim "Blue4")
       (if (boundp 'my-default-font)
@@ -1136,9 +1135,12 @@ something fanciful or something totally random, whatever makes you happy.")
             '(("TODO" . org-todo)
               ("IN-PROGRESS" . org-in-progress)
               ("DONE" . org-done)
+              ("CANCELED" . org-canceled)
               ("HOLD" . org-hold)
               ("RESEARCH-HOLD" . org-hold)
+              ("RESEARCH-CANCELED" . org-canceled)
               ("CODE-HOLD" . org-hold)
+              ("RESEARCH-CANCELED" . org-canceled)
               ))
 
       ;; The following seems to muck up org-mode's headline fontification:
@@ -1741,9 +1743,11 @@ language.")
 (defun align-repeat (start end regexp)
     "Repeat alignment with respect to 
      the given regular expression."
-    (interactive "r\nsAlign regexp: ")
+    (interactive "r\nsAlign regexp (default \\S-+): ")
+    (if (or (string= "" regexp) (not regexp))
+        (setq regexp "\\S-+"))
     (align-regexp start end 
-        (concat "\\(\\s-*\\)" regexp) 1 1 t))
+        (concat "\\(\\s-+\\)" regexp) 1 1 t))
 
 ;; Some of the following code is for the older align.el, by Matthias Helmling.
 ;; Later emacsen seem to have acquired a similar capability having the same
