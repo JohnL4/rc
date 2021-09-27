@@ -376,12 +376,12 @@ something fanciful or something totally random, whatever makes you happy.")
             (setq fill-column our-default-fill-column)
             (local-set-key "\C-j" 'newline)
             (local-set-key "\r" 'newline-and-indent) ;Auto-indent.
-            (local-set-key "\M-o" 'one-line-section-break)
+            (local-set-key "\M-o" 'one-line-section-break)
 ;;;            (message "\ttypescript-mode-hook: Typescript mode set up for current buffer")
             ))
 
 ;; Note that the following don't work for me when set inside the mode hook.  Don't know why.
-(setq typescript-indent-level 3)
+(setq typescript-indent-level 4)
 (setq tide-format-options '(:placeOpenBraceOnNewLineForFunctions t :placeOpenBraceOnNewLineForControlBlocks t))
 
 (setq company-tooltip-align-annotations t)
@@ -501,7 +501,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;---------------------------------  python  ---------------------------------
 
-(require 'python-mode)
+;;(require 'python-mode) ;Apparently, it's automatic by the time of emacs 26.3.
 
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
@@ -515,9 +515,10 @@ something fanciful or something totally random, whatever makes you happy.")
       (setq auto-mode-alist
             (append (list '("\\.py$" . python-mode))
                     auto-mode-alist))
-      (add-hook 'python-mode-hook 'group-python-mode-hook)
       )
   )
+
+(add-hook 'python-mode-hook 'group-python-mode-hook)
 
 ;;---------------------------------  psgml  ----------------------------------
 
@@ -834,10 +835,15 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;;       (append '(("\\.js$" . javascript-mode))
 ;;;               auto-mode-alist))
 
-(setq auto-mode-alist
-      (append (list '("\\.js$" . c++-mode)
-                    )
-              auto-mode-alist))
+;;; (setq auto-mode-alist
+;;;       (append (list '("\\.js$" . c++-mode)
+;;;                     )
+;;;               auto-mode-alist))
+
+(add-hook 'js-mode-hook (lambda ()
+                          (subword-mode 1)
+                          (company-mode 1)
+                          ))
 
 ;;----------------------------------  text  ----------------------------------
 
@@ -977,6 +983,20 @@ something fanciful or something totally random, whatever makes you happy.")
 	 )
        )
       )
+
+;;--------------------------------------------------  plantuml-mode  ---------------------------------------------------
+
+(with-demoted-errors "Error (ignored): %S"
+  (if (featurep 'plantuml-mode)
+      (progn
+        (add-hook 'plantuml-mode-hook
+                  (lambda ()
+                    (setq tab-width 4)
+                    (setq indent-tabs-mode nil)
+                    ))
+        )
+    )
+  )
 
 ;;----------------------------------  org-mode  -----------------------------------
 
@@ -1595,6 +1615,9 @@ language.")
 (font-lock-add-keywords 'typescript-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'javascript-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'csharp-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
@@ -1602,6 +1625,9 @@ language.")
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'haskell-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'python-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (if define-font-lock-org-todo-face

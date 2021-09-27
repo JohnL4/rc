@@ -112,7 +112,7 @@
                                         ;USERNAME -- MS-Windows
                                         ;USER -- Unix
 
-(if (or (and (getenv "USERNAME") (string-match "[Ll]usk\\|^j6l$"
+(if (or (and (getenv "USERNAME") (string-match "[Jj]?[Ll]usk\\|^j6l$"
                                                (getenv "USERNAME")))
         (and (getenv "USER") (string-match "john" (getenv "USER")))
         )
@@ -251,7 +251,9 @@
 
 ;;-------------------------------  end maxima  -------------------------------
 
-(load-library "powershell")             ; http://www.emacswiki.org/emacs/PowerShell
+(with-demoted-errors "Warning: Ignoring error: %S"
+  (load-library "powershell")             ; http://www.emacswiki.org/emacs/PowerShell
+  )
 
 ;;=================================  modes  ==================================
 
@@ -575,18 +577,6 @@ values turn on auto-fill mode, non-positive values turn it off."
                                         ;(set-face-foreground 'org-level-7 "")
                                         ;(set-face-foreground 'org-level-8 "")
 
-      (setq org-ascii-text-width 100)
-
-      (setq org-agenda-clock-consistency-checks
-            '(:max-duration "10:00" :min-duration 0 :max-gap "0:10"
-                            :gap-ok-around ("4:00" ; 4 a.m.
-                                            "12:30" ;lunch
-                                            )
-                            :default-face ((:background "DarkRed") (:foreground "Yellow"))
-                            :overlap-face ((:background "Red") (:foreground "Yellow"))
-                            :gap-face ((:background "Orange") (:foreground "Black"))
-                            ))
-
       (setq org-agenda-files
             (let* (
                    (user-profile (replace-regexp-in-string "\\\\" "\\\\\\\\" (getenv "USERPROFILE"))
@@ -600,6 +590,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                       )
               )
             )
+
                                         ;Doing something a bit hacky here: the first time you create a new host-specific
                                         ;subdirectory in ~/org, it will get missed by org-agenda-files.  You'll have to
                                         ;restart emacs (probably) to pick it up.  This should be as rare as setting up a
@@ -622,7 +613,6 @@ values turn on auto-fill mode, non-positive values turn it off."
                       )
                     ))
       (message (format "org-agenda-files: %S" (org-agenda-files)))
-      
       (setq org-mobile-directory "C:/My Dropbox/MobileOrg")
       (setq org-mobile-inbox-for-pull
             "C:/My Dropbox/MobileOrg/org-mobile-inbox-for-pull.org")
@@ -633,6 +623,7 @@ values turn on auto-fill mode, non-positive values turn it off."
               ))
 
       (setq org-tags-column -120)
+      (setq org-ascii-text-width 120)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (setq fill-column our-default-fill-column)
@@ -669,7 +660,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                :empty-lines 1
                )
               ("t" "TODO entry" entry (file+olp+datetree "journal.org")
-               "* TODO %? %^g"       ; template here -- nil means default will be used (previously had "%^g" at the end)
+               "* TODO %?"           ; template here -- nil means default will be used (previously had "%^g" at the end)
                ;; :unnarrowed t
                :empty-lines 1
                )
