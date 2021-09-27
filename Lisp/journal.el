@@ -51,9 +51,11 @@
                          "te - test"
                          "db - debug"
                          "dc - documentation"
+                         "dv - development (might encompass ds, if, cd, cp, te, db, dc)"
                          "cr - code review (usually of somebody else's code)"
                          "pm - post mortem"
                          "df - defect"
+                         "op - operations (e.g., deploy, configure, etc.)"
                          )
   "Non-exchaustive list of possible phases in an entry.  First word must be unique."
   )
@@ -90,19 +92,23 @@
   (concat journal-dir "/journal.txt")
   )
 
+(defvar journal-timestamp-granularity 'minutes
+  "The granularity of journal timestamps.  Should be either 'minutes or 'seconds.")
+
 (defun journal-timestamp (time)
   "*Journal timestamp for `time', as in `current-time'."
-  (format-time-string "%Y-%m-%d (%a) %H:%M:%S" time) ;Added seconds for logging ("did such-and-such") while testing
-                                                     ;software
+  (let ((format-string
+        (cond ((eq 'minutes journal-timestamp-granularity) "%Y-%m-%d (%a) %H:%M")
+              ((eq 'seconds journal-timestamp-granularity) "%Y-%m-%d (%a) %H:%M:%S")
+              (t (error "Unexpected value of journal-timestamp-granularity: %S" journal-timestamp-granularity)))))
+    (format-time-string format-string time) ;Added seconds for logging ("did such-and-such") while testing
+                                        ;software
+    )
   )
 
-                                        ;journal-parse-timestamp is
-                                        ;not really an
-                                        ;easily-configurable thing,
-                                        ;but if the user changes the
-                                        ;timestamp format, he needs to
-                                        ;teach journal how to parse
-                                        ;the new format.
+                                        ;journal-parse-timestamp is not really an easily-configurable thing, but if the
+                                        ;user changes the timestamp format, he needs to teach journal how to parse the
+                                        ;new format.
 
 (defun journal-parse-timestamp (start end)
   "Parse timestamp between positions `start' and `end', returning
@@ -128,8 +134,7 @@ result in same format as `current-time'."
 
 (defvar journal-timestamp-regexp
   "\\([0-9]+\\)-\\([0-9]+\\)-\\([0-9]+\\)\\s-+(...)\\s-+\\([0-9]+\\):\\([0-9]+\\)"
-  "*Regular expression to match timestamps in journal files.  Many
-subexpressions to ease parsing.")
+  "*Regular expression to match timestamps in journal files.  Many subexpressions to ease parsing.")
 
 (defface journal-error-face
   '(
