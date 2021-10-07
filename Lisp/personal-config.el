@@ -462,33 +462,6 @@
 
 ;;----------------------------------  org  -----------------------------------
 
-;; Stupid little helper function for org-capture, but could be used anywhere, really.
-(defun host-specific-string (fmt)
-  "Returns the given `fmt' string with current hostname (first dotted component only if it includes a fully-qualified
-  domain name) interpolated into it where ``%s'' occurs"
-  (format fmt (or (if (getenv "HOSTNAME")
-                      (car (split-string (getenv "HOSTNAME") "\\.")))
-                  (getenv "COMPUTERNAME")))
-  )
-
-(if (functionp 'home-dir)
-    (message "WARNING: redefining function `home-dir' in personal-config.el"))
-(defun home-dir ()
-  "Returns user's home directory as a string"
-  (if (getenv "USERPROFILE")
-      (getenv "USERPROFILE") ;MS-Windows
-    "~")                     ;Everybody else
-  )
-
-;; http://ergoemacs.org/emacs/elisp_read_file_content.html
-(defun read-lines (file-path)
-  "Return a list of lines from the given text file"
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (split-string (buffer-string) "\n" t)
-    )
-  )
-
 (if (member 'org features)
     (progn
       (set-face-foreground 'org-date "SteelBlue3")

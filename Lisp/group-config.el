@@ -439,18 +439,16 @@ found for the current project                                                   
             (setq comment-start "'")
             (setq comment-padding nil)
             (set-face-foreground 'vbnet-funcall-face "blue")
-            (subword-mode 1)
             ))
 
 ;;---------------------------------  python  ---------------------------------
 
-;;(require 'python-mode) ;Apparently, it's automatic by the time of emacs 26.3.
+(require 'python-mode)
 
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
   (local-set-key "\M-o" 'one-line-section-break)
   (setq fill-column our-default-fill-column)
-  (subword-mode 1)
   )
 
 (if (member 'python-mode features)
@@ -848,7 +846,6 @@ found for the current project                                                   
                                      (face-foreground font-lock-string-face)
                                      )
               )
-            (subword-mode 1)
 	    )
 	  )
 
@@ -1172,7 +1169,7 @@ directory and proceeding to parent directories until it's found or root is reach
   (if (called-interactively-p 'any)
       (setq underscores-only (y-or-n-p "Target underscores only? ")))
   (if (null opener)
-      (setq opener (read-from-minibuffer "Opener: " "=")))
+      (setq opener (read-from-minibuffer "Opener: " "~")))
   (if (null closer)
       (setq closer (read-from-minibuffer "Closer: " opener)))
   (let
@@ -1696,9 +1693,6 @@ language.")
 (font-lock-add-keywords 'typescript-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'javascript-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'csharp-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
@@ -1706,9 +1700,6 @@ language.")
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'haskell-mode
-                        (list
-                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
-(font-lock-add-keywords 'python-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (if define-font-lock-org-todo-face
@@ -1968,18 +1959,17 @@ side of the display."
   )
 
 (defun wf ()
-  "Make the current frame wide, for use in viewing code written by developers
-who didn't feel the need to confine themselves to 80 characters."
+  "Make the current frame wide (132 characters)."
   (interactive)
   (reset-frame-width 132)
+  (setq org-tags-column -129)
   )
 
 (defun nf ()
-  "Make the current frame the ``standard'' size of 80 characters, which some
-developers might consider narrow, after you've made it wide for some reason or
-accidentally repositioned it, or whatever."
+  "Make the current frame the ``standard'' size of 80 characters."
   (interactive)
   (reset-frame-width 80)
+  (setq org-tags-column -77)
   )
 
 ;;----------------------------  end frame sizing  ----------------------------
