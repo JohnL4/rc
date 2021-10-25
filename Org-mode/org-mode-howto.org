@@ -1,0 +1,118 @@
+# -*- org -*-
+#+TITLE: Notes on org-mode text markup
+
+#+COLUMNS: %12TODO %10WHO %3PRIORITY %HOURS(HRS){est+} %82ITEM
+# #+INFOJS_OPT: view:showall toc:t ltoc:nil path:../org-info.js mouse:#B3F2E3
+# Pandoc needs H:9; default is H:3.
+# `^:nil' means raw underscores and carets are not interpreted to mean sub- and superscript.  (Use {} to force interpretation.)
+#+OPTIONS: author:nil creator:t H:9 ^:{}
+#+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600,600i|IBM+Plex+Sans:400,400i,600,600i|IBM+Plex+Serif:400,400i,600,600i">
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="org-mode.css" />
+
+# Generates "up" and "home" links ("." is "current directory").  Can comment one out.
+#+HTML_LINK_UP: .
+#+HTML_LINK_HOME: _index.html
+
+# Use ``#+ATTR_HTML: :class lower-alpha'' on line before list to use the following class.
+# See https://emacs.stackexchange.com/a/18943/17421
+# 
+#+HTML_HEAD: <style type="text/css">
+#+HTML_HEAD:  ol.lower-alpha { list-style-type: lower-alpha; }
+#+HTML_HEAD: </style>
+
+* Overview
+
+  I've gotten in the habit of using emacs org-mode to organize text notes I take at various times, because it's a pretty
+  super outliner and organizer, based on plain text.  Now, it's just what my fingers remember, and, since nobody else
+  ever seems to edit documentation....
+
+* Org-mode explainer
+
+  Text markup.  More stars in header means lower-level items.  Blank lines between paragraphs.  Indentation doesn't
+  matter (except for lists).  (Section headlines must be flush-left, though.)
+
+** Simple formatting
+   
+   *bold* /italic/ =verbatim= ~code~ (probably should use =verbatim= instead of ~code~, because "code" has some weighted
+   meanings in org-mode (e.g., you can run code straight out of an org-mode file)).
+
+   Note that these markup characters should be /joined/ to the stuff they're marking up, no spaces in between.
+   (Sometimes, you'll get weird effects.  By-product of the evolution of org-mode; don't worry about it too much; it's
+   just text, in the end, and not really supposed to get in your way.)
+
+   Subscript: H_{2}O (so don't paste in =code_with_underscores= w/out surrounding it with equals signs).
+   (Superscript: E = mc^2.)  *Note:* if =#+OPTIONS:= contains =^:nil=, you'll /have/ to use {} to get sub- and
+   superscripts, and "naked" underscores won't cause subscripts.
+
+   : one-line code sample (leading colon)
+   : ok, maybe two lines
+
+   #+BEGIN_EXAMPLE
+     Multi-line example
+     like maybe a pasted email
+     or something you don't want line-wrapping or other /character interpretation/ applied to
+   #+END_EXAMPLE 
+
+** Lists
+   
+   Bullet lists:
+  
+   - one
+   - two
+     - sub-item (indentation matters here)
+
+   Definitions:
+  
+   - terms :: Can be defined
+
+   Checklists:
+  
+   - [ ] Items can be...
+   - [X] ...checked off
+   - [-] And (dash means "partially completed")
+     - [X] you can have sublists
+     - [ ] if you really want to
+
+** Links
+   
+   Internal-link syntax is as [[#maintaining-this-file][internal link]], or as [[Links][user-displayed text]] to link to a section.  You can leave the
+   user-displayed text out.
+
+   External links are as: [[https://google.com][Link to Google]] (although just pasting in a URL works fine, too (see "more info", below)).
+
+** More info
+  
+   - More info than you ever cared for: https://orgmode.org
+   - If you truly want to go down the rabbit hole: https://melpa.org/#/?q=org-mode
+
+** Maintaining org-mode files without emacs
+   :PROPERTIES:
+   :CUSTOM_ID: maintaining-this-file
+   :END:
+
+   If you want to update the contents of org-mode files and you're not an emacs user (i.e., you're a normal person), you
+   /might/ be able to use pandoc (https://pandoc.org/) to render the text file to whatever format you like.
+
+   See [[*On processing org-mode files with Pandoc]].
+
+   (You might also be able to do it by installing emacs and using it as a command-line processor, but I haven't figured
+   that out quite yet.)
+
+   Or you might be able to find an org-mode plugin for your favorite editor.  It's a surprisingly popular format, for
+   something you never heard of.
+   
+   As the last alternative, you can just DELETE the generated HTML file (including in any repositories where it exists)
+   and update this text file without attempting to regenerate the HTML.  In the end, it's just text.
+
+* On processing org-mode files with Pandoc
+  
+  There is a program, =pandoc= (https://pandoc.org/), which can be used to turn this org-mode file into whatever you
+  want (HTML, Word, Markdown, PDF, the list goes on).
+
+  If you do use Pandoc, try the following command line:
+
+  : pandoc --from=org --to=html5 --standalone --table-of-contents --toc-depth=9 --number-sections --include-in-header=pandoc-header-extra.html --output=<output-html-file> <this-file>
+
+  Or
+
+  : 
