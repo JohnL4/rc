@@ -1,0 +1,47 @@
+{
+    "workbench.colorTheme": "Default Light+",
+    "editor.selectionHighlight": false,
+    "workbench.colorCustomizations": {
+    "terminal.ansiBrightYellow": "#7a7a00",
+        "editorBracketMatch.background": "#00ffff80",
+        "editorBracketMatch.border": "#00ffff",
+        "editor.lineHighlightBackground": "#ff03",
+        // "editor.lineHighlightBorder": "#ff0f"
+        "editorRuler.foreground": "#f004",
+        "editor.wordHighlightStrongBackground": "#ff990080",
+        "editor.wordHighlightBackground": "#33ff3380"
+    },
+    "editor.rulers": [
+        120
+    ],
+    "editor.largeFileOptimizations": false,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+
+    // TODO highlight config for extension jgclark.vscode-todo-highlight
+    // 
+    "todohighlight.keywords": [
+        "HACK:",
+        {
+            "text": "TODO:",
+            "backgroundColor": "#ff00ff20",
+            "color": "magenta",
+            "fontWeight": "bold"
+        }
+    ],
+    "todohighlight.defaultStyle": {
+        "backgroundColor": "#9900ff20",
+        "color": "#9900ff",
+        "fontWeight": "bold",
+        "overviewRulerColor": "#9900ffff"
+    },
+    "gitlens.currentLine.enabled": false,
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.codeLens.enabled": false,
+    "gitlens.statusBar.enabled": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
+    "terminal.integrated.tabs.enabled": true,
+    "editor.fontSize": 13,
+    "security.workspace.trust.untrustedFiles": "open",
+}
