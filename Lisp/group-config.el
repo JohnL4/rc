@@ -101,6 +101,12 @@ something fanciful or something totally random, whatever makes you happy.")
 					;  "Courier New" seems to the only one
 					;  for which this is true.
 
+      ;; Well... I tried.  It's a nice font, but 8-point is too light and 9-point is too big.
+      ;; (if (and (member "IBM Plex Mono Medium" (font-family-list))
+      ;;          (member "IBM Plex Mono Text" (font-family-list)))
+      ;;     (setq my-default-font "IBM Plex Mono Text-8:medium")
+      ;;   )
+      
       (if (x-list-fonts "Source Code Pro-9")
           (setq my-default-font "Source Code Pro-9") ;https://github.com/adobe-fonts/source-code-pro; use the OpenType version.
         (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
