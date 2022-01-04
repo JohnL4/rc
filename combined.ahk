@@ -64,26 +64,27 @@ IfWinExist ahk_class Emacs
 }
 else
 {
-   Run C:\usr\local\emacs\26.1\bin\runemacs.exe, C:\Users\j6l ; 2nd param is working dir
+   Run C:\usr\local\emacs\27.2\x86_64\bin\runemacs.exe, C:\Users\j6l ; 2nd param is working dir
    WinWait ahk_class Emacs
    WinActivate
 }
 return
 
-#j::                            ;Windows-J key
-IfWinExist ahk_class Emacs
-{
-   WinActivate
-   Send {F8}                    ;Function key stroke (journal entry, in my case)
-}
-else
-{
-   Run C:\usr\local\emacs\26.1\bin\runemacs.exe, C:\Users\j6l
-   WinWait ahk_class Emacs
-   WinActivate
-   Send {F8}
-}
-return
+; Using org-mode for journalling now, don't need my own journalling software.
+; #j::                            ;Windows-J key
+; IfWinExist ahk_class Emacs
+; {
+;    WinActivate
+;    Send {F8}                    ;Function key stroke (journal entry, in my case)
+; }
+; else
+; {
+;    Run C:\usr\local\emacs\27.2\x86_64\bin\runemacs.exe, C:\Users\j6l
+;    WinWait ahk_class Emacs
+;    WinActivate
+;    Send {F8}
+; }
+; return
 
 ; Visual Studio Code
 #v::
@@ -93,7 +94,7 @@ IfWinExist Visual.Studio.Code
 }
 else
 {
-   Run C:\Users\j6l\AppData\Local\Programs\Microsoft VS Code\Code.exe
+   Run C:\Users\John\AppData\Local\Programs\Microsoft VS Code\Code.exe
    WinWait Visual.Studio.Code
    WinActivate
 }

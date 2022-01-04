@@ -101,7 +101,10 @@ something fanciful or something totally random, whatever makes you happy.")
 					;  "Courier New" seems to the only one
 					;  for which this is true.
 
-      (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
+      (if (x-list-fonts "Source Code Pro-9")
+          (setq my-default-font "Source Code Pro-9") ;https://github.com/adobe-fonts/source-code-pro; use the OpenType version.
+        (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
+        )
       
                                         ;Could also try "Lucida Console-9" or "Courier New-9" or
                                         ;  "Lucida Sans Typewriter-9"
@@ -128,7 +131,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (if (not (null window-system))
     (progn
-      (set-default-font my-default-font)
+      ;; (set-default-font my-default-font)
 
       ;; (make-face-italic 'italic)
       ;; (make-face-italic 'bold-italic)
@@ -379,34 +382,36 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;-------------------------------------------------------  mmm  --------------------------------------------------------
 
-(require 'mmm-mode)
-(when (featurep 'mmm-mode)
-  (setq mmm-global-mode 'maybe)
-  (add-hook 'haskell-mode-hook 'my-mmm-mode)
-  (mmm-add-classes
-   '((literate-haskell-bird
-      :submode indented-text-mode
-      :front "^[^>]"
-      :include-front true
-      :back "^>"
-      ;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
-      )
-     (literate-haskell-latex
-      :submode literate-haskell-mode
-      :front "^\\\\begin{code}"
-      :front-offset (end-of-line 1)
-      :back "^\\\\end{code}"
-      :include-back nil
-      :back-offset (beginning-of-line -1)
-      )))
-  ;;(setq mmm-submode-decoration-level 1)
-  (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
-  )
+(with-demoted-errors "Error (ignored): %S"
+  (require 'mmm-mode)
+  (when (featurep 'mmm-mode)
+    (setq mmm-global-mode 'maybe)
+    (add-hook 'haskell-mode-hook 'my-mmm-mode)
+    (mmm-add-classes
+     '((literate-haskell-bird
+	:submode indented-text-mode
+	:front "^[^>]"
+	:include-front true
+	:back "^>"
+	;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
+	)
+       (literate-haskell-latex
+	:submode literate-haskell-mode
+	:front "^\\\\begin{code}"
+	:front-offset (end-of-line 1)
+	:back "^\\\\end{code}"
+	:include-back nil
+	:back-offset (beginning-of-line -1)
+	)))
+    ;;(setq mmm-submode-decoration-level 1)
+    (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
+    )
 
-(defun my-mmm-mode ()
-  ;; go into mmm minor mode when class is given
-  (make-local-variable 'mmm-global-mode)
-  (setq mmm-global-mode 'true))
+  (defun my-mmm-mode ()
+    ;; go into mmm minor mode when class is given
+    (make-local-variable 'mmm-global-mode)
+    (setq mmm-global-mode 'true))
+  )
 
 
 ;;--------------------------------  haskell  ---------------------------------
@@ -689,12 +694,13 @@ something fanciful or something totally random, whatever makes you happy.")
                ;; (c-block-comment-prefix . "*")
                ))
 
-(require 'filladapt)
-                                        ;Suggested by cc-mode home page, for
+(with-demoted-errors "Error (ignored): %S"
+  (require 'filladapt)
+  )                                      ;Suggested by cc-mode home page, for
                                         ;cc-mode 5.30.9.
 (defun my-c-mode-common-hook ()
-  (c-setup-filladapt)
-  (filladapt-mode 1)
+  (if (featurep 'filladapt (c-setup-filladapt)))
+  (if (featurep 'filladapt (filladapt-mode 1)))
   (subword-mode 1)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
@@ -1925,6 +1931,7 @@ side of the display."
 who didn't feel the need to confine themselves to 80 characters."
   (interactive)
   (reset-frame-width 132)
+  (setq org-tags-column -129)
   )
 
 (defun nf ()
@@ -1933,6 +1940,7 @@ developers might consider narrow, after you've made it wide for some reason or
 accidentally repositioned it, or whatever."
   (interactive)
   (reset-frame-width 80)
+  (setq org-tags-column -77)
   )
 
 ;;----------------------------  end frame sizing  ----------------------------
@@ -2166,3 +2174,8 @@ version.  This is true for `Courier New'."
 
 ;;; Local Variables:
 ;;; End:
+
+
+
+
+
