@@ -1,4 +1,3 @@
-:set ic
-:set sw=4
-:set ai
-:set ruler
+set background=dark
+set mouse=a
+color pablo-edited

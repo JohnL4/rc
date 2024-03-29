@@ -17,6 +17,21 @@ case `uname -s` in
 esac
 
 # ----------------------------------------------------------------
+				# Environment variables
+
+export BC_ENV_ARGS=~/.bcrc
+export FIGNORE='.$tx:.$el:.$ja:.$ba:.$sh:.$pl:~'
+export LESS="-Mi -j10 -z-3 -r -q --no-init"
+unset MAILCHECK
+export PAGER=less
+
+				# 'patch' version control; see man
+				# page.
+
+export VERSION_CONTROL=numbered
+
+
+# ----------------------------------------------------------------
 				# Functions
 
 function alert()	{ msg $USERNAME "$@"; }
