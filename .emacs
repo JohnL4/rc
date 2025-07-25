@@ -8,7 +8,7 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
+;; (package-initialize)
 
 (message "loading .emacs...")
 (setq message-log-max 1000)
@@ -84,18 +84,17 @@ the JDE directory to be placed on `load-path'."
  ;; If there is more than one, they won't work right.
  '(ange-ftp-default-user "anonymous")
  '(archive-zip-use-pkzip nil t)
- '(bmkp-auto-light-when-set (quote any-bookmark))
- '(bmkp-light-left-fringe-bitmap (quote right-triangle))
- '(bmkp-light-right-fringe-bitmap (quote left-triangle))
- '(bmkp-light-style-autonamed (quote lfringe))
- '(bmkp-light-style-non-autonamed (quote lfringe))
+ '(bmkp-auto-light-when-set 'any-bookmark)
+ '(bmkp-light-left-fringe-bitmap 'right-triangle)
+ '(bmkp-light-right-fringe-bitmap 'left-triangle)
+ '(bmkp-light-style-autonamed 'lfringe)
+ '(bmkp-light-style-non-autonamed 'lfringe)
  '(bsh-vm-args nil)
  '(canlock-password "7dba1437adbcb175c1ba0e748981647e10db2510")
  '(ediff-patch-options "--verbose -f")
  '(global-font-lock-mode t nil (font-lock))
  '(gnus-summary-highlight
-   (quote
-    (((= mark gnus-canceled-mark)
+   '(((= mark gnus-canceled-mark)
       . gnus-summary-cancelled-face)
      ((and
        (> score default)
@@ -150,57 +149,45 @@ the JDE directory to be placed on `load-path'."
       . gnus-summary-high-read-face)
      ((< score default)
       . gnus-summary-low-read-face)
-     (t . gnus-summary-normal-read-face))))
+     (t . gnus-summary-normal-read-face)))
+ '(graphviz-dot-auto-indent-on-newline nil)
+ '(graphviz-dot-auto-indent-on-semi nil)
+ '(graphviz-dot-indent-width 4)
+ '(graphviz-dot-preview-extension "svg")
  '(jde-gen-class-buffer-template (double-quote-list-elts jdex-class-template))
  '(jde-gen-code-templates
    (append
     (list
-     (cons "Data Member"
-           (quote tempo-template-jdex-data-member))
-     (cons "Function Member"
-           (quote template-jdex-function-member)))
+     (cons "Data Member" 'tempo-template-jdex-data-member)
+     (cons "Function Member" 'template-jdex-function-member))
     jde-gen-code-templates))
  '(jde-gen-console-buffer-template (double-quote-list-elts jdex-class-template))
  '(jde-key-bindings
    (append
     (list
-     (cons ""
-           (quote jde-gen-class))
-     (cons ""
-           (quote tempo-template-jdex-data-member))
-     (cons ""
-           (quote tempo-template-jdex-function-member))
-     (cons "[? ? (control ?.)]"
-           (quote tempo-forward-mark))
-     (cons "[? ? (control ?,)]"
-           (quote tempo-backward-mark))
-     (cons ""
-           (quote jdex-insert-html-code)))
+     (cons "\3\30\14" 'jde-gen-class)
+     (cons "\3\30\26" 'tempo-template-jdex-data-member)
+     (cons "\3\30\15" 'tempo-template-jdex-function-member)
+     (cons "[?\3 ?\30 (control ?.)]" 'tempo-forward-mark)
+     (cons "[?\3 ?\30 (control ?,)]" 'tempo-backward-mark)
+     (cons "\3\30\5" 'jdex-insert-html-code))
     (if
-        (featurep
-         (quote jdex-bean))
+        (featurep 'jdex-bean)
         (list
-         (cons ""
-               (quote jdex-insert-property))))
+         (cons "\3\30\20" 'jdex-insert-property)))
     jde-key-bindings))
  '(markdown-command "pandoc -f gfm -t html5")
- '(org-babel-load-languages (quote ((emacs-lisp . t) (plantuml . t))))
+ '(org-babel-load-languages '((emacs-lisp . t) (plantuml . t)))
  '(org-list-allow-alphabetical t)
  '(org-plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
- '(package-archives
-   (quote
-    (("gnu" . "https://elpa.gnu.org/packages/")
-     ("melpa-stable" . "https://stable.melpa.org/packages/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("org" . "https://orgmode.org/elpa/"))))
  '(package-selected-packages
-   (quote
-    (rainbow-mode htmlize plantuml-mode magit csharp-mode ox-twbs markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode with-editor web-mode powershell ox-reveal ox-pandoc ox-asciidoc mmm-mode haskell-mode epresent company)))
- '(plantuml-default-exec-mode (quote jar))
- '(plantuml-jar-args (quote ("-charset" "UTF-8" "-nometadata")))
+   '(compat gnu-elpa-keyring-update org-modern yaml-mode edit-indirect rust-mode powershell json-mode rainbow-mode htmlize plantuml-mode magit csharp-mode markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode web-mode mmm-mode haskell-mode company))
+ '(plantuml-default-exec-mode 'jar)
+ '(plantuml-jar-args '("-charset" "UTF-8" "-nometadata"))
  '(plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
- '(safe-local-variable-values (quote ((flyspell-mode . 1) (org-footnote-section))))
- '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow))))
+ '(safe-local-variable-values '((flyspell-mode . 1) (org-footnote-section)))
+ '(visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+ '(warning-suppress-types '((files) (unlock-file))))
 (message "loading .emacs...done")
 
 (custom-set-faces
@@ -208,20 +195,32 @@ the JDE directory to be placed on `load-path'."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(diff-refine-added ((t (:inherit diff-refine-changed :background "#a8f1a8"))))
+ '(diff-refine-removed ((t (:inherit diff-refine-changed :background "#ffb2b2"))))
  '(dired-marked ((t (:foreground "red"))))
+ '(fixed-pitch ((t nil)))
+ '(flyspell-incorrect ((t (:foreground "red" :underline (:color "Red1" :style wave :position nil)))))
  '(font-lock-comment-face ((((class color) (background light)) (:italic t :foreground "SteelBlue4")) (((class color) (background dark)) (:italic t :foreground "gray"))))
  '(font-lock-doc-face ((t (:foreground "dark slate blue" :slant italic))))
  '(font-lock-string-face ((((class color) (background light)) (:foreground "firebrick")) (((class color) (background dark)) (:foreground "LightSalmon"))))
  '(gnus-summary-high-read ((((class color) (background light)) (:bold t :foreground "SlateGray"))))
+ '(gnus-summary-high-read-face ((((class color) (background light)) (:bold t :foreground "SlateGray"))) t)
  '(gnus-summary-low-read ((((class color) (background light)) (:italic t :foreground "SlateGray"))))
+ '(gnus-summary-low-read-face ((((class color) (background light)) (:italic t :foreground "SlateGray"))) t)
  '(gnus-summary-low-unread ((t (:italic t :foreground "MediumPurple4"))))
+ '(gnus-summary-low-unread-face ((t (:italic t :foreground "MediumPurple4"))) t)
  '(gnus-summary-normal-read ((((class color) (background light)) (:foreground "SlateGray"))))
+ '(gnus-summary-normal-read-face ((((class color) (background light)) (:foreground "SlateGray"))) t)
+ '(magit-cherry-unmatched ((t (:foreground "turquoise4"))))
+ '(magit-diff-added-highlight ((t (:extend t :background "#cef9ce" :foreground "#005c00"))))
+ '(magit-diff-removed-highlight ((t (:extend t :background "#ffdddd" :foreground "#5d0000"))))
  '(mmm-default-submode-face ((t (:background "linen"))))
  '(org-block ((t (:inherit shadow :foreground "gray40"))))
  '(org-code ((t (:inherit org-verbatim))))
  '(org-column ((t (:background "grey90" :strike-through nil :underline nil :slant normal :weight normal :height 98))))
  '(org-todo ((t (:foreground "magenta" :weight bold))))
  '(region ((((class color) (background light)) (:background "LightSteelBlue1")) (((class color) (background dark)) (:background "DimGray"))))
+ '(sh-heredoc ((t (:foreground "chocolate4"))))
  '(show-paren-match ((t (:background "cyan2"))))
  '(show-paren-match-expression ((t (:background "DarkSlateGray1"))))
  '(speedbar-button-face ((((class color) (background light)) (:background "green4" :foreground "white" :weight bold))))

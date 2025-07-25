@@ -245,6 +245,7 @@
 (if (featurep 'magit)
     (progn
       (global-set-key (kbd "C-x g") 'magit-status)
+      (setq magit-define-global-key-bindings 'recommended)
       (setq magit-git-executable "git")
       )
   )
@@ -590,14 +591,57 @@ values turn on auto-fill mode, non-positive values turn it off."
       (setq org-agenda-clock-consistency-checks
             '(:max-duration "10:00" :min-duration 0 :max-gap "0:10"
                             :gap-ok-around ("4:00" ; 4 a.m.
-                                            "12:30" ;lunch
+                                            "12:00" ;lunch ;if commented out, decided to require it accounted for, in
+                                                    ;order not to be misled by larger gaps around lunchtime.
                                             )
                             :default-face ((:background "DarkRed") (:foreground "Yellow"))
                             :overlap-face ((:background "Red") (:foreground "Yellow"))
                             :gap-face ((:background "LightGoldenrod") ;; (:background "gold")
                                        (:foreground "Black"))
+                            :short-face ((:background "Red") (:foreground "Yellow"))
                             ))
                             
+      (defun filter-journals-from-org-agenda-files ()
+        (seq-remove (lambda (s) (string-match-p "/org\\b" s))
+                    (org-agenda-files)))
+
+      (setq org-refile-targets
+            (list
+             (cons 'filter-journals-from-org-agenda-files (cons :maxlevel 1))
+             ))
+
+      (defun my-org-agenda-todo-sort (a b)
+        "Function should only sort TODO items; since I can't return ``unsortable'' for things that don't compare, I just
+return 0 and hope for the best.  Seems to be working so far.  Higher-priority and more-recently-scheduled items
+have higher urgency." 
+        (if (string-match "\\(Sched\\.\\s-*\\([0-9]+\\)x\\|Scheduled\\):\\s-+\\S-+ \\[#\\([ABC]\\)\\]" a)
+            (let ((a-sched-days (string-to-number (if (null (match-string 2 a)) "0" (match-string 2 a))))
+                  (a-priority (match-string 3 a)))
+              (if (string-match "\\(Sched\\.\\s-*\\([0-9]+\\)x\\|Scheduled\\):\\s-+\\S-+ \\[#\\([ABC]\\)\\]" b)
+                  (let ((b-sched-days (string-to-number (if (null (match-string 2 b)) "0" (match-string 2 b))))
+                        (b-priority (match-string 3 b)))
+                                        ;(message "Agenda item a of type %s: %s" (type-of a) a)
+                                        ;(message "Agenda item b of type %s: %s" (type-of b) b)
+                                        ;(message "a-priority: %s; b-priority: %s; a-sched-days: %s; b-sched-days: %s"
+                                        ;         a-priority b-priority a-sched-days b-sched-days)
+                    (cond ((string< a-priority b-priority) 1)
+                          ((string> a-priority b-priority) -1)
+                          (t (cond ((< a-sched-days b-sched-days) 1)
+                                   ((> a-sched-days b-sched-days) -1)
+                                   (t 0)))))
+                0
+                )
+              )
+          0
+          )
+        )
+
+      (setq org-agenda-cmp-user-defined 'my-org-agenda-todo-sort)
+      (setq org-agenda-sorting-strategy '((agenda habit-down time-up user-defined-down category-keep)
+                                          (todo urgency-down category-keep)
+                                          (tags urgency-down category-keep)
+                                          (search category-keep)))
+
       ;;------------------------------------  org-agenda-files  ------------------------------------
 
       ;; Note that the entries in org-agenda-files are NOT searched recursively, so you have to add each subdirectory
@@ -611,13 +655,13 @@ values turn on auto-fill mode, non-positive values turn it off."
                    )
               (message (format "user-profile: %s" user-profile))
               (mapcar (lambda (s)
-                        (replace-regexp-in-string "%USERPROFILE%"
+                        (replace-regexp-in-string "%userprofile%"
                                                   user-profile
                                                   s))
-                      ;; org-agenda files on One Drive so they'll appear the same both in the buble and on my laptop.
+                      ;; org-agenda files on One Drive so they'll appear the same both in the bubble and on my laptop.
                       ;; Note that k6 notes (and possibly other projects) may be under source control not on One Drive,
                       ;; so a nightly job to copy them to their working directories might be necessary/helpful.
-                      (read-lines (concat (home-dir) "/OneDrive - Pulse8 Inc/org/org-agendas.txt"))
+                      (read-lines (concat (home-dir) "/OneDrive - Veradigm Corporate/org/org-agendas.txt"))
                       )
               )
             )
@@ -629,7 +673,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                                         ;new machine on which you org-capture notes and whatnot.  This seemed better
                                         ;than writing a new capture-template function to find the right file and
                                         ;position point at the right location.
-      (setq org-directory (host-specific-string (concat (home-dir) "/OneDrive - Pulse8 Inc/org/Host-%s")))
+      (setq org-directory (host-specific-string (concat (home-dir) "/OneDrive - Veradigm Corporate/org/Host-%s")))
       (message (format "org-directory: %s" org-directory))
       ;; (setq org-agenda-files (concat org-directory "/org-agendas.txt")) ;Old value
       (setq org-agenda-files
@@ -640,7 +684,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                       (cons home-org
                             (file-expand-wildcards (concat
                                                     (home-dir)
-                                                    "/OneDrive - Pulse8 Inc/org/Host-*")
+                                                    "/OneDrive - Veradigm Corporate/org/Host-*")
                                                    t) ;Final boolean is full pathnames.
                             )
                       )
@@ -658,8 +702,9 @@ values turn on auto-fill mode, non-positive values turn it off."
               "org-mobile-setup.org"
               ))
 
-      (setq org-tags-column -117)
+      (setq org-tags-column -128)
       (setq org-ascii-text-width 120)
+      (setq org-adapt-indentation t)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (setq fill-column our-default-fill-column)
@@ -668,6 +713,7 @@ values turn on auto-fill mode, non-positive values turn it off."
                   (setq comment-start-skip "---+\\(\\s-*\\)")
                   (setq org-footnote-section nil)
                   (setq org-footnote-auto-adjust t)
+                  (if (featurep 'company) (company-mode-on))
                   ))
 
       (with-demoted-errors "Warning: Ignoring error: %S"
@@ -709,6 +755,11 @@ values turn on auto-fill mode, non-positive values turn it off."
                :empty-lines 1
                )
               ))
+      (setq org-log-into-drawer nil);  "NOTES") ;If non-nil, org-add-note (C-z) will update a drawer, not the note body itself.
+                                         ;Default drawer is LOGBOOK (as of org 9.5.4).  Note that notes in the LOGBOOK
+                                         ;drawer, at least in org 9.5.4, cause some confusion when building the agenda
+                                         ;(note header gets appended), so it's best to log notes into a different drawer
+                                         ;than LOGBOOK.
       ))
 
 ;;---------------------------------------------------  end org-mode  ---------------------------------------------------
@@ -747,8 +798,8 @@ values turn on auto-fill mode, non-positive values turn it off."
 
 ;;-------------------------------  end tramp  --------------------------------
 
-(require 'adaptive-wrap)
-(setq adaptive-wrap-extra-indent 2)
+;; (require 'adaptive-wrap)                ;Package obsoleted and removed
+;; (setq adaptive-wrap-extra-indent 2)
 
 ;;===============================  end modes  ================================
 

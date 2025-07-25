@@ -79,7 +79,18 @@ something fanciful or something totally random, whatever makes you happy.")
 (require 'package)
 ;; (add-to-list 'package-archives
 ;;              '("melpa" . "http://melpa.milkbox.net/packages/") t) ;For haskell-mode.
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+
+;; On windows, emacs/cygwin get stupid.  This is the fix.
+;; Courtesy of https://www.reddit.com/r/emacs/comments/ymzw78/comment/l2254zq/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+;; NOTE: May need to run manually when list-packages fails.
+(when-let (cygpath (executable-find "cygpath.exe"))
+  (setopt package-gnupghome-dir
+          (with-temp-buffer
+            (call-process cygpath nil t nil
+                          "-u" (default-value 'package-gnupghome-dir))
+            (string-trim (buffer-string)))))
 
 ;;---------------------------------  fonts  ----------------------------------
 
@@ -106,11 +117,26 @@ something fanciful or something totally random, whatever makes you happy.")
       ;;          (member "IBM Plex Mono Text" (font-family-list)))
       ;;     (setq my-default-font "IBM Plex Mono Text-8:medium")
       ;;   )
-      
-      (if (x-list-fonts "Source Code Pro-9")
-          (setq my-default-font "Source Code Pro-9") ;https://github.com/adobe-fonts/source-code-pro; use the OpenType version.
-        (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
-        )
+      (cond
+                                        ;https://github.com/adobe-fonts/source-code-pro; use the OpenType version.
+       ((x-list-fonts "Source Code Pro-9") (setq my-default-font "Source Code Pro Medium-9"))
+                                        ; https://github.com/microsoft/cascadia-code (has ligatures: != \/ |> >= )
+       ((x-list-fonts "Cascadia Code-9") (setq my-default-font "Cascadia Code-9"))
+       (t (setq my-default-font "Consolas-9")) ;New with Windows 7 (and Vista?)
+       )
+       
+      ;; (if (x-list-fonts "Source Code Pro-9")
+      ;;     (setq my-default-font "Source Code Pro Medium-9") ;https://github.com/adobe-fonts/source-code-pro; use the OpenType version.
+      ;;   (setq my-default-font "Consolas-9") ;New with Windows 7 (and Vista?)
+      ;;   ;; Could also try:
+      ;;   ;;  IBM Plex Mono
+      ;;   ;;  Courier New
+      ;;   ;;  Lucida Sans Typewriter
+      ;;   ;;  Liberation Mono            Libre Office?
+      ;;   ;;  DejaVu Sans Mono
+      ;;   ;;  Cascadia Code
+      ;;   ;;  JetBrains Mono
+      ;;   )
       
                                         ;Could also try "Lucida Console-9" or "Courier New-9" or
                                         ;  "Lucida Sans Typewriter-9"
@@ -137,7 +163,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (if (not (null window-system))
     (progn
-      (set-default-font my-default-font)
+      ;; (set-default-font my-default-font)
 
       ;; (make-face-italic 'italic)
       ;; (make-face-italic 'bold-italic)
@@ -438,9 +464,9 @@ something fanciful or something totally random, whatever makes you happy.")
 ;;---------------------------------  csharp  ---------------------------------
 
 (ignore-errors
-(require 'csharp-mode)
-(setq auto-mode-alist
-      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+;; (require 'csharp-mode)
+;; (setq auto-mode-alist
+;;       (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
 
 (defun my-csharp-mode-fn ()
       "function that runs when csharp-mode is initialized for a buffer."
@@ -885,7 +911,8 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (add-hook 'sh-mode-hook
 	  (lambda ()
-	    (setq sh-indentation 3)
+	    ;; (setq sh-indentation 3)
+            (setq fill-column 120)
 	    (my-fill-mode)		;Auto Word-wrap
 	    (setq tempo-interactive t)
 	    (local-set-key "\C-j" 'newline)
@@ -1641,6 +1668,10 @@ language.")
 (font-lock-add-keywords 'python-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'sh-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+
 (if define-font-lock-org-todo-face
     (font-lock-add-keywords 'org-mode
                             (list
