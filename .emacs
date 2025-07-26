@@ -91,64 +91,29 @@ the JDE directory to be placed on `load-path'."
  '(bmkp-light-style-non-autonamed 'lfringe)
  '(bsh-vm-args nil)
  '(canlock-password "7dba1437adbcb175c1ba0e748981647e10db2510")
+ '(company-dabbrev-code-ignore-case nil)
+ '(company-dabbrev-downcase nil)
+ '(company-dabbrev-ignore-case nil)
+ '(company-tooltip-align-annotations t t)
  '(ediff-patch-options "--verbose -f")
  '(global-font-lock-mode t nil (font-lock))
  '(gnus-summary-highlight
-   '(((= mark gnus-canceled-mark)
-      . gnus-summary-cancelled-face)
-     ((and
-       (> score default)
-       (or
-        (= mark gnus-dormant-mark)
-        (= mark gnus-ticked-mark)))
-      . gnus-summary-high-ticked-face)
-     ((and
-       (< score default)
-       (or
-        (= mark gnus-dormant-mark)
-        (= mark gnus-ticked-mark)))
-      . gnus-summary-low-ticked-face)
-     ((or
-       (= mark gnus-dormant-mark)
-       (= mark gnus-ticked-mark))
-      . gnus-summary-normal-ticked-face)
-     ((and
-       (> score default)
-       (= mark gnus-ancient-mark))
-      . gnus-summary-high-ancient-face)
-     ((and
-       (< score default)
-       (= mark gnus-ancient-mark))
-      . gnus-summary-low-ancient-face)
-     ((= mark gnus-ancient-mark)
-      . gnus-summary-normal-ancient-face)
-     ((and
-       (> score default)
-       (= mark gnus-unread-mark))
+   '(((= mark gnus-canceled-mark) . gnus-summary-cancelled-face)
+     ((and (> score default) (or (= mark gnus-dormant-mark) (= mark gnus-ticked-mark))) . gnus-summary-high-ticked-face)
+     ((and (< score default) (or (= mark gnus-dormant-mark) (= mark gnus-ticked-mark))) . gnus-summary-low-ticked-face)
+     ((or (= mark gnus-dormant-mark) (= mark gnus-ticked-mark)) . gnus-summary-normal-ticked-face)
+     ((and (> score default) (= mark gnus-ancient-mark)) . gnus-summary-high-ancient-face)
+     ((and (< score default) (= mark gnus-ancient-mark)) . gnus-summary-low-ancient-face)
+     ((= mark gnus-ancient-mark) . gnus-summary-normal-ancient-face)
+     ((and (> score default) (= mark gnus-unread-mark)) . gnus-summary-high-unread-face)
+     ((and (< score default) (= mark gnus-unread-mark)) . gnus-summary-low-unread-face)
+     ((= mark gnus-unread-mark) . gnus-summary-normal-unread-face)
+     ((and (> score default) (memq mark (list gnus-downloadable-mark gnus-undownloaded-mark)))
       . gnus-summary-high-unread-face)
-     ((and
-       (< score default)
-       (= mark gnus-unread-mark))
+     ((and (< score default) (memq mark (list gnus-downloadable-mark gnus-undownloaded-mark)))
       . gnus-summary-low-unread-face)
-     ((= mark gnus-unread-mark)
-      . gnus-summary-normal-unread-face)
-     ((and
-       (> score default)
-       (memq mark
-             (list gnus-downloadable-mark gnus-undownloaded-mark)))
-      . gnus-summary-high-unread-face)
-     ((and
-       (< score default)
-       (memq mark
-             (list gnus-downloadable-mark gnus-undownloaded-mark)))
-      . gnus-summary-low-unread-face)
-     ((memq mark
-            (list gnus-downloadable-mark gnus-undownloaded-mark))
-      . gnus-summary-normal-unread-face)
-     ((> score default)
-      . gnus-summary-high-read-face)
-     ((< score default)
-      . gnus-summary-low-read-face)
+     ((memq mark (list gnus-downloadable-mark gnus-undownloaded-mark)) . gnus-summary-normal-unread-face)
+     ((> score default) . gnus-summary-high-read-face) ((< score default) . gnus-summary-low-read-face)
      (t . gnus-summary-normal-read-face)))
  '(graphviz-dot-auto-indent-on-newline nil)
  '(graphviz-dot-auto-indent-on-semi nil)
@@ -157,31 +122,25 @@ the JDE directory to be placed on `load-path'."
  '(jde-gen-class-buffer-template (double-quote-list-elts jdex-class-template))
  '(jde-gen-code-templates
    (append
-    (list
-     (cons "Data Member" 'tempo-template-jdex-data-member)
-     (cons "Function Member" 'template-jdex-function-member))
+    (list (cons "Data Member" 'tempo-template-jdex-data-member) (cons "Function Member" 'template-jdex-function-member))
     jde-gen-code-templates))
  '(jde-gen-console-buffer-template (double-quote-list-elts jdex-class-template))
  '(jde-key-bindings
    (append
-    (list
-     (cons "\3\30\14" 'jde-gen-class)
-     (cons "\3\30\26" 'tempo-template-jdex-data-member)
-     (cons "\3\30\15" 'tempo-template-jdex-function-member)
-     (cons "[?\3 ?\30 (control ?.)]" 'tempo-forward-mark)
-     (cons "[?\3 ?\30 (control ?,)]" 'tempo-backward-mark)
-     (cons "\3\30\5" 'jdex-insert-html-code))
-    (if
-        (featurep 'jdex-bean)
-        (list
-         (cons "\3\30\20" 'jdex-insert-property)))
-    jde-key-bindings))
+    (list (cons "\3\30\14" 'jde-gen-class) (cons "\3\30\26" 'tempo-template-jdex-data-member)
+          (cons "\3\30\15" 'tempo-template-jdex-function-member) (cons "[?\3 ?\30 (control ?.)]" 'tempo-forward-mark)
+          (cons "[?\3 ?\30 (control ?,)]" 'tempo-backward-mark) (cons "\3\30\5" 'jdex-insert-html-code))
+    (if (featurep 'jdex-bean) (list (cons "\3\30\20" 'jdex-insert-property))) jde-key-bindings))
  '(markdown-command "pandoc -f gfm -t html5")
  '(org-babel-load-languages '((emacs-lisp . t) (plantuml . t)))
  '(org-list-allow-alphabetical t)
  '(org-plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/") ("melpa" . "https://melpa.org/packages/")))
  '(package-selected-packages
-   '(compat gnu-elpa-keyring-update org-modern yaml-mode edit-indirect rust-mode powershell json-mode rainbow-mode htmlize plantuml-mode magit csharp-mode markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode web-mode mmm-mode haskell-mode company))
+   '(company compat csharp-mode edit-indirect gnu-elpa-keyring-update graphviz-dot-mode haskell-mode htmlize json-mode
+             lua-mode magit markdown-mode markdown-mode+ markdown-preview-mode mmm-mode org org-modern plantuml-mode
+             powershell rainbow-mode rust-mode tide web-mode yaml-mode))
  '(plantuml-default-exec-mode 'jar)
  '(plantuml-jar-args '("-charset" "UTF-8" "-nometadata"))
  '(plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")

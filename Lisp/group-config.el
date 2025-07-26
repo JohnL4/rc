@@ -414,34 +414,36 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;-------------------------------------------------------  mmm  --------------------------------------------------------
 
-(require 'mmm-mode)
-(when (featurep 'mmm-mode)
-  (setq mmm-global-mode 'maybe)
-  (add-hook 'haskell-mode-hook 'my-mmm-mode)
-  (mmm-add-classes
-   '((literate-haskell-bird
-      :submode indented-text-mode
-      :front "^[^>]"
-      :include-front true
-      :back "^>"
-      ;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
-      )
-     (literate-haskell-latex
-      :submode literate-haskell-mode
-      :front "^\\\\begin{code}"
-      :front-offset (end-of-line 1)
-      :back "^\\\\end{code}"
-      :include-back nil
-      :back-offset (beginning-of-line -1)
-      )))
-  ;;(setq mmm-submode-decoration-level 1)
-  (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
-  )
+(with-demoted-errors "Error (ignored): %S"
+  (require 'mmm-mode)
+  (when (featurep 'mmm-mode)
+    (setq mmm-global-mode 'maybe)
+    (add-hook 'haskell-mode-hook 'my-mmm-mode)
+    (mmm-add-classes
+     '((literate-haskell-bird
+	:submode indented-text-mode
+	:front "^[^>]"
+	:include-front true
+	:back "^>"
+	;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
+	)
+       (literate-haskell-latex
+	:submode literate-haskell-mode
+	:front "^\\\\begin{code}"
+	:front-offset (end-of-line 1)
+	:back "^\\\\end{code}"
+	:include-back nil
+	:back-offset (beginning-of-line -1)
+	)))
+    ;;(setq mmm-submode-decoration-level 1)
+    (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
+    )
 
-(defun my-mmm-mode ()
-  ;; go into mmm minor mode when class is given
-  (make-local-variable 'mmm-global-mode)
-  (setq mmm-global-mode 'true))
+  (defun my-mmm-mode ()
+    ;; go into mmm minor mode when class is given
+    (make-local-variable 'mmm-global-mode)
+    (setq mmm-global-mode 'true))
+  )
 
 
 ;;--------------------------------  haskell  ---------------------------------
@@ -724,12 +726,13 @@ something fanciful or something totally random, whatever makes you happy.")
                ;; (c-block-comment-prefix . "*")
                ))
 
-(require 'filladapt)
-                                        ;Suggested by cc-mode home page, for
+(with-demoted-errors "Error (ignored): %S"
+  (require 'filladapt)
+  )                                      ;Suggested by cc-mode home page, for
                                         ;cc-mode 5.30.9.
 (defun my-c-mode-common-hook ()
-  (c-setup-filladapt)
-  (filladapt-mode 1)
+  (if (featurep 'filladapt (c-setup-filladapt)))
+  (if (featurep 'filladapt (filladapt-mode 1)))
   (subword-mode 1)
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
@@ -1032,7 +1035,9 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (with-demoted-errors "ERROR: %S"
   ;; (require 'org-install)
+  (message "Requiring org...")
   (require 'org)
+  (message "Requiring org...Done")
   ;; (require 'ox-hugo)
   ;; (require 'ox-hugo-auto-export)
   (require 'ox-md)

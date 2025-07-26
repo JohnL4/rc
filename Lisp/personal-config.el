@@ -245,7 +245,6 @@
 (if (featurep 'magit)
     (progn
       (global-set-key (kbd "C-x g") 'magit-status)
-      (setq magit-define-global-key-bindings 'recommended)
       (setq magit-git-executable "git")
       )
   )
@@ -661,7 +660,7 @@ have higher urgency."
                       ;; org-agenda files on One Drive so they'll appear the same both in the bubble and on my laptop.
                       ;; Note that k6 notes (and possibly other projects) may be under source control not on One Drive,
                       ;; so a nightly job to copy them to their working directories might be necessary/helpful.
-                      (read-lines (concat (home-dir) "/OneDrive - Veradigm Corporate/org/org-agendas.txt"))
+                      (read-lines (concat (home-dir) "/Dropbox/org/org-agendas.txt"))
                       )
               )
             )
@@ -673,7 +672,7 @@ have higher urgency."
                                         ;new machine on which you org-capture notes and whatnot.  This seemed better
                                         ;than writing a new capture-template function to find the right file and
                                         ;position point at the right location.
-      (setq org-directory (host-specific-string (concat (home-dir) "/OneDrive - Veradigm Corporate/org/Host-%s")))
+      (setq org-directory (host-specific-string (concat (home-dir) "/Dropbox/Orgzly/Host-%s")))
       (message (format "org-directory: %s" org-directory))
       ;; (setq org-agenda-files (concat org-directory "/org-agendas.txt")) ;Old value
       (setq org-agenda-files
@@ -681,12 +680,12 @@ have higher urgency."
                     (let* (
                            (home-org (format "%s/org" (home-dir)))
                            )
-                      (cons home-org
+                      ;; (cons home-org
                             (file-expand-wildcards (concat
                                                     (home-dir)
-                                                    "/OneDrive - Veradigm Corporate/org/Host-*")
+                                                    "/Dropbox/Orgzly/Host-*")
                                                    t) ;Final boolean is full pathnames.
-                            )
+                         ;;   )
                       )
                     ))
       (message (format "finally, org-agenda-files: %S" (org-agenda-files)))
@@ -798,8 +797,10 @@ have higher urgency."
 
 ;;-------------------------------  end tramp  --------------------------------
 
-;; (require 'adaptive-wrap)                ;Package obsoleted and removed
-;; (setq adaptive-wrap-extra-indent 2)
+;; (with-demoted-errors "Warning: Ignoring error: %S"
+;;   (require 'adaptive-wrap)                            ;Package obsoleted and removed
+;;   (setq adaptive-wrap-extra-indent 2)
+;;   )
 
 ;;===============================  end modes  ================================
 
