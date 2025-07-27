@@ -37,19 +37,19 @@ TERM vt100
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
 NORMAL 00	# global default, although everything should be something.
 FILE 00 	# normal file
-DIR 34 	# directory
-LINK 36 	# symbolic link.  (If you set this to 'target' instead of a
+DIR 01;34 	# directory
+LINK 01;36 	# symbolic link.  (If you set this to 'target' instead of a
            	# numerical value, the color is as for the file pointed to.)
 FIFO 40;33	# pipe
-SOCK 35	# socket
-DOOR 35	# door
+SOCK 01;35	# socket
+DOOR 01;35	# door
 BLK 40;33	# block device driver
 CHR 40;33 	# character device driver
 ORPHAN 1;40;31  # symlink to nonexistent file
-STICKY_OTHER_WRITABLE 01;05;30;42 # dir that is sticky and other-writable (+t,o+w)
-OTHER_WRITABLE 01;05;34;42 # dir that is other-writable (o+w) and not sticky
+# STICKY_OTHER_WRITABLE 30;41 # dir that is sticky and other-writable (+t,o+w)
+# OTHER_WRITABLE 30;43 # dir that is other-writable (o+w) and not sticky
 # This is for files with execute permission:
-EXEC 32
+EXEC 01;32
 
 # List any file extensions like '.gz' or '.tar' that you would like ls
 # to colorize below. Put the extension, a space, and the color init string.
@@ -68,7 +68,7 @@ EXEC 32
 .BAT 32
 
 # Backup files
-# *~ 37 # grey
+*~ 37 # grey
 
 .tar 31 # archives or compressed (bright red)
 .TAR 31 # archives or compressed (bright red)
@@ -83,8 +83,6 @@ EXEC 32
 .zip 31
 .ZIP 31
 .z   31
-.Z   31
-.Z   31
 .Z   31
 .gz  31
 .GZ  31

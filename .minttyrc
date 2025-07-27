@@ -1,5 +1,5 @@
 BoldAsFont=yes
-ForegroundColour=0,224,0
+ForegroundColour=0,255,0
 Transparency=off
 OpaqueWhenFocused=yes
 CursorType=block
@@ -10,6 +10,4 @@ Rows=40
 BellFlash=yes
 Font=Consolas
 Blue=112,162,255
-Green=0,224,0
-CursorColour=0,224,0
-Columns=120
+CursorColour=0,255,0
