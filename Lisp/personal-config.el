@@ -646,25 +646,27 @@ have higher urgency."
       ;; Note that the entries in org-agenda-files are NOT searched recursively, so you have to add each subdirectory
       ;; explicitly.  It's really like a "hardcoded" list of major projects.
       
-      (message (format "before setting org-agenda-files: %S" org-agenda-files))
-      (setq org-agenda-files
-            (let* (
-                   (user-profile (replace-regexp-in-string "\\\\" "\\\\\\\\" (getenv "USERPROFILE"))
-                                 )
-                   )
-              (message (format "user-profile: %s" user-profile))
-              (mapcar (lambda (s)
-                        (replace-regexp-in-string "%userprofile%"
-                                                  user-profile
-                                                  s))
-                      ;; org-agenda files on One Drive so they'll appear the same both in the bubble and on my laptop.
-                      ;; Note that k6 notes (and possibly other projects) may be under source control not on One Drive,
-                      ;; so a nightly job to copy them to their working directories might be necessary/helpful.
-                      (read-lines (concat (home-dir) "/Dropbox/org/org-agendas.txt"))
-                      )
-              )
-            )
-      (message (format "initial org-agenda-files: %S" org-agenda-files))
+      (if (eq "windows-nt" system-type)
+          (progn
+            (message (format "before setting org-agenda-files: %S" org-agenda-files))
+            (setq org-agenda-files
+                  (let* (
+                         (user-profile (replace-regexp-in-string "\\\\" "\\\\\\\\" (getenv "USERPROFILE"))
+                                       )
+                         )
+                    (message (format "user-profile: %s" user-profile))
+                    (mapcar (lambda (s)
+                              (replace-regexp-in-string "%userprofile%"
+                                                        user-profile
+                                                        s))
+                            ;; org-agenda files on One Drive so they'll appear the same both in the bubble and on my laptop.
+                            ;; Note that k6 notes (and possibly other projects) may be under source control not on One Drive,
+                            ;; so a nightly job to copy them to their working directories might be necessary/helpful.
+                            (read-lines (concat (home-dir) "/Dropbox/org/org-agendas.txt"))
+                            )
+                    )
+                  )
+            (message (format "initial org-agenda-files: %S" org-agenda-files))
 
                                         ;Doing something a bit hacky here: the first time you create a new host-specific
                                         ;subdirectory in ~/org, it will get missed by org-agenda-files.  You'll have to
@@ -672,23 +674,25 @@ have higher urgency."
                                         ;new machine on which you org-capture notes and whatnot.  This seemed better
                                         ;than writing a new capture-template function to find the right file and
                                         ;position point at the right location.
-      (setq org-directory (host-specific-string (concat (home-dir) "/Dropbox/Orgzly/Host-%s")))
-      (message (format "org-directory: %s" org-directory))
-      ;; (setq org-agenda-files (concat org-directory "/org-agendas.txt")) ;Old value
-      (setq org-agenda-files
-            (append org-agenda-files
-                    (let* (
-                           (home-org (format "%s/org" (home-dir)))
-                           )
-                      ;; (cons home-org
+            (setq org-directory (host-specific-string (concat (home-dir) "/Dropbox/Orgzly/Host-%s")))
+            (message (format "org-directory: %s" org-directory))
+            ;; (setq org-agenda-files (concat org-directory "/org-agendas.txt")) ;Old value
+            (setq org-agenda-files
+                  (append org-agenda-files
+                          (let* (
+                                 (home-org (format "%s/org" (home-dir)))
+                                 )
+                            ;; (cons home-org
                             (file-expand-wildcards (concat
                                                     (home-dir)
                                                     "/Dropbox/Orgzly/Host-*")
                                                    t) ;Final boolean is full pathnames.
-                         ;;   )
-                      )
-                    ))
-      (message (format "finally, org-agenda-files: %S" (org-agenda-files)))
+                            ;;   )
+                            )
+                          ))
+            (message (format "finally, org-agenda-files: %S" (org-agenda-files)))
+            )
+        )
 
       ;;----------------------------------  end org-agenda-files  ----------------------------------
 

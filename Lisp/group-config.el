@@ -157,7 +157,11 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (if (eq 'x window-system)
     (progn
-      (setq my-default-font "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*")
+      (setq my-default-font
+	    ;; "Courier 12"
+            "DejaVu Sans Mono 10"
+	    ;; "-*-courier-medium-r-*-*-*-120-*-*-m-*-*-*"
+	    )
       )
   )
 
@@ -1958,9 +1962,10 @@ language.")
 side of the display."
   (set-frame-width (selected-frame) width)
   (set-frame-position (selected-frame)
-                      (- (cadr (cdr (cdr (car (car (display-monitor-attributes-list)))))) ; was: (x-display-pixel-width)
+                      (- (x-display-pixel-width)
+                         ;; (cadr (cdr (cdr (car (car (display-monitor-attributes-list)))))) ; was: (x-display-pixel-width)
                          (* width (frame-char-width))
-                         45             ;scroll bar, window border fudge factor (Windows 10, Lenovo T480, Dell 2709W).
+                         ;; 45             ;scroll bar, window border fudge factor (Windows 10, Lenovo T480, Dell 2709W).
                          )
                       0)
   )
