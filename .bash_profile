@@ -35,3 +35,4 @@ fi
 #   INFOPATH=${HOME}/info:${INFOPATH}
 # fi
 
+. "$HOME/.cargo/env"

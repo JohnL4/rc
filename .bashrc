@@ -3,7 +3,6 @@
 # $Header: v:/J80Lusk/CVSROOT/Dotfiles/.bashrc,v 1.62 2003/05/02 00:57:30 J80Lusk Exp $
 
 echo "----------------  .bashrc  ----------------"
-echo "(hi)"
 
 # ----------------------------------------------------------------
 
@@ -42,7 +41,7 @@ fi
 #     echo -ne "\\e]4;4;#4083FF\\a" # "blue" -- make it lighter so it's more visible on black background.
 # fi
 
-export PATH="${PATH}:~/Work/Tools/Bin:~/Bin"
+export PATH="${PATH}:/usr/local/go/bin:~/Work/Tools/Bin:~/Bin"
 export PERLLIB="/usr/local/lib/perl"
 export PRINTER='\\rprint1\NETprint37 (PS)'
 export TIMEFORMAT="real %lR	user %lU	sys %lS	cpu %P%%"
@@ -86,6 +85,11 @@ export PAGER=less
 export VERSION_CONTROL=numbered
 
 jdk1_1_8_classpath=".;e:/Java/xml4j/xml4j_1_1_16.jar;e:/java/JSDK2.0/lib/jsdk.jar;e:/Java/JUnit2.1;e:/Java/jdk1.1.8/classes;e:/Java/jdk1.1.8/lib/classes.zip"
+
+# ----------------------------------------------------------------
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --bash)"            # Only works with version 0.48.0 or later.  See
+                                # https://github.com/junegunn/fzf?tab=readme-ov-file#setting-up-shell-integration 
 
 # ----------------------------------------------------------------
 				# Functions
@@ -481,3 +485,4 @@ echo "--------------  .bashrc ends  -------------"
 
 
 # End:
+. "$HOME/.cargo/env"
