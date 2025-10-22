@@ -1,0 +1,270 @@
+				# -*- text -*-
+				
+DestroyFunc StartFunction
+AddToFunc StartFunction
+   + I Module FvwmIconMan
+
+DefaultFont -*-lucida-medium-r-*-sans-12-*-*-*-*-*-*-*
+
+Style * \
+   Font "-*-new century schoolbook-bold-i-*-*-12-*-*-*-*-*-*-*",	\
+   DepressableBorder,							\
+   Color gray85/gray50,							\
+   HilightFore black,							\
+   HilightBack DeepSkyBlue3,						\
+   DecorateTransient,							\
+   MwmButtons,								\
+   IconBox 0 0 -1 -1, IconGrid 4 4, IconFill left bottom		\
+   MinOverlapPlacement
+
+
+
+Style beantest* \
+   NoTitle
+
+Style newmail \
+   NoTitle
+
+# Style javax.swing.JFrame \
+#    DecorateTransient
+
+# Style javax.swing.Popup$HeavyWeightWindow \
+#    NakedTransient
+
+# Style AcroRead \
+#    DecorateTransient
+
+
+# Style Mozilla-bin \
+#    DecorateTransient
+
+# Style OpenOffice* \
+#    DecorateTransient
+
+# Style javax.swing.JDialog \
+#    DecorateTransient
+
+				# Custom dialog box?
+# Style com.gentleware.poseidon.ui.* \
+#    DecorateTransient
+
+# Style Eclipse \
+#    DecorateTransient
+
+Style Civclient \
+   GrabFocus
+
+Style oclock \
+   NoTitle
+
+Style xload \
+   NoTitle
+
+Style xbiff \
+   NoTitle
+
+Style xmms \
+   StaysOnTop, NoTitle
+
+Style Emacs \
+   Icon /usr/local/share/icons/emacs.xpm
+
+Style XTerm \
+   Icon /usr/X11R6/include/X11/bitmaps/terminal
+
+TitleStyle		HGradient 100 DeepSkyBlue3 Aquamarine
+# BorderStyle	Active	Solid DeepSkyBlue3
+
+# TitleStyle ActiveUp	HGradient 100 DeepSkyBlue3 Aquamarine
+
+# TitleStyle ActiveDown	HGradient 100 DeepSkyBlue3 Aquamarine
+
+TitleStyle	Inactive Solid gray50
+# BorderStyle	Inactive Solid SteelBlue
+
+#----------------------------------------------------------------
+
+# No multiple desktops, scrolling, other nonsense.  >:(
+
+DeskTopSize 1x1
+EdgeThickness 0
+EdgeScroll 0 0
+EdgeResistance 10000 64
+
+SnapAttraction 8 All
+
+#----------------------------------------------------------------
+
+AddToMenu Programs Programs Title
+   + XTerm		Exec exec xterm
+   + "XTerm -e su"	Exec exec xterm -fg red3 -e su
+   + Emacs		Exec exec emacs
+   + Mozilla		Exec exec /opt/mozilla/mozilla
+   + "XMMS (audio player)"	Exec exec /usr/bin/xmms
+   + "XCDRoast"		Exec exec /opt/bin/xcdroast
+   + "Star Office"	Exec exec /sopt/bin/soffice
+   + "xclipboard"	Exec exec xclipboard
+   + "xcutsel"		Exec exec xcutsel -background grey85
+   + "xmag"		Exec exec xmag
+   + ""			Nop
+   + "(Right-click for system operations)"	Nop
+
+AddToMenu WindowOps
+   + &Move		Move
+   + &Resize		Resize
+   + Ico&nify		Iconify
+   + Ma&ximize		Maximize
+   + Raise&Lower	RaiseLower
+   + "Place &Again"	PlaceAgain Anim
+   + StaysOn&Top	Layer 0 6
+   + Stays&Put		Layer 0 4
+   + &Close		Close
+   + &Delete		Delete
+   + Destro&y		Destroy
+
+AddToMenu RootOps Operations Title
+   + Ident		Module FvwmIdent
+   + &Move		Move
+   + &Close		Close
+   + "Window Ops"	Popup WindowOps
+   + ""			Nop
+   + "Restart FVWM"	Restart
+   + "Quit X-Windows"	Menu QuitVerify
+   + "Reboot"		Menu RebootVerify
+   + "Shut Down"	Menu HaltVerify
+   + ""			Nop
+   + Applications	Popup Programs
+
+AddToMenu QuitVerify "Really Quit?" Title
+   + "No, wait!"	Nop
+   + "Yes, really quit." Quit
+
+AddToMenu RebootVerify "Really Reboot?" Title
+   + "No, wait!"	Nop
+   + "Yes, really reboot." Exec exec /usr/bin/reboot
+
+AddToMenu HaltVerify "Really Halt?" Title
+   + "No, wait!"	Nop
+   + "Yes, really halt." Exec exec /usr/bin/halt -p
+
+Mouse 1 R A Menu Programs
+Mouse 3 R A Menu RootOps
+
+# Base menu style
+
+MenuStyle blueGreenDiag Mwm,						\
+   Hilight3DThin,							\
+   MenuFace DGradient 100 DarkTurquoise Aquamarine,			\
+   Font -*-lucida-medium-r-*-sans-12-*-*-*-*-*-*-*
+
+# Variations on base menu style
+
+MenuStyle redBrownDiag				\
+   MenuFace DGradient 100 #ff002b #99001a,	\
+   Foreground white
+
+MenuStyle greenFadeDiag				\
+   MenuFace DGradient 100 #00ff7f #c0ffdf
+
+MenuStyle orangeFadeDiag			\
+   MenuFace DGradient 100 #ffb200 #ffecc0
+
+# Specify base style for all menus in order to pick up base preferences (font,
+# highlight style, etc.)
+
+ChangeMenuStyle blueGreenDiag Programs MenuFvwmRoot RootOps WindowOps	\
+   QuitVerify RebootVerify HaltVerify
+
+ChangeMenuStyle redBrownDiag	HaltVerify
+ChangemenuStyle greenFadeDiag	RebootVerify
+# ChangeMenuStyle orangeFadeDiag	QuitVerify
+
+
+# -----------------------------  Window buttons  -----------------------------
+
+# Syntax is: Mouse Button Context Modifiers Function
+#
+# Contexts:
+#     'R' for the root window,
+#     'W' for an application window,
+#     'T' for a  window  title-bar,
+#     'S' for a window side, top, or bottom bar,
+#     'F' for a window frame (the corners),
+#     'I' for an  Icon  window,
+#     '0'  through '9' for title-bar buttons, which are laid out like this:
+#        1 3 5 7 9    0 8 6 4 2
+#     'A' is for any context except for title-bar buttons
+#
+# Modifiers:
+#     "2" is numlock
+#     "5" is scroll-lock
+
+
+Mouse 1 1 A Menu WindowOps Close
+Mouse 1 2 N Maximize
+Mouse 1 2 2 Maximize
+Mouse 1 2 M Maximize 0 100
+Mouse 1 2 M2 Maximize 0 100
+Mouse 1 2 C Maximize 100 0
+Mouse 1 2 C2 Maximize 100 0
+Mouse 1 4I A Iconify            
+
+Mouse 2 SF A Move
+
+# Title bar
+
+Mouse 3 TSF A Lower
+
+# In a window
+
+Key space WTSFI M Menu WindowOps
+Key space WTSFI M2 Menu WindowOps
+Key Escape WTSFI M RaiseLower
+Key Escape WTSFI M2 RaiseLower
+
+# Anywhere
+
+# (default of "A M" is already provided by... um... default.)
+Key Tab A M2 WindowList Root c c NoDeskSort
+Key F4 A N All (FvwmIconMan) RaiseLower
+Key F4 A 2 All (FvwmIconMan) RaiseLower
+
+                                # For emergency use:  full-screen window,
+                                # can't move or resize it, can't get to root
+                                # window. 
+# Key F5 A N All Popup WindowOps
+# Key F5 A 2 All Popup WindowOps
+
+#----------------------------------------------------------------
+
+*FvwmIdent: Font -*-lucidatypewriter-medium-*-*-*-12-*-*-*-m-*-*-*
+*FvwmIdent: Back PaleTurquoise1
+*FvwmIdent: Fore Blue4
+
+#----------------------------------------------------------------
+
+*FvwmIconMan*nummanagers	1
+*FvwmIconMan*1*managergeometry	1x0+0+0
+*FvwmIconMan*font		-*-lucida-medium-r-*-*-12-*-*-*-*-*-*-*
+*FvwmIconMan*buttongeometry	400x0
+*FvwmIconMan*dontshow		class Clock XBiff XLoad FvwmIdent FvwmModule
+*FvwmIconMan*followfocus	true
+				# icon: dimmer; focus: complement
+*FvwmIconMan*plainbutton	flat black #6cd7e5
+*FvwmIconMan*iconbutton		flat gray35 #bdd6db
+# *FvwmIconMan*focusbutton	flat black #f4e181
+*FvwmIconMan*focusbutton	flat white #00687f
+*FvwmIconMan*selectbutton	flat white #00687f
+*FvwmIconMan*focusandselectbutton flat white #00687f
+
+*FvwmIconMan*action		Mouse 1 2 sendcommand Iconify
+*FvwmIconMan*action		Mouse 3 N sendcommand RaiseLower
+*FvwmIconMan*action		Mouse 3 2 sendcommand RaiseLower
+*FvwmIconMan*action		Select sendcommand Focus
+
+#----------------------------------------------------------------
+
+# For emacs:
+# Local Variables:
+# fill-column: 78
+# End:
