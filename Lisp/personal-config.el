@@ -244,9 +244,10 @@
   )
 (if (featurep 'magit)
     (progn
-      (global-set-key (kbd "C-x g") 'magit-status)
+      ;; (global-set-key (kbd "C-x g") 'magit-status)
       (setq magit-define-global-key-bindings 'recommended)
       (setq magit-git-executable "git")
+      ;; (setq magit-log-color-graph-limit 512)
       )
   )
 
@@ -591,7 +592,7 @@ values turn on auto-fill mode, non-positive values turn it off."
       (setq org-agenda-clock-consistency-checks
             '(:max-duration "10:00" :min-duration 0 :max-gap "0:10"
                             :gap-ok-around ("4:00" ; 4 a.m.
-                                            "12:00" ;lunch ;if commented out, decided to require it accounted for, in
+                                            ;; "12:00" ;lunch ;if commented out, decided to require it accounted for, in
                                                     ;order not to be misled by larger gaps around lunchtime.
                                             )
                             :default-face ((:background "DarkRed") (:foreground "Yellow"))
@@ -800,6 +801,48 @@ have higher urgency."
 
 ;; (require 'adaptive-wrap)                ;Package obsoleted and removed
 ;; (setq adaptive-wrap-extra-indent 2)
+
+;;-----------------------------------------------------  polymode  -----------------------------------------------------
+
+; This doesn't seem to work all that well (polymode doesn't automatically activate, and when it does, it doesn't fontify
+; inner modes as expected unless you activate it twice), but it SEEMS to be harmless, so I'll leave it in, in case
+; things change some day.
+
+(with-demoted-errors "Error (ignored): %S"
+  (require 'polymode)
+  (require 'sh-script)
+  (require 'cc-mode)
+  (require 'sql)
+
+  (define-hostmode poly-sh-hostmode
+    :mode 'sh-mode)
+
+  (define-innermode poly-sh-sql-innermode
+    :mode 'sql-mode
+    :head-matcher "^[^#]*<<SQL\\s-*$"
+    :tail-matcher "^\\s-*SQL$"
+    :head-mode 'host
+    :tail-mode 'host)
+
+  (define-innermode poly-sh-awk-innermode
+    :mode 'awk-mode
+    :head-matcher "^[^#]*<<AWK\\s-*$"
+    :tail-matcher "^\\s-*AWK$"
+    :head-mode 'host
+    :tail-mode 'host)
+
+  (define-polymode poly-sh-mode
+    :hostmode 'poly-sh-hostmode
+    :innermodes '(poly-sh-sql-innermode
+                  poly-sh-awk-innermode
+                  ))
+
+  (add-to-list 'auto-mode-alist '("\\.sh$" . poly-sh-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.sh\\'" . poly-sh-mode)) ;Don't know why we need the escaped single quote
+  )
+
+
+;;---------------------------------------------------  end polymode  ---------------------------------------------------
 
 ;;===============================  end modes  ================================
 

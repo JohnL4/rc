@@ -414,35 +414,36 @@ something fanciful or something totally random, whatever makes you happy.")
 
 ;;-------------------------------------------------------  mmm  --------------------------------------------------------
 
-(require 'mmm-mode)
-(when (featurep 'mmm-mode)
-  (setq mmm-global-mode 'maybe)
-  (add-hook 'haskell-mode-hook 'my-mmm-mode)
-  (mmm-add-classes
-   '((literate-haskell-bird
-      :submode indented-text-mode
-      :front "^[^>]"
-      :include-front true
-      :back "^>"
-      ;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
-      )
-     (literate-haskell-latex
-      :submode literate-haskell-mode
-      :front "^\\\\begin{code}"
-      :front-offset (end-of-line 1)
-      :back "^\\\\end{code}"
-      :include-back nil
-      :back-offset (beginning-of-line -1)
-      )))
-  ;;(setq mmm-submode-decoration-level 1)
-  (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
+(with-demoted-errors "Error (ignored): %S"
+  (require 'mmm-mode)
+  (when (featurep 'mmm-mode)
+    (setq mmm-global-mode 'maybe)
+    (add-hook 'haskell-mode-hook 'my-mmm-mode)
+    (mmm-add-classes
+     '((literate-haskell-bird
+	:submode indented-text-mode
+	:front "^[^>]"
+	:include-front true
+	:back "^>"
+	;;:creation-hook (lambda () (message (format "submode region created at %d" (point))))
+	)
+       (literate-haskell-latex
+	:submode literate-haskell-mode
+	:front "^\\\\begin{code}"
+	:front-offset (end-of-line 1)
+	:back "^\\\\end{code}"
+	:include-back nil
+	:back-offset (beginning-of-line -1)
+	)))
+    ;;(setq mmm-submode-decoration-level 1)
+    (mmm-add-mode-ext-class 'literate-haskell-mode "\\.lhs$" 'literate-haskell-bird)
+    )
+
+  (defun my-mmm-mode ()
+    ;; go into mmm minor mode when class is given
+    (make-local-variable 'mmm-global-mode)
+    (setq mmm-global-mode 'true))
   )
-
-(defun my-mmm-mode ()
-  ;; go into mmm minor mode when class is given
-  (make-local-variable 'mmm-global-mode)
-  (setq mmm-global-mode 'true))
-
 
 ;;--------------------------------  haskell  ---------------------------------
 
@@ -531,6 +532,7 @@ something fanciful or something totally random, whatever makes you happy.")
 
 (defun group-python-mode-hook ()
   (my-fill-mode)			;Auto Word-wrap
+  (setq tab-width 4)
   (local-set-key "\M-o" 'one-line-section-break)
   (setq fill-column our-default-fill-column)
   (subword-mode 1)
@@ -924,6 +926,8 @@ something fanciful or something totally random, whatever makes you happy.")
                                      )
               )
             (subword-mode 1)
+            (if (featurep 'company)
+                (company-mode 1))
 	    )
 	  )
 
@@ -1033,6 +1037,7 @@ something fanciful or something totally random, whatever makes you happy.")
 (with-demoted-errors "ERROR: %S"
   ;; (require 'org-install)
   (require 'org)
+  ;; (require 'ox-gfm nil t)
   ;; (require 'ox-hugo)
   ;; (require 'ox-hugo-auto-export)
   (require 'ox-md)
@@ -1314,6 +1319,52 @@ something fanciful or something totally random, whatever makes you happy.")
   )
 
 ;;-----------------------------------------------------  org-mode ends  -----------------------------------------------------
+
+;;-----------------------------------------------------  markdown  -----------------------------------------------------
+;; Adding after org-mode because it has org-mode dependencies.
+
+;; For this radio table jazz to work, you need the following structure in your markdown:
+;; 
+;; <!-- BEGIN SOURCE ORGTBL mytbl -->
+;; #+ORGTBL: SEND mytbl my-orgtbl-to-markdown :splice t
+;; | Name  | Value |
+;; |-------+-------|
+;; | Alpha | 1     |
+;; | Beta  | 2     |
+;; <!-- END SOURCE ORGTBL mytbl -->
+;; 
+;; <!-- BEGIN RECEIVE ORGTBL mytbl -->
+;; <!-- END RECEIVE ORGTBL mytbl -->
+;;
+;; Put the cursor on the #+ORGTBL line and hit C-c C-c.
+
+;; The following is still broken.  Generates a single dash for separator line.
+;; 
+;; (defun my-orgtbl-to-markdown (table params)
+;;   "Convert orgtbl TABLE to Markdown pipe table."
+;;   (let* ((text
+;;           (orgtbl-to-generic
+;;            table
+;;            (org-combine-plists
+;;             params
+;;             '(:lstart "| " :lend " |" :sep " | " :hline "-")))))
+;;     ;; orgtbl may emit + in hlines; force Markdown-style pipes there.
+;;     (replace-regexp-in-string
+;;      "^|\\([[:space:]:|-]*\\+[-+|[:space:]:]*\\)|$"
+;;      (lambda (line) (replace-regexp-in-string "\\+" "|" line))
+;;      text)))
+;; 
+;; (defun my-markdown-orgtbl-hook ()
+;;   "Enable orgtbl-mode and configure markdown radio tables."
+;;   (orgtbl-mode 1)
+;;   (setq-local orgtbl-radio-table-templates
+;;               '((markdown-mode
+;;                  "<!-- BEGIN RECEIVE ORGTBL %s -->\n%s\n<!-- END RECEIVE ORGTBL %s -->"
+;;                  "<!-- BEGIN SOURCE ORGTBL %s -->\n#+ORGTBL: SEND %s my-orgtbl-to-markdown %s\n%s\n<!-- END SOURCE ORGTBL %s -->"))))
+;; 
+;; (add-hook 'markdown-mode-hook #'my-markdown-orgtbl-hook)
+
+;;--------------------------------------------------  markdown ends  ---------------------------------------------------
 
 ;;===============================  end modes  ================================
 
@@ -1659,6 +1710,9 @@ language.")
 (font-lock-add-keywords 'csharp-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
+(font-lock-add-keywords 'markdown-mode
+                        (list
+                         (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
 (font-lock-add-keywords 'powershell-mode
                         (list
                          (cons "\\bTODO\\b:?" '(0 font-lock-todo-face t))))
@@ -1780,83 +1834,83 @@ language.")
 
 ;;---------------------------------  align  ----------------------------------
 
-(defun align-repeat (start end regexp)
-    "Repeat alignment with respect to 
-     the given regular expression."
-    (interactive "r\nsAlign regexp (default \\S-+): ")
-    (if (or (string= "" regexp) (not regexp))
-        (setq regexp "\\S-+"))
-    (align-regexp start end 
-        (concat "\\(\\s-+\\)" regexp) 1 1 t))
-
-;; Some of the following code is for the older align.el, by Matthias Helmling.
-;; Later emacsen seem to have acquired a similar capability having the same
-;; name.
-
+;; (defun align-repeat (start end regexp)
+;;     "Repeat alignment with respect to 
+;;      the given regular expression."
+;;     (interactive "r\nsAlign regexp (default \\S-+): ")
+;;     (if (or (string= "" regexp) (not regexp))
+;;         (setq regexp "\\S-+"))
+;;     (align-regexp start end 
+;;         (concat "\\(\\s-+\\)" regexp) 1 1 t))
+;; 
+;; ;; Some of the following code is for the older align.el, by Matthias Helmling.
+;; ;; Later emacsen seem to have acquired a similar capability having the same
+;; ;; name.
+;; 
 (require 'align)
-
-;; (defun debug-align (msg matches)
-;;   "Add to a string message for use in debugging an align rule."
-;;   (if (null matches)
-;;       msg
-;;     (let* ((match-index (car matches))
-;;           (new-msg (concat msg
-;;                            (format "\n\t\\%d: pos %d-%d (\"%s\")"
-;;                                    match-index
-;;                                    (match-beginning match-index)
-;;                                    (match-end match-index)
-;;                                    (buffer-substring (match-beginning
-;;                                                       match-index)
-;;                                                      (match-end
-;;                                                       match-index))
-;;                                    )))
-;;           )
-;;       (debug-align new-msg (cdr matches))
-;;       )
-;;     )
-;;   )
 ;; 
-;; (defun faux-aligner (beg end mode)
-;;   "For debugging use w/`align-region'.  If MODE is a rule (a list), return t
-;; if BEG to END are to be searched.  Otherwise BEG to END will be a region of
-;; text that matches the rule's definition, and MODE will be non-nil if any
-;; changes are necessary."
-;;   (cond ((listp mode)
-;;          (message (format "faux-aligner list: region %d-%d, mode %S"
-;;                           beg end (car mode)))
-;;          t
-;;          )
-;;         (t
-;;          (message (format "faux-aligner: region %S-%S, mode %S"
-;;                           (marker-position beg)
-;;                           (marker-position end)
-;;                           mode))
-;;          )
-;;         )
-;;   )
-;; 
+;; ;; (defun debug-align (msg matches)
+;; ;;   "Add to a string message for use in debugging an align rule."
+;; ;;   (if (null matches)
+;; ;;       msg
+;; ;;     (let* ((match-index (car matches))
+;; ;;           (new-msg (concat msg
+;; ;;                            (format "\n\t\\%d: pos %d-%d (\"%s\")"
+;; ;;                                    match-index
+;; ;;                                    (match-beginning match-index)
+;; ;;                                    (match-end match-index)
+;; ;;                                    (buffer-substring (match-beginning
+;; ;;                                                       match-index)
+;; ;;                                                      (match-end
+;; ;;                                                       match-index))
+;; ;;                                    )))
+;; ;;           )
+;; ;;       (debug-align new-msg (cdr matches))
+;; ;;       )
+;; ;;     )
+;; ;;   )
+;; ;; 
+;; ;; (defun faux-aligner (beg end mode)
+;; ;;   "For debugging use w/`align-region'.  If MODE is a rule (a list), return t
+;; ;; if BEG to END are to be searched.  Otherwise BEG to END will be a region of
+;; ;; text that matches the rule's definition, and MODE will be non-nil if any
+;; ;; changes are necessary."
+;; ;;   (cond ((listp mode)
+;; ;;          (message (format "faux-aligner list: region %d-%d, mode %S"
+;; ;;                           beg end (car mode)))
+;; ;;          t
+;; ;;          )
+;; ;;         (t
+;; ;;          (message (format "faux-aligner: region %S-%S, mode %S"
+;; ;;                           (marker-position beg)
+;; ;;                           (marker-position end)
+;; ;;                           mode))
+;; ;;          )
+;; ;;         )
+;; ;;   )
+;; ;; 
 (if (not (member 'align features))
     (message "Warning:  feature `align' not loaded.")
-;;   (setq align-c++-modes (cons 'jde-mode align-c++-modes))
-;; 
-;;                                         ; These func-call align rules require
-;;                                         ; that the `exc-c-func-params'
-;;                                         ; exclusion rule NOT be in play.  I
-;;                                         ; had to comment it out of align.el.
-;;   (setq align-exclude-rules-list
-;;         (append
-;;          (list
-;;           '(sql
-;;             (regexp . "\\(^\\s-*\\)")
-;;             (modes . '(sql-mode))
-;;             )
-;;           '(sql-comment
-;;             (regexp . "\\(\\s-*--.*\\)")
-;;             (modes . '(sql-mode))
-;;             )
-;;           )
-;;          align-exclude-rules-list))
-;;   
+  ;;   (setq align-c++-modes (cons 'jde-mode align-c++-modes))
+  ;; 
+  ;;                                         ; These func-call align rules require
+  ;;                                         ; that the `exc-c-func-params'
+  ;;                                         ; exclusion rule NOT be in play.  I
+  ;;                                         ; had to comment it out of align.el.
+  ;;   (setq align-exclude-rules-list
+  ;;         (append
+  ;;          (list
+  ;;           '(sql
+  ;;             (regexp . "\\(^\\s-*\\)")
+  ;;             (modes . '(sql-mode))
+  ;;             )
+  ;;           '(sql-comment
+  ;;             (regexp . "\\(\\s-*--.*\\)")
+  ;;             (modes . '(sql-mode))
+  ;;             )
+  ;;           )
+  ;;          align-exclude-rules-list))
+  ;;   
   (setq align-rules-list
         (append
          (list
@@ -1867,45 +1921,45 @@ language.")
             (tab-stop . t)
             (modes . '(sql-mode))
             )
-;;           `(wiki-table
-;;             (regexp . "|?  *[^| ]*\\(  *\\)|")
-;;             (valid . (lambda ()
-;;                        (save-excursion
-;;                          (beginning-of-line)
-;;                          (looking-at "^|.*|$")
-;;                          )))
-;;             (repeat . t)
-;;             (modes . '(text-mode))
-;;             )
-;;           `(func-call-first-parm
-;;             (regexp . "\\(\\(\\sw\\|\\s_\\)+\\)\\s-*(\\(\\s-*\\)\\(\\(\\sw\\|\\s_\\)+\\).*)")
-;;             (group  . 3)
-;;             ;; (repeat . t)
-;;             (modes  . align-c++-modes)
-;; ;;;                (valid  . (lambda ()
-;; ;;;                            (message (debug-align
-;; ;;;                                      "align rule `func-call-first-parm' matched"
-;; ;;;                                      '(0 1 3 4)))
-;; ;;;                            t
-;; ;;;                            ))
-;;             )
-;; ;;;          `(func-call-other-parms
-;; ;;;            (regexp . "\\(\\sw\\|\\s_\\)+\\s-*(.*,\\(\\s-*\\).*)")
-;; ;;;            (group  . 2)
-;; ;;;            (repeat . t)
-;; ;;;            (modes  . align-c++-modes)
-;; ;;;                (valid  . (lambda ()
-;; ;;;                            (message (debug-align
-;; ;;;                                      "align rule `func-call-other-parms' matched"
-;; ;;;                                      '(0 1 2)))
-;; ;;;                            t
-;; ;;;                            ))
-;; ;;;            )
+          ;;           `(wiki-table
+          ;;             (regexp . "|?  *[^| ]*\\(  *\\)|")
+          ;;             (valid . (lambda ()
+          ;;                        (save-excursion
+          ;;                          (beginning-of-line)
+          ;;                          (looking-at "^|.*|$")
+          ;;                          )))
+          ;;             (repeat . t)
+          ;;             (modes . '(text-mode))
+          ;;             )
+          ;;           `(func-call-first-parm
+          ;;             (regexp . "\\(\\(\\sw\\|\\s_\\)+\\)\\s-*(\\(\\s-*\\)\\(\\(\\sw\\|\\s_\\)+\\).*)")
+          ;;             (group  . 3)
+          ;;             ;; (repeat . t)
+          ;;             (modes  . align-c++-modes)
+          ;; ;;;                (valid  . (lambda ()
+          ;; ;;;                            (message (debug-align
+          ;; ;;;                                      "align rule `func-call-first-parm' matched"
+          ;; ;;;                                      '(0 1 3 4)))
+          ;; ;;;                            t
+          ;; ;;;                            ))
+          ;;             )
+          ;; ;;;          `(func-call-other-parms
+          ;; ;;;            (regexp . "\\(\\sw\\|\\s_\\)+\\s-*(.*,\\(\\s-*\\).*)")
+          ;; ;;;            (group  . 2)
+          ;; ;;;            (repeat . t)
+          ;; ;;;            (modes  . align-c++-modes)
+          ;; ;;;                (valid  . (lambda ()
+          ;; ;;;                            (message (debug-align
+          ;; ;;;                                      "align rule `func-call-other-parms' matched"
+          ;; ;;;                                      '(0 1 2)))
+          ;; ;;;                            t
+          ;; ;;;                            ))
+          ;; ;;;            )
           )
          align-rules-list)
         )
   
-;;   (setq align-to-tab-stop nil)
+  ;;   (setq align-to-tab-stop nil)
   )
 
 ;;-------------------------------  end align  --------------------------------
@@ -2096,7 +2150,7 @@ version.  This is true for `Courier New'."
 (global-set-key [C-end] 'end-of-buffer)
 
 (global-set-key "\M-[" 'align)
-(global-set-key "\M-]" 'align-repeat)
+(global-set-key "\M-]" 'align-regexp)
 
 (setq version-control t)		;All those little "~" backup files.
 (setq kept-old-versions 1)

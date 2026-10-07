@@ -1,4 +1,4 @@
-                                        ;-*- coding: raw-text-dos -*-
+                                        ;-*- coding: raw-text-dos; mode: lisp -*-
 
 ;;; $Header: v:/J80Lusk/CVSROOT/Dotfiles/.emacs,v 1.14 2004/09/24 17:23:42 j80lusk Exp $
 
@@ -39,7 +39,7 @@ the JDE directory to be placed on `load-path'."
 	 (let ((home-path (getenv "HOME")))
 	   (concat home-path
 		   (if (or (string-match "/$" home-path)
-			   (string-match "\\\\$" home-path)) ;Not sure why I need so many backslashes, but ok....
+			   (string-match "\\$" home-path)) ;Not sure why I need so many backslashes, but ok....
 		       ""
 		     "/")
 		   "Lisp")
@@ -181,7 +181,7 @@ the JDE directory to be placed on `load-path'."
  '(org-list-allow-alphabetical t)
  '(org-plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
  '(package-selected-packages
-   '(compat gnu-elpa-keyring-update org-modern yaml-mode edit-indirect rust-mode powershell json-mode rainbow-mode htmlize plantuml-mode magit csharp-mode markdown-mode markdown-mode+ markdown-preview-mode tide lua-mode web-mode mmm-mode haskell-mode company))
+   '(ox-gfm kql-mode mmm-mode markdown-mode compat gnu-elpa-keyring-update org-modern yaml-mode edit-indirect rust-mode powershell json-mode rainbow-mode htmlize plantuml-mode csharp-mode markdown-mode+ markdown-preview-mode tide lua-mode web-mode haskell-mode company))
  '(plantuml-default-exec-mode 'jar)
  '(plantuml-jar-args '("-charset" "UTF-8" "-nometadata"))
  '(plantuml-jar-path "c:\\usr\\local\\lib\\plantuml.1.2019.7.jar")
